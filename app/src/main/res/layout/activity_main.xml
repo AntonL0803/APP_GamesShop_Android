@@ -11,14 +11,14 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="651dp">
+        android:layout_height="931dp">
 
     </FrameLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLay"
         android:layout_width="match_parent"
-        android:layout_height="78dp">
+        android:layout_height="62dp">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/perfil"
