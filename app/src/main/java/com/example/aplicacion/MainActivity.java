@@ -1,18 +1,22 @@
 package com.example.aplicacion;
 
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
+    FrameLayout frame;
     TabItem perfil;
     TabItem tienda;
     TabItem pedidos;
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tabLayout = findViewById(R.id.tabLay);
+        frame = findViewById(R.id.frameLayout);
 
         // Asignar íconos a las pestañas (solo si existen)
         if (tabLayout.getTabAt(0) != null){
@@ -41,6 +46,37 @@ public class MainActivity extends AppCompatActivity {
         if (tabLayout.getTabAt(2) != null){
             tabLayout.getTabAt(2).setIcon(R.drawable.pedido);
         }
-    }
 
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction transaction = fm.beginTransaction();
+
+                if (tab.getPosition() == 0){
+                    transaction.replace(R.id.frameLayout, new PerfilFragmento());
+                    transaction.addToBackStack(null);
+                } else if (tab.getPosition() == 1) {
+                    transaction.replace(R.id.frameLayout, new Tienda());
+                    transaction.addToBackStack(null);
+                } else if (tab.getPosition() == 2) {
+                    transaction.replace(R.id.frameLayout, new PedidosFragmento());
+                    transaction.addToBackStack(null);
+                }
+
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
 }
