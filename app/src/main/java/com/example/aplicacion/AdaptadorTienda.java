@@ -15,14 +15,32 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
 
     private List<Producto> productos;
     private View.OnClickListener listener;
+    private boolean isGridLayout;
 
-    public AdaptadorTienda(){
+    public AdaptadorTienda(boolean isGridLayout){
         this.productos = productos;
+        this.isGridLayout = isGridLayout;
+    }
+
+    public void setGridLayout(boolean isGridLayout) {
+        this.isGridLayout = isGridLayout;
+        notifyDataSetChanged(); // Recargar RecyclerView
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return isGridLayout ? 1 : 0; // 1 para Grid, 0 para Linear
     }
 
     public MiViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Inflar el layout para cada elemento
-        View nuevaVista = LayoutInflater.from(parent.getContext()).inflate(R.layout.tarjeta_producto, parent, false);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View nuevaVista;
+        if (viewType == 1){
+            nuevaVista = inflater.inflate(R.layout.tarjeta_producto_grid, parent, false);
+        } else {
+            nuevaVista = inflater.inflate(R.layout.tarjeta_producto_linear, parent, false);
+        }
         nuevaVista.setOnClickListener(listener);
         return new MiViewHolder(nuevaVista);
     }
@@ -57,9 +75,9 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
 
         public MiViewHolder(@NonNull View nuevaVista) {
             super(nuevaVista);
-            ivProducto = nuevaVista.findViewById(R.id.imagenProductoTarjeta);
-            tvNombre = nuevaVista.findViewById(R.id.nombreProductoTarjeta);
-            tvPrecio =  nuevaVista.findViewById(R.id.precioProductoTarjeta);
+            ivProducto = nuevaVista.findViewById(R.id.imagenProductoTarjeta2);
+            tvNombre = nuevaVista.findViewById(R.id.nombreProductoTarjeta2);
+            tvPrecio =  nuevaVista.findViewById(R.id.precioProductoTarjeta2);
         }
     }
 }

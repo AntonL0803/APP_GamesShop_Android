@@ -3,12 +3,14 @@ package com.example.aplicacion;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
  */
 public class Tienda extends Fragment {
     private RecyclerView rvTienda;
+    private Switch swTienda;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -63,10 +66,26 @@ public class Tienda extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tienda, container, false);
         rvTienda = view.findViewById(R.id.rvTienda);
-        AdaptadorTienda adaptador = new AdaptadorTienda();
+        swTienda = view.findViewById(R.id.switch1);
+
+        boolean isGrid = false;
+        AdaptadorTienda adaptador = new AdaptadorTienda(isGrid);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(view.getContext(), 2);
+
         rvTienda.setLayoutManager(layoutManager);
         rvTienda.setAdapter(adaptador);
+
+        swTienda.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                rvTienda.setLayoutManager(gridLayoutManager);
+                adaptador.setGridLayout(true);
+            } else {
+                rvTienda.setLayoutManager(layoutManager);
+                adaptador.setGridLayout(false);
+            }
+        });
         return view;
     }
 }
