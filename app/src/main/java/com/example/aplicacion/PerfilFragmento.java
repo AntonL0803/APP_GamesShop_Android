@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ToggleButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +16,10 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class PerfilFragmento extends Fragment {
+    private EditText editTextUsuarioPerfil;
+    private EditText editTextCpPerfil;
+    private EditText editTextEmail;
+    private ToggleButton togglePerfil;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
