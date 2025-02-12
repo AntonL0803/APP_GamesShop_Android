@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout frame;
     TabItem perfil;
     TabItem tienda;
+    TabItem carrito;
     TabItem pedidos;
 
     @Override
@@ -44,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
             tabLayout.getTabAt(1).setIcon(R.drawable.tienda);
         }
         if (tabLayout.getTabAt(2) != null){
-            tabLayout.getTabAt(2).setIcon(R.drawable.pedido);
+            tabLayout.getTabAt(2).setIcon(R.drawable.carro);
+        }
+        if (tabLayout.getTabAt(3) != null){
+            tabLayout.getTabAt(3).setIcon(R.drawable.pedido);
         }
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
