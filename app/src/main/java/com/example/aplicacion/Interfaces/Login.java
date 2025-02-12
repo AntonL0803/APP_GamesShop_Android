@@ -1,4 +1,4 @@
-package com.example.aplicacion;
+package com.example.aplicacion.Interfaces;
 
 import android.os.Bundle;
 
@@ -8,7 +8,9 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class MainActivityLogin extends AppCompatActivity {
+import com.example.aplicacion.R;
+
+public class Login extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,4 +1,4 @@
-package com.example.aplicacion;
+package com.example.aplicacion.Interfaces;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.aplicacion.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link PedidosFragmento#newInstance} factory method to
+ * Use the {@link Pedidos#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PedidosFragmento extends Fragment {
+public class Pedidos extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +26,7 @@ public class PedidosFragmento extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public PedidosFragmento() {
+    public Pedidos() {
         // Required empty public constructor
     }
 
@@ -37,8 +39,8 @@ public class PedidosFragmento extends Fragment {
      * @return A new instance of fragment PedidosFragmento.
      */
     // TODO: Rename and change types and number of parameters
-    public static PedidosFragmento newInstance(String param1, String param2) {
-        PedidosFragmento fragment = new PedidosFragmento();
+    public static Pedidos newInstance(String param1, String param2) {
+        Pedidos fragment = new Pedidos();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

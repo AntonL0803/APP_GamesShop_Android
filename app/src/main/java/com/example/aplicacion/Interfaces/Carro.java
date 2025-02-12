@@ -1,4 +1,4 @@
-package com.example.aplicacion;
+package com.example.aplicacion.Interfaces;
 
 import android.os.Bundle;
 
@@ -7,19 +7,15 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ToggleButton;
+
+import com.example.aplicacion.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link PerfilFragmento#newInstance} factory method to
+ * Use the {@link Carro#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PerfilFragmento extends Fragment {
-    private EditText editTextUsuarioPerfil;
-    private EditText editTextCpPerfil;
-    private EditText editTextEmail;
-    private ToggleButton togglePerfil;
+public class Carro extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,7 +26,7 @@ public class PerfilFragmento extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public PerfilFragmento() {
+    public Carro() {
         // Required empty public constructor
     }
 
@@ -40,11 +36,11 @@ public class PerfilFragmento extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment PerfilFragmento.
+     * @return A new instance of fragment Carro.
      */
     // TODO: Rename and change types and number of parameters
-    public static PerfilFragmento newInstance(String param1, String param2) {
-        PerfilFragmento fragment = new PerfilFragmento();
+    public static Carro newInstance(String param1, String param2) {
+        Carro fragment = new Carro();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -65,6 +61,6 @@ public class PerfilFragmento extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
+        return inflater.inflate(R.layout.fragment_carro, container, false);
     }
 }

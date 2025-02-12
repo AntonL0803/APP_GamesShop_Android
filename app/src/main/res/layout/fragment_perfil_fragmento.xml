@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:paddingTop="30px"
     android:paddingBottom="100px"
-    tools:context=".PerfilFragmento">
+    tools:context=".Interfaces.Perfil">
 
     <TextView
         android:id="@+id/textView"

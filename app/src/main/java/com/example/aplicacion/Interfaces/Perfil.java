@@ -1,25 +1,27 @@
-package com.example.aplicacion;
+package com.example.aplicacion.Interfaces;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
+import android.widget.EditText;
+import android.widget.ToggleButton;
+
+import com.example.aplicacion.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Tienda#newInstance} factory method to
+ * Use the {@link Perfil#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Tienda extends Fragment {
-    private RecyclerView rvTienda;
-    private Switch swTienda;
+public class Perfil extends Fragment {
+    private EditText editTextUsuarioPerfil;
+    private EditText editTextCpPerfil;
+    private EditText editTextEmail;
+    private ToggleButton togglePerfil;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,7 +32,7 @@ public class Tienda extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public Tienda() {
+    public Perfil() {
         // Required empty public constructor
     }
 
@@ -40,11 +42,11 @@ public class Tienda extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Tienda.
+     * @return A new instance of fragment PerfilFragmento.
      */
     // TODO: Rename and change types and number of parameters
-    public static Tienda newInstance(String param1, String param2) {
-        Tienda fragment = new Tienda();
+    public static Perfil newInstance(String param1, String param2) {
+        Perfil fragment = new Perfil();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -64,28 +66,7 @@ public class Tienda extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tienda, container, false);
-        rvTienda = view.findViewById(R.id.rvTienda);
-        swTienda = view.findViewById(R.id.switch1);
-
-        boolean isGrid = false;
-        AdaptadorTienda adaptador = new AdaptadorTienda(isGrid);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(view.getContext(), 2);
-
-        rvTienda.setLayoutManager(layoutManager);
-        rvTienda.setAdapter(adaptador);
-
-        swTienda.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                rvTienda.setLayoutManager(gridLayoutManager);
-                adaptador.setGridLayout(true);
-            } else {
-                rvTienda.setLayoutManager(layoutManager);
-                adaptador.setGridLayout(false);
-            }
-        });
-        return view;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
     }
 }

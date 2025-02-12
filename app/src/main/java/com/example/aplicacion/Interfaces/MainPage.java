@@ -1,4 +1,4 @@
-package com.example.aplicacion;
+package com.example.aplicacion.Interfaces;
 
 import android.os.Bundle;
 import android.widget.FrameLayout;
@@ -11,10 +11,11 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.aplicacion.R;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
-public class MainActivity extends AppCompatActivity {
+public class MainPage extends AppCompatActivity {
     TabLayout tabLayout;
     FrameLayout frame;
     TabItem perfil;
@@ -58,13 +59,16 @@ public class MainActivity extends AppCompatActivity {
                 FragmentTransaction transaction = fm.beginTransaction();
 
                 if (tab.getPosition() == 0){
-                    transaction.replace(R.id.frameLayout, new PerfilFragmento());
+                    transaction.replace(R.id.frameLayout, new Perfil());
                     transaction.addToBackStack(null);
                 } else if (tab.getPosition() == 1) {
                     transaction.replace(R.id.frameLayout, new Tienda());
                     transaction.addToBackStack(null);
                 } else if (tab.getPosition() == 2) {
-                    transaction.replace(R.id.frameLayout, new PedidosFragmento());
+                    transaction.replace(R.id.frameLayout, new Carro());
+                    transaction.addToBackStack(null);
+                } else if (tab.getPosition() == 3) {
+                    transaction.replace(R.id.frameLayout, new Pedidos());
                     transaction.addToBackStack(null);
                 }
 
