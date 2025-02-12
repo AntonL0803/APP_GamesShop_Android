@@ -1,14 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Interfaces.Carro">
+    android:orientation="vertical"
+    tools:context=".Interfaces.Carro" >
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="57dp"
+        app:cardElevation="100dp">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tvTienda"
+            android:layout_width="match_parent"
+            android:layout_height="59dp"
+            android:background="#525252"
+            android:gravity="center"
+            android:text="TIENDA"
+            android:textColor="#FFFFFF"
+            android:textSize="34sp"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_width="102dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
+            android:text="Cambiar vista"
+            android:textColor="#FFFFFF"
+            android:textOff="Vertical"
+            android:textOn="Cuadricula" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="835dp" />
+
+</LinearLayout>
