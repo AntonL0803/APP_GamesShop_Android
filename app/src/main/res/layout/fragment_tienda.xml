@@ -14,7 +14,7 @@
         app:cardElevation="100dp">
 
         <TextView
-            android:id="@+id/tvTienda"
+            android:id="@+id/tvCarro"
             android:layout_width="match_parent"
             android:layout_height="59dp"
             android:background="#525252"

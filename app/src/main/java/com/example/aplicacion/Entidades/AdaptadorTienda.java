@@ -77,9 +77,9 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
 
         public MiViewHolder(@NonNull View nuevaVista) {
             super(nuevaVista);
-            ivProducto = nuevaVista.findViewById(R.id.imagenProductoTarjeta2);
+            ivProducto = nuevaVista.findViewById(R.id.imagenProductoCarrito);
             tvNombre = nuevaVista.findViewById(R.id.nombreProductoTarjeta2);
-            tvPrecio =  nuevaVista.findViewById(R.id.precioProductoTarjeta2);
+            tvPrecio =  nuevaVista.findViewById(R.id.precioProductoCarrito);
         }
     }
 }
