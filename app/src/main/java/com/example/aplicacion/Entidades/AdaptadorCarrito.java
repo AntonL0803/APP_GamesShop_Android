@@ -19,6 +19,7 @@ import java.util.List;
 public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiViewHolderCarrito> implements View.OnClickListener {
     private List<Producto> productos;
     private View.OnClickListener listener;
+    private int cantidad = 0;
     @Override
     public void onClick(View view) {
 
@@ -37,6 +38,23 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
         holder.tvNombre.setText("Nombre del producto");
         holder.tvPrecio.setText("Precio: 0.00$");
         holder.ivProducto.setImageResource(R.drawable.perfil);
+        holder.tvQuantity.setText(String.valueOf(cantidad));
+
+        holder.btnPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.tvQuantity.setText(String.valueOf(++cantidad));
+            }
+        });
+        holder.btnMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.tvQuantity.getText().toString().equals("0")){
+                } else {
+                    holder.tvQuantity.setText(String.valueOf(--cantidad));
+                }
+            }
+        });
     }
 
     @Override
