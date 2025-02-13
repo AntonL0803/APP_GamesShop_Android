@@ -13,31 +13,21 @@
         app:cardElevation="100dp">
 
         <TextView
-            android:id="@+id/tvTienda"
+            android:id="@+id/tvCarro"
             android:layout_width="match_parent"
             android:layout_height="59dp"
             android:background="#525252"
             android:gravity="center"
-            android:text="TIENDA"
+            android:text="CARRITO"
             android:textColor="#FFFFFF"
             android:textSize="34sp"
             android:textStyle="bold" />
 
-        <Switch
-            android:id="@+id/switch1"
-            android:layout_width="102dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="10dp"
-            android:text="Cambiar vista"
-            android:textColor="#FFFFFF"
-            android:textOff="Vertical"
-            android:textOn="Cuadricula" />
-
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCarrito"
         android:layout_width="match_parent"
-        android:layout_height="835dp" />
+        android:layout_height="858dp" />
 
 </LinearLayout>

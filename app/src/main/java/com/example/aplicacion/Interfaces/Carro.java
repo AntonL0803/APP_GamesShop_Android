@@ -3,11 +3,15 @@ package com.example.aplicacion.Interfaces;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.aplicacion.Entidades.AdaptadorCarrito;
 import com.example.aplicacion.R;
 
 /**
@@ -16,6 +20,8 @@ import com.example.aplicacion.R;
  * create an instance of this fragment.
  */
 public class Carro extends Fragment {
+    private RecyclerView rvCarro;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,6 +67,13 @@ public class Carro extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_carro, container, false);
+        rvCarro = view.findViewById(R.id.rvCarrito);
+        AdaptadorCarrito adaptador = new AdaptadorCarrito();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+
+        rvCarro.setLayoutManager(layoutManager);
+        rvCarro.setAdapter(adaptador);
+        rvCarro.addItemDecoration(new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
         return view;
     }
 }
