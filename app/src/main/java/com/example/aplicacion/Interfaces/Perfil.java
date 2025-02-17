@@ -68,5 +68,8 @@ public class Perfil extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
+
+        //editTextCpPerfil = findViewbyId(R.id.etCPPerfil);
     }
+
 }
