@@ -15,12 +15,14 @@ import java.util.List;
 
 public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiViewHolder> implements View.OnClickListener {
 
-    private List<Producto> productos;
+    private List<String> nombreProductos;
+    private List<Double> precioProductos;
     private View.OnClickListener listener;
     private boolean isGridLayout;
 
-    public AdaptadorTienda(boolean isGridLayout){
-        this.productos = productos;
+    public AdaptadorTienda(List<String> nombreProductos, List<Double> precioProductos, boolean isGridLayout) {
+        this.nombreProductos = nombreProductos;
+        this.precioProductos = precioProductos;
         this.isGridLayout = isGridLayout;
     }
 
@@ -50,13 +52,13 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
     @Override
     public void onBindViewHolder(@NonNull AdaptadorTienda.MiViewHolder holder, int position) {
         holder.ivProducto.setImageResource(R.drawable.perfil);
-        holder.tvNombre.setText("Nombre del producto");
-        holder.tvPrecio.setText("Precio: 0,00$");
+        holder.tvNombre.setText(nombreProductos.get(position));
+        holder.tvPrecio.setText("Precio: " + String.valueOf(precioProductos.get(position)));
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return nombreProductos.size();
     }
 
     public void setOnClickListener(View.OnClickListener listener) {
