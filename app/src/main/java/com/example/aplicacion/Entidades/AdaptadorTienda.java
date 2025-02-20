@@ -3,6 +3,7 @@ package com.example.aplicacion.Entidades;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,6 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aplicacion.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -18,12 +24,14 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
     private List<String> nombreProductos;
     private List<Double> precioProductos;
     private View.OnClickListener listener;
+    private BotonMas listenerBoton;
     private boolean isGridLayout;
 
-    public AdaptadorTienda(List<String> nombreProductos, List<Double> precioProductos, boolean isGridLayout) {
+    public AdaptadorTienda(List<String> nombreProductos, List<Double> precioProductos, boolean isGridLayout, BotonMas listenerBoton) {
         this.nombreProductos = nombreProductos;
         this.precioProductos = precioProductos;
         this.isGridLayout = isGridLayout;
+        this.listenerBoton = listenerBoton;
     }
 
     public void setGridLayout(boolean isGridLayout) {
@@ -54,6 +62,43 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
         holder.ivProducto.setImageResource(R.drawable.perfil);
         holder.tvNombre.setText(nombreProductos.get(position));
         holder.tvPrecio.setText("Precio: " + String.valueOf(precioProductos.get(position)));
+        holder.imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listenerBoton.clickBotonMas(position);
+                agregarAlCarrito(position);
+            }
+        });
+    }
+
+    public void agregarAlCarrito(int position){
+        FirebaseDatabase db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
+        DatabaseReference nodoPadre = db.getReference().child("Carrito");
+
+        String productoSeleccionado = nombreProductos.get(position);
+        Double precioSeleccionado = precioProductos.get(position);
+
+        Producto producto = new Producto(productoSeleccionado, precioSeleccionado, 1);
+        DatabaseReference productoRef = nodoPadre.child(productoSeleccionado);
+        productoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    Producto productoExistente = snapshot.getValue(Producto.class);
+                    if (productoExistente != null){
+                        int nuevaCantidad = productoExistente.getCantidad() + 1;
+                        productoRef.child("cantidad").setValue(nuevaCantidad);
+                    }
+                } else {
+                    productoRef.setValue(producto);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -76,12 +121,14 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
         ImageView ivProducto;
         TextView tvNombre;
         TextView tvPrecio;
+        ImageButton imageButton;
 
         public MiViewHolder(@NonNull View nuevaVista) {
             super(nuevaVista);
             ivProducto = nuevaVista.findViewById(R.id.imagenProductoCarrito);
             tvNombre = nuevaVista.findViewById(R.id.nombreProductoTarjeta2);
             tvPrecio =  nuevaVista.findViewById(R.id.precioProductoCarrito);
+            imageButton = nuevaVista.findViewById(R.id.imageButton);
         }
     }
 }

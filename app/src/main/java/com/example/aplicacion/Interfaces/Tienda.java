@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 
 import com.example.aplicacion.Entidades.AdaptadorTienda;
+import com.example.aplicacion.Entidades.BotonMas;
 import com.example.aplicacion.Entidades.Producto;
 import com.example.aplicacion.R;
 import com.google.firebase.database.DataSnapshot;
@@ -89,7 +90,10 @@ public class Tienda extends Fragment {
         nombreProducto = new ArrayList<>();
         precioProducto = new ArrayList<>();
         boolean isGrid = false;
-        AdaptadorTienda adaptador = new AdaptadorTienda(nombreProducto, precioProducto, isGrid);
+        AdaptadorTienda adaptador = new AdaptadorTienda(
+                nombreProducto,
+                precioProducto,
+                isGrid);
         rvTienda.setAdapter(adaptador);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
