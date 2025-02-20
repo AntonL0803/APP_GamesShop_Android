@@ -20,10 +20,10 @@
             android:name=".Interfaces.Registro"
             android:exported="false" />
         <activity
-            android:name=".Interfaces.MainPage"
+            android:name=".Interfaces.Login"
             android:exported="true" />
         <activity
-            android:name=".Interfaces.Login"
+            android:name=".Interfaces.MainPage"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
