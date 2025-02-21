@@ -1,5 +1,6 @@
 package com.example.aplicacion.Interfaces;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -118,6 +119,14 @@ public class Tienda extends Fragment {
         });
 
         cargarDatos(adaptador);
+
+        adaptador.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.putExtra("titulo", )
+            }
+        });
 
         return view;
     }
