@@ -10,26 +10,50 @@
     tools:context=".Interfaces.Registro">
 
     <ImageView
-        android:id="@+id/ivLogoLogin"
+        android:id="@+id/ivLogoRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200px"
+        android:layout_marginTop="100px"
         app:srcCompat="@drawable/ic_launcher_foreground" />
 
     <EditText
-        android:id="@+id/etUsuarioLogin"
+        android:id="@+id/etNombreRegistro"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="200px"
+        android:layout_marginTop="100px"
         android:background="#E7E5E5"
         android:ems="10"
-        android:hint="Usuario"
+        android:hint="Nombre"
         android:inputType="text"
         android:textAlignment="center"
         android:textSize="20sp" />
 
     <EditText
-        android:id="@+id/etContrasenaLogin"
+        android:id="@+id/etEmailRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:background="#E7E5E5"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:textAlignment="center"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/etCPRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:background="#E7E5E5"
+        android:ems="10"
+        android:hint="CP"
+        android:inputType="textPostalAddress"
+        android:textAlignment="center"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/etContrasenaRegistro"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="30dp"
@@ -40,44 +64,28 @@
         android:textAlignment="center"
         android:textSize="20sp" />
 
-    <LinearLayout
+
+    <Switch
+        android:id="@+id/newsRegistro"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/tvPreguntaLogin"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="¿No tienes cuenta?"
-            android:textAlignment="textStart"
-            android:textSize="18sp"
-            android:textStyle="bold" />/>
-
-        <TextView
-            android:id="@+id/tvRegistrateLogin"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Regístrate"
-            android:textAlignment="textEnd"
-            android:textColor="@android:color/holo_blue_dark"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:background="#E7E5E5"
+        android:text="Newsletter"
+        android:textAlignment="center"
+        android:textSize="20sp" />
 
     <Button
-        android:id="@+id/btIniciarSesionLogin"
+        android:id="@+id/btRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="100px"
         android:layout_marginTop="100px"
         android:layout_marginRight="100px"
-        android:backgroundTint="#3B8121"
-        android:onClick="iniciarSesion"
-        android:text="Iniciar Sesión"
+        android:backgroundTint="#00c3e3"
+        android:onClick="registrarse"
+        android:text="Registrarse"
+        android:textColor="#3A3535"
         android:textSize="20sp" />
 
     <View

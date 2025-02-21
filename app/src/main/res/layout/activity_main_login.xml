@@ -23,7 +23,7 @@
         android:layout_marginTop="200px"
         android:background="#E7E5E5"
         android:ems="10"
-        android:hint="Usuario"
+        android:hint="Correo"
         android:inputType="text"
         android:textAlignment="center"
         android:textSize="20sp" />
@@ -51,6 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="signInWithEmail"
             android:text="¿No tienes cuenta?"
             android:textAlignment="textStart"
             android:textSize="18sp"
@@ -76,7 +77,6 @@
         android:layout_marginTop="100px"
         android:layout_marginRight="100px"
         android:backgroundTint="#3B8121"
-        android:onClick="iniciarSesion"
         android:text="Iniciar Sesión"
         android:textSize="20sp" />
 

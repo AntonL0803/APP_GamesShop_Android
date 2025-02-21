@@ -1,5 +1,6 @@
 package com.example.aplicacion.Interfaces;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.example.aplicacion.R;
@@ -22,6 +24,8 @@ public class Perfil extends Fragment {
     private EditText editTextCpPerfil;
     private EditText editTextEmail;
     private ToggleButton togglePerfil;
+
+    private TextView tvEmail, tvCP;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,15 +65,26 @@ public class Perfil extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        // Vinculamos los TextViews de la interfaz
+        editTextUsuarioPerfil = getActivity().findViewById(R.id.etNombrePerfil);
+        tvEmail = getActivity().findViewById(R.id.etEmailAddressPerfil);
+        tvCP = getActivity().findViewById(R.id.etCPPerfil);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //Recuperamos los datos del intent que se ha pasado desde el registro
+        Intent intent = getActivity().getIntent();
+        String nombre = intent.getStringExtra("Nombre");
+        String email = intent.getStringExtra("Email");
+        String cp = intent.getStringExtra("CP");
+
+        // Set the values to the TextViews or EditTexts
+        if (tvEmail != null) tvEmail.setText(email);
+        if (tvCP != null) tvCP.setText(cp);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
-
-        //editTextCpPerfil = findViewbyId(R.id.etCPPerfil);
     }
 
 }

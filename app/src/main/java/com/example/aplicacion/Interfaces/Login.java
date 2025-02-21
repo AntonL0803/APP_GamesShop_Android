@@ -1,5 +1,6 @@
 package com.example.aplicacion.Interfaces;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.aplicacion.R;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class Login extends AppCompatActivity {
     private EditText etUsuarioLogin;
@@ -57,7 +59,12 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
-        tvRegistrateLogin.setOnClickListener(new View.OnClickListener() {
+        tvRegistrateLogin.setOnClickListener(view -> {
+            Intent intent = new Intent(Login.this, Registro.class);
+            startActivity(intent);
+        });
+
+        /*tvRegistrateLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String emailText = etUsuarioLogin.getText().toString().trim();
@@ -69,15 +76,26 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Por favor, ingresa un email o contraseña. ", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-    }
-    public void signInWithEmail(String emailText, String password){
-        mAuth.signInWithEmailAndPassword(emailText,password);
+        });*/
     }
 
-    public void registrarUsuario(String emailText, String password){
-        mAuth.createUserWithEmailAndPassword(emailText,password);
+    public void signInWithEmail(String emailText, String password){
+        mAuth.signInWithEmailAndPassword(emailText,password)
+            .addOnCompleteListener(this, task -> { //task: es una expresión lambda que define qué hacer cuando finaliza la tarea (resulado de la operación: exito o error)
+                if(task.isSuccessful()){
+                    FirebaseUser Fuser = mAuth.getCurrentUser(); //FUser: representa el usuario actualmente autentificadO
+                    Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(this, "Error, el usuario introducido no existe", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
+
+    /*public void registrarUsuario(String emailText, String password){
+        mAuth.createUserWithEmailAndPassword(emailText,password);
+        Intent intent = new Intent(Login.this, Registro.class);
+        startActivity(intent);
+    }*/
    /* public void iniciarSesion(View view){
         Intent intent = new Intent();
         intent.putExtra("usuario", etUsuarioLogin.getText().toString());
