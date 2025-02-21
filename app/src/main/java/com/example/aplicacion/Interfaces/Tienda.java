@@ -90,10 +90,15 @@ public class Tienda extends Fragment {
         nombreProducto = new ArrayList<>();
         precioProducto = new ArrayList<>();
         boolean isGrid = false;
-        AdaptadorTienda adaptador = new AdaptadorTienda(
-                nombreProducto,
-                precioProducto,
-                isGrid);
+        AdaptadorTienda adaptador = new AdaptadorTienda(nombreProducto, precioProducto, isGrid, null);
+
+        adaptador.setListenerBoton(new BotonMas() {
+            @Override
+            public void clickListener(int position) {
+                adaptador.agregarAlCarrito(position);
+            }
+        });
+
         rvTienda.setAdapter(adaptador);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());

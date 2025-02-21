@@ -1,5 +1,6 @@
 package com.example.aplicacion.Entidades;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,10 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
         this.listenerBoton = listenerBoton;
     }
 
+    public void setListenerBoton(BotonMas listenerBoton) {
+        this.listenerBoton = listenerBoton;
+    }
+
     public void setGridLayout(boolean isGridLayout) {
         this.isGridLayout = isGridLayout;
         notifyDataSetChanged(); // Recargar RecyclerView
@@ -58,15 +63,16 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdaptadorTienda.MiViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AdaptadorTienda.MiViewHolder holder,int position) {
+        int currentPosition = holder.getBindingAdapterPosition();
         holder.ivProducto.setImageResource(R.drawable.perfil);
-        holder.tvNombre.setText(nombreProductos.get(position));
-        holder.tvPrecio.setText("Precio: " + String.valueOf(precioProductos.get(position)));
+        holder.tvNombre.setText(nombreProductos.get(currentPosition));
+        holder.tvPrecio.setText("Precio: " + String.valueOf(precioProductos.get(currentPosition)));
         holder.imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listenerBoton.clickBotonMas(position);
-                agregarAlCarrito(position);
+                listenerBoton.clickListener(currentPosition);
+                agregarAlCarrito(currentPosition);
             }
         });
     }
