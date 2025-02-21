@@ -103,6 +103,7 @@ public class Registro extends AppCompatActivity {
         }
     }
 }
+
 /*// Registrar el usuario con Firebase Auth
     //Meétodo para gestionar errores
             @Override
