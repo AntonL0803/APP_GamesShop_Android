@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.aplicacion.R;
 
@@ -16,6 +18,10 @@ import com.example.aplicacion.R;
  * create an instance of this fragment.
  */
 public class ProductoDetallado extends Fragment {
+    private ImageButton imageButton;
+    private TextView titulo;
+    private TextView precio;
+    private TextView descripcion;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,33 +40,54 @@ public class ProductoDetallado extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ProductoDetallado.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProductoDetallado newInstance(String param1, String param2) {
+    public static ProductoDetallado newInstance(String nombre, String precio) {
         ProductoDetallado fragment = new ProductoDetallado();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString("nombre", nombre);
+        args.putString("precio", precio);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_producto_detallado, container, false);
+        imageButton = view.findViewById(R.id.ibflechaProductoDetallado);
+        titulo = view.findViewById(R.id.tituloProductoDetallado);
+        precio = view.findViewById(R.id.tvPrecioProductoDetallado);
+        descripcion = view.findViewById(R.id.descripcionProductoDetallado);
+
+        if (getArguments() != null) {
+            String nombre = getArguments().getString("nombre");
+            String precio = getArguments().getString("precio");
+
+            // Actualiza las vistas con los datos
+            titulo.setText(nombre);
+            this.precio.setText(String.valueOf(precio));
+        }
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requireActivity().getSupportFragmentManager().popBackStack();
+                requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            }
+        });
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    public void cargarDatos(String titulo){
+
     }
 }

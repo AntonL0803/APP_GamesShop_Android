@@ -23,12 +23,11 @@
             android:textStyle="bold" />
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/ibflechaProductoDetallado"
             android:layout_width="35dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
-            android:background="null"
             android:scaleType="fitCenter"
             android:scaleX="-1"
             android:src="@drawable/flecha"
@@ -44,19 +43,19 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="370dp"
+        android:layout_height="422dp"
         android:layout_margin="10dp"
         app:cardCornerRadius="40dp"
-        app:cardElevation="300dp">
+        app:cardElevation="350dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#E7E7E7"
+            android:layout_height="425dp"
+            android:background="#C1C1C1"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/tituloProductoDetallado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="40dp"
@@ -67,13 +66,24 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/descripcionProductoDetallado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="25dp"
                 android:layout_marginBottom="10dp"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textSize="16sp" />
+
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvPrecioProductoDetallado"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_margin="10dp"
+            android:text="TextView"
+            android:textSize="20sp" />
 
     </androidx.cardview.widget.CardView>
 

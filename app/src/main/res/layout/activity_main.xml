@@ -9,10 +9,9 @@
     tools:context=".Interfaces.MainPage">
 
     <FrameLayout
-        android:id="@+id/frameLayout"
+        android:id="@+id/frameLayoutPrincipal"
         android:layout_width="match_parent"
         android:layout_height="802dp">
-
     </FrameLayout>
 
     <com.google.android.material.tabs.TabLayout

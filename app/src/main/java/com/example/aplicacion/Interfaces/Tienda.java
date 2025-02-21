@@ -1,6 +1,5 @@
 package com.example.aplicacion.Interfaces;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.example.aplicacion.Entidades.AdaptadorTienda;
 import com.example.aplicacion.Entidades.BotonMas;
@@ -123,11 +123,21 @@ public class Tienda extends Fragment {
         adaptador.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.putExtra("titulo", )
+                TextView nombreProductoText = view.findViewById(R.id.nombreProductoTarjeta2);
+                TextView precioProductoText = view.findViewById(R.id.precioProductoTienda);
+
+                String nombreProducto = nombreProductoText.getText().toString().trim();
+                String precioProductoStr = precioProductoText.getText().toString().trim();
+
+                ProductoDetallado fragment = ProductoDetallado.newInstance(nombreProducto, precioProductoStr);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frameLayoutPrincipal, fragment)
+                        .addToBackStack(null)
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
+                        .commit();
             }
         });
-
         return view;
     }
     public void cargarDatos(AdaptadorTienda adaptador){

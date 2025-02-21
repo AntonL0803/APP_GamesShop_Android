@@ -1,6 +1,7 @@
 package com.example.aplicacion.Entidades;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.aplicacion.Interfaces.ProductoDetallado;
 import com.example.aplicacion.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -133,7 +135,7 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
             super(nuevaVista);
             ivProducto = nuevaVista.findViewById(R.id.imagenProductoCarrito);
             tvNombre = nuevaVista.findViewById(R.id.nombreProductoTarjeta2);
-            tvPrecio =  nuevaVista.findViewById(R.id.precioProductoCarrito);
+            tvPrecio =  nuevaVista.findViewById(R.id.precioProductoTienda);
             imageButton = nuevaVista.findViewById(R.id.imageButton);
         }
     }

@@ -34,7 +34,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/precioProductoCarrito"
+            android:id="@+id/precioProductoTienda"
             android:layout_width="136dp"
             android:layout_height="45dp"
             android:layout_marginRight="20dp"
