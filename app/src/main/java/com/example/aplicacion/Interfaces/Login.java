@@ -84,19 +84,12 @@ public class Login extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null && user.isEmailVerified()) {
-                            Toast.makeText(Login.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
-
-                            // Redirigir a la pantalla principal
-                            Intent intent = new Intent(Login.this, MainPage.class);
-                            intent.putExtra("Email", user.getEmail());
-                            startActivity(intent);
-                            finish(); // Cerrar la actividad de login
-                        } else {
-                            Toast.makeText(Login.this, "Por favor, verifica tu email antes de iniciar sesión.", Toast.LENGTH_LONG).show();
-                            mAuth.signOut(); // Cerrar sesión si el email no está verificado
-                        }
+                        Toast.makeText(Login.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
+                        // Redirigir a la pantalla principal
+                        Intent intent = new Intent(Login.this, MainPage.class);
+                        intent.putExtra("Email", email); // Use the email parameter
+                        startActivity(intent);
+                        finish(); // Cerrar la actividad de login
                     } else {
                         // Manejo de errores
                         if (task.getException() instanceof FirebaseNetworkException) {
