@@ -74,6 +74,8 @@ public class Perfil extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
+
         //Recuperamos los datos del intent que se ha pasado desde el registro
         Intent intent = getActivity().getIntent();
         String nombre = intent.getStringExtra("Nombre");
@@ -84,7 +86,8 @@ public class Perfil extends Fragment {
         if (tvEmail != null) tvEmail.setText(email);
         if (tvCP != null) tvCP.setText(cp);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
+        //return inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
+        return rootView;
     }
 
 }
