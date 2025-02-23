@@ -142,24 +142,3 @@ public class Registro extends AppCompatActivity {
                 });
     }
 }
-
-
-                   /*
-
-
-                            // Enviar datos al perfil con Intent
-                            Intent intent = new Intent(Registro.this, Perfil.class);
-                            intent.putExtra("Nombre", nombreRegis);
-                            intent.putExtra("Email", emailRegis);
-                            intent.putExtra("CP", cpRegis);
-                            startActivity(intent);
-                            finish();
-                        }else{
-                            Toast.makeText(Registro.this, "Error al guardar datos", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                } else {
-                    Toast.makeText(Registro.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        };*/

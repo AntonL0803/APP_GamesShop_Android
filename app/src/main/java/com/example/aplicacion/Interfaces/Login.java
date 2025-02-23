@@ -94,7 +94,7 @@ public class Login extends AppCompatActivity {
                         if (task.getException() instanceof FirebaseNetworkException) {
                             Toast.makeText(Login.this, "Error de red. Verifica tu conexión a Internet.", Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(Login.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(Login.this, "Error: Usuario o contraseña introducidos incorrectos", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

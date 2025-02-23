@@ -1,5 +1,6 @@
 package com.example.aplicacion.Interfaces;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +48,7 @@ public class Perfil extends Fragment {
     private SharedPreferences sharedPreferences;
     private DatabaseReference databaseReference;
     private TextView tvEmail, tvCP;
+    private String userId;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -101,8 +105,36 @@ public class Perfil extends Fragment {
 
         //  Firebase
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(editTextEmail.getText().toString());
+        firebaseAuth = FirebaseAuth.getInstance();
+        usuarioActual = firebaseAuth.getCurrentUser();
+        //storageReference = FirebaseStorage.getInstance().getReference();
+        sharedPreferences = getActivity().getSharedPreferences("PerfilUsuario", Context.MODE_PRIVATE);
+        
+        // Verificar si el usuario está autenticado
+        if (usuarioActual != null) {
+            String userId = usuarioActual.getUid();
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(userId);
+            cargarDatosUsuario();
+            configurarEventosDeCambio();
+        } else {
+            Toast.makeText(getActivity(), "Usuario no autenticado", Toast.LENGTH_SHORT).show();
+        }
 
-        //Recuper datos del Firebase
+        // Acción para cerrar sesión (Ejemplo)
+        cerrarSesion.setOnClickListener(view -> {
+            Toast.makeText(getActivity(), "Cerrando sesión...", Toast.LENGTH_SHORT).show();
+            firebaseAuth.signOut();
+            Toast.makeText(getActivity(), "Sesión cerrada", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+        });
+
+        // Inflate the layout for this fragment
+        //return inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
+        return rootView;
+    }
+
+    private void cargarDatosUsuario() {
+        // Cargar datos desde Firebase Realtime Database
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -118,6 +150,14 @@ public class Perfil extends Fragment {
                     editTextEmail.setText(email);
                     editTextCpPerfil.setText(cp);
                     newsletterPerfil.setChecked(newsletter != null && newsletter);
+
+                    // Guardar datos localmente con SharedPreferences
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("nombre", nombre);
+                    editor.putString("email", email);
+                    editor.putString("cp", cp);
+                    editor.putBoolean("newsletter", newsletter != null && newsletter);
+                    editor.apply();
                 }
             }
 
@@ -126,16 +166,47 @@ public class Perfil extends Fragment {
                 Toast.makeText(getActivity(), "Error al cargarlos datos", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void configurarEventosDeCambio() {
+        // Actualizar en Firebase cuando se modifique el CP
+        editTextCpPerfil.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-        // Acción para cerrar sesión (Ejemplo)
-        cerrarSesion.setOnClickListener(view -> {
-            Toast.makeText(getActivity(), "Cerrando sesión...", Toast.LENGTH_SHORT).show();
-            // Aquí puedes agregar lógica para cerrar sesión
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                actualizarDatoEnFirebase("cp", s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
 
-        // Inflate the layout for this fragment
-        //return inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
-        return rootView;
+        // Actualizar en Firebase cuando se modifique el Email
+        editTextEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                actualizarDatoEnFirebase("email", s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Actualizar en Firebase cuando se modifique el Switch de Newsletter
+        newsletterPerfil.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            actualizarDatoEnFirebase("newsletter", isChecked);
+        });
     }
 
+    private void actualizarDatoEnFirebase(String key, Object value) {
+        if (userId != null) {
+            databaseReference.child(key).setValue(value)
+                    .addOnSuccessListener(aVoid -> Toast.makeText(getActivity(), "Perfil actualizado", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error al actualizar", Toast.LENGTH_SHORT).show());
+        }
+    }
 }
