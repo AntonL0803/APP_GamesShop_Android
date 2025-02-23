@@ -35,7 +35,7 @@ public class Registro extends AppCompatActivity {
     private Switch newsRegis;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase database; // Referencia a Firebase
-    private DatabaseReference myRef;
+    private DatabaseReference nodoPadre;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -48,11 +48,10 @@ public class Registro extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        //buscar cómo comprobar si los correos/usuarios está en la base de datos
         // Inicializamos las Firebase
         firebaseAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Usuarios");// Referencia correcta para almacenar usuarios
+        nodoPadre = database.getReference("Usuarios");// Referencia correcta para almacenar usuarios
 
         // Vincular elementos UI
         etEmailRegis = findViewById(R.id.etEmailRegistro);
@@ -70,112 +69,6 @@ public class Registro extends AppCompatActivity {
         });
     }
 
-    /*private void registrarNuevoUsuario() {
-        String nombreRegis = etnombreRegis.getText().toString();
-        String emailRegis = etEmailRegis.getText().toString();
-        String passwordRegis = etContrasenaRegis.getText().toString();
-        String cpRegis = etCPRegis.getText().toString();
-        Boolean newRegis = newsRegis.isChecked();
-        sharedPreferences = getSharedPreferences(etEmailRegis.getText().toString(), MODE_PRIVATE);
-
-        if (nombreRegis.isEmpty() || emailRegis.isEmpty() || cpRegis.isEmpty() || passwordRegis.isEmpty()) {
-            Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        //Crear usuario en Firebase Authentification
-        firebaseAuth.createUserWithEmailAndPassword(emailRegis, passwordRegis)
-            .addOnCompleteListener(this, task -> {
-                if (task.isSuccessful()) {
-                    FirebaseUser user = firebaseAuth.getCurrentUser(); //Coger el correo actual
-                    if (user != null) {
-                        String userId = user.getUid();
-
-                        //Guardar datos en Firebase Database
-                        HashMap<String, Object> userData = new HashMap<>();
-                        userData.put("nombre", nombreRegis);
-                        userData.put("email", emailRegis);
-                        userData.put("cp", cpRegis);
-                        userData.put("newsletter", newRegis);
-
-                        myRef.child(userId).setValue(userData).addOnCompleteListener(dbTask -> {
-                            if (dbTask.isSuccessful()) {
-                                user.sendEmailVerification(); // Enviar verificación de email
-                                Toast.makeText(this, "Registro exitoso. Verifica tu email.", Toast.LENGTH_LONG).show();
-
-                                // Guardar sesión en sharedReference (clave, valor)
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("nombre", nombreRegis);
-                                editor.putString("email", emailRegis);
-                                editor.putString("cp", cpRegis);
-                                editor.putString("password", passwordRegis);
-                                editor.putBoolean("news", newRegis);
-                                editor.apply();
-
-                                // Enviar datos al perfil con Intent
-                                Intent intent = new Intent(Registro.this, Login.class);
-                                intent.putExtra("Nombre", nombreRegis);
-                                intent.putExtra("Email", emailRegis);
-                                intent.putExtra("CP", cpRegis);
-                                startActivity(intent);
-                                finish();
-                            }
-                        });
-                    }
-                }else{
-                    Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-    }*/
-    /*private void registrarNuevoUsuario() {
-        String nombreRegis = etnombreRegis.getText().toString();
-        String emailRegis = etEmailRegis.getText().toString();
-        String passwordRegis = etContrasenaRegis.getText().toString();
-        String cpRegis = etCPRegis.getText().toString();
-        Boolean newRegis = newsRegis.isChecked();
-
-        if (nombreRegis.isEmpty() || emailRegis.isEmpty() || cpRegis.isEmpty() || passwordRegis.isEmpty()) {
-            Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Crear usuario en Firebase Auth
-        firebaseAuth.createUserWithEmailAndPassword(emailRegis, passwordRegis)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = firebaseAuth.getCurrentUser();
-                        if (user != null) {
-                            String userId = user.getUid();
-
-                            // Guardar datos en Firebase Database
-                            HashMap<String, Object> userData = new HashMap<>();
-                            userData.put("nombre", nombreRegis);
-                            userData.put("email", emailRegis);
-                            userData.put("cp", cpRegis);
-                            userData.put("newsletter", newRegis);
-
-                            myRef.child(userId).setValue(userData).addOnCompleteListener(dbTask -> {
-                                if (dbTask.isSuccessful()) {
-                                    user.sendEmailVerification(); // Enviar verificación de email
-                                    Toast.makeText(this, "Registro exitoso. Verifica tu email.", Toast.LENGTH_LONG).show();
-
-                                    // Enviar datos al Login con Intent
-                                    Intent intent = new Intent(Registro.this, Login.class);
-                                    intent.putExtra("Nombre", nombreRegis);
-                                    intent.putExtra("Email", emailRegis);
-                                    intent.putExtra("CP", cpRegis);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            });
-                        }
-                    } else {
-                        Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-}*/
     private void registrarNuevoUsuario() {
         String nombreRegis = etnombreRegis.getText().toString();
         String emailRegis = etEmailRegis.getText().toString();
@@ -204,7 +97,19 @@ public class Registro extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = firebaseAuth.getCurrentUser();
                         if (user != null) {
+                            // Obtener el ID del usuario registrado
                             String userId = user.getUid();
+
+                            /*// Guardar sesión en sharedReference (clave, valor)
+                            sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("userId", userId);
+                            editor.putString("nombre", nombreRegis);
+                            editor.putString("email", emailRegis);
+                            editor.putString("cp", cpRegis);
+                            editor.putString("password", passwordRegis);
+                            editor.putBoolean("news", newRegis);
+                            editor.apply();*/
 
                             // Guardar datos en Firebase Database
                             HashMap<String, Object> userData = new HashMap<>();
@@ -213,7 +118,7 @@ public class Registro extends AppCompatActivity {
                             userData.put("cp", cpRegis);
                             userData.put("newsletter", newRegis);
 
-                            myRef.child(userId).setValue(userData).addOnCompleteListener(dbTask -> {
+                            nodoPadre.child(userId).setValue(userData).addOnCompleteListener(dbTask -> {
                                 if (dbTask.isSuccessful()) {
                                     user.sendEmailVerification(); // Enviar verificación de email
                                     Toast.makeText(this, "Registro exitoso. Verifica tu email.", Toast.LENGTH_LONG).show();
@@ -223,6 +128,7 @@ public class Registro extends AppCompatActivity {
                                     intent.putExtra("Nombre", nombreRegis);
                                     intent.putExtra("Email", emailRegis);
                                     intent.putExtra("CP", cpRegis);
+                                    intent.putExtra("newsletter", newRegis);
                                     startActivity(intent);
                                     finish();
                                 } else {
@@ -237,28 +143,9 @@ public class Registro extends AppCompatActivity {
     }
 }
 
-/*// Registrar el usuario con Firebase Auth
-    //Meétodo para gestionar errores
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
 
-                    // Obtener el ID del usuario registrado
-                    String userId = firebaseAuth.getCurrentUser().getUid();
-                    //Usuario usuario = new Usuario(nombreRegis, emailRegis, cpRegis);
+                   /*
 
-                    // Guardar datos en Firebase Database
-                    myRef.child(userId).setValue(user).addOnCompleteListener(dbTask -> {
-                        if (dbTask.isSuccessful()) {
-                            Toast.makeText(Registro.this, "Registro exitoso", Toast.LENGTH_SHORT).show();
-
-                            // Guardar sesión del usuario con SharedPreferences
-                            SharedPreferences sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("userId", userId);
-                            editor.putString("nombre", nombreRegis);
-                            editor.putString("email", emailRegis);
-                            editor.putString("cp", cpRegis);
-                            editor.apply();
 
                             // Enviar datos al perfil con Intent
                             Intent intent = new Intent(Registro.this, Perfil.class);

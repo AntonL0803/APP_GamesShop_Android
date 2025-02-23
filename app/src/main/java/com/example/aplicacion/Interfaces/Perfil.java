@@ -1,18 +1,31 @@
 package com.example.aplicacion.Interfaces;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.aplicacion.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,11 +33,17 @@ import com.example.aplicacion.R;
  * create an instance of this fragment.
  */
 public class Perfil extends Fragment {
-    private EditText editTextUsuarioPerfil;
+    private TextView textViewUsuarioPerfil;
     private EditText editTextCpPerfil;
     private EditText editTextEmail;
-    private ToggleButton togglePerfil;
-
+    private Switch newsletterPerfil;
+    private Button cerrarSesion;
+    private ImageView imageViewPerfil;
+    //private StorageReference storageReference;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser usuarioActual;
+    private SharedPreferences sharedPreferences;
+    private DatabaseReference databaseReference;
     private TextView tvEmail, tvCP;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -65,10 +84,6 @@ public class Perfil extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        // Vinculamos los TextViews de la interfaz
-        editTextUsuarioPerfil = getActivity().findViewById(R.id.etNombrePerfil);
-        tvEmail = getActivity().findViewById(R.id.etEmailAddressPerfil);
-        tvCP = getActivity().findViewById(R.id.etCPPerfil);
     }
 
     @Override
@@ -76,15 +91,48 @@ public class Perfil extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
 
-        //Recuperamos los datos del intent que se ha pasado desde el registro
-        Intent intent = getActivity().getIntent();
-        String nombre = intent.getStringExtra("Nombre");
-        String email = intent.getStringExtra("Email");
-        String cp = intent.getStringExtra("CP");
+        // Vincular elementos UI con IDs
+        textViewUsuarioPerfil = rootView.findViewById(R.id.etNombrePerfil);
+        editTextEmail = rootView.findViewById(R.id.etEmailAddressPerfil);
+        editTextCpPerfil = rootView.findViewById(R.id.etCPPerfil);
+        newsletterPerfil = rootView.findViewById(R.id.switchNewsPerfil);
+        cerrarSesion = rootView.findViewById(R.id.cerrarSesionPerfil);
+        imageViewPerfil = rootView.findViewById(R.id.imageView2);
 
-        // Set the values to the TextViews or EditTexts
-        if (tvEmail != null) tvEmail.setText(email);
-        if (tvCP != null) tvCP.setText(cp);
+        //  Firebase
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(editTextEmail.getText().toString());
+
+        //Recuper datos del Firebase
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Obtener valores de Firebase
+                    String nombre = snapshot.child("nombre").getValue(String.class);
+                    String email = snapshot.child("email").getValue(String.class);
+                    String cp = snapshot.child("cp").getValue(String.class);
+                    Boolean newsletter = snapshot.child("newsletter").getValue(Boolean.class);
+
+                    // Asignar valores a los elementos UI
+                    textViewUsuarioPerfil.setText(nombre);
+                    editTextEmail.setText(email);
+                    editTextCpPerfil.setText(cp);
+                    newsletterPerfil.setChecked(newsletter != null && newsletter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getActivity(), "Error al cargarlos datos", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Acción para cerrar sesión (Ejemplo)
+        cerrarSesion.setOnClickListener(view -> {
+            Toast.makeText(getActivity(), "Cerrando sesión...", Toast.LENGTH_SHORT).show();
+            // Aquí puedes agregar lógica para cerrar sesión
+        });
+
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
         return rootView;

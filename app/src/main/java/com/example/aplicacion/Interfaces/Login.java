@@ -69,7 +69,6 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(Login.this, "La contraseña debe tener al menos 6 caracteres.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             signInWithEmail(email, password);
         });
 
@@ -113,11 +112,8 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Por favor, ingresa un email o contraseña. ", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-        tvRegistrateLogin.setOnClickListener(view -> {
-            Intent intent = new Intent(Login.this, Registro.class);
-            startActivity(intent);
         });*/
+
 
         /*tvRegistrateLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,110 +148,6 @@ public class Login extends AppCompatActivity {
                 }
             });
     }*/
-    /*public void signInWithEmail(String emailText, String password) {
-        mAuth.signInWithEmailAndPassword(emailText, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        Log.d("Login", "Autenticación exitosa");
-                        FirebaseUser Fuser = mAuth.getCurrentUser();
-                        if (Fuser != null && Fuser.isEmailVerified()) {
-                            Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
-
-                            // Redirigir a la tienda
-                            Intent intent = new Intent(Login.this, MainPage.class);
-                            intent.putExtra("Email", Fuser.getEmail());
-                            startActivity(intent);
-                            finish(); // Cierra la pantalla de login
-                        } else {
-                            Toast.makeText(this, "Verifica tu email antes de iniciar sesión.", Toast.LENGTH_LONG).show();
-                            mAuth.signOut();
-                        }
-                    } else {
-                        Log.d("Login", "Error en la autenticación");
-                    }
-                });
-    }*/
-    /*public void signInWithEmail(String emailText, String password) {
-        signInWithEmail(emailText, password, 0); // Inicia el proceso de autenticación con 0 reintentos
-    }
-
-    private void signInWithEmail(String emailText, String password, int retryCount) {
-        int maxRetries = 3; // Número máximo de reintentos
-
-        mAuth.signInWithEmailAndPassword(emailText, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        Log.d("Login", "Autenticación exitosa");
-                        FirebaseUser Fuser = mAuth.getCurrentUser();
-                        if (Fuser != null && Fuser.isEmailVerified()) {
-                            Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(Login.this, MainPage.class);
-                            intent.putExtra("Email", Fuser.getEmail());
-                            startActivity(intent);
-                            finish(); // Cierra la actividad de login
-                        } else {
-                            Toast.makeText(this, "Verifica tu email antes de iniciar sesión.", Toast.LENGTH_LONG).show();
-                            mAuth.signOut();
-                        }
-                    } else {
-                        Log.d("Login", "Error en la autenticación", task.getException());
-                        if (task.getException() instanceof FirebaseNetworkException) {
-                            if (retryCount < maxRetries) {
-                                Toast.makeText(this, "Error de red, reintentando... (" + (retryCount + 1) + "/" + maxRetries + ")", Toast.LENGTH_SHORT).show();
-                                // Espera 2 segundos antes de reintentar
-                                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                    signInWithEmail(emailText, password, retryCount + 1); // Reintenta
-                                }, 2000);
-                            } else {
-                                Toast.makeText(this, "Error de red, no se pudo conectar después de " + maxRetries + " intentos.", Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Toast.makeText(this, "Error en la autenticación: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-    }*/
-    /*public void signInWithEmail(String emailText, String password) {
-        signInWithEmail(emailText, password, 0); // Inicia el proceso de autenticación con 0 reintentos
-    }
-
-    private void signInWithEmail(String emailText, String password, int retryCount) {
-        int maxRetries = 3; // Número máximo de reintentos
-
-        mAuth.signInWithEmailAndPassword(emailText, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        Log.d("Login", "Autenticación exitosa");
-                        FirebaseUser Fuser = mAuth.getCurrentUser();
-                        if (Fuser != null && Fuser.isEmailVerified()) {
-                            Toast.makeText(this, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(Login.this, MainPage.class);
-                            intent.putExtra("Email", Fuser.getEmail());
-                            startActivity(intent);
-                            finish(); // Cierra la actividad de login
-                        } else {
-                            Toast.makeText(this, "Verifica tu email antes de iniciar sesión.", Toast.LENGTH_LONG).show();
-                            mAuth.signOut();
-                        }
-                    } else {
-                        Log.d("Login", "Error en la autenticación", task.getException());
-                        if (task.getException() instanceof FirebaseNetworkException) {
-                            if (retryCount < maxRetries) {
-                                Toast.makeText(this, "Error de red, reintentando... (" + (retryCount + 1) + "/" + maxRetries + ")", Toast.LENGTH_SHORT).show();
-                                // Espera 2 segundos antes de reintentar
-                                new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                                    signInWithEmail(emailText, password, retryCount + 1); // Reintenta
-                                }, 2000);
-                            } else {
-                                Toast.makeText(this, "Error de red, no se pudo conectar después de " + maxRetries + " intentos.", Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Toast.makeText(this, "Error en la autenticación: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-    }*/
-
 
 
     /*public void registrarUsuario(String emailText, String password){
