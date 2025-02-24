@@ -21,6 +21,8 @@ import com.example.aplicacion.Entidades.AdaptadorTienda;
 import com.example.aplicacion.Entidades.BotonMas;
 import com.example.aplicacion.Entidades.Producto;
 import com.example.aplicacion.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,6 +47,9 @@ public class Tienda extends Fragment {
 
     private List<String> nombreProducto;
     private List<Double> precioProducto;
+
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
 
     private Map<Integer, Integer> imagenes = new HashMap<Integer, Integer>() {{
         put(1, R.drawable.supermariobroswonder);

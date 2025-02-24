@@ -52,6 +52,8 @@ public class MainPage extends AppCompatActivity {
             tabLayout.getTabAt(3).setIcon(R.drawable.pedido);
         }
 
+        cargarFragmentoInicial();
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -86,5 +88,14 @@ public class MainPage extends AppCompatActivity {
 
             }
         });
+    }
+    private void cargarFragmentoInicial() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+
+        transaction.replace(R.id.frameLayoutPrincipal, new Tienda());
+        tabLayout.selectTab(tabLayout.getTabAt(1));
+
+        transaction.commit();
     }
 }
