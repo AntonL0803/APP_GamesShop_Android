@@ -18,17 +18,30 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.aplicacion.R;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
 public class Login extends AppCompatActivity {
     private EditText etUsuarioLogin;
     private EditText etContrasenaLogin;
     private TextView tvRegistrateLogin;
     private Button btIniciarSesion;
+    private Button btIniciarSesionGoogle;
     private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
+    private SignInButton googleSignInButton;
+
+    private static final int RC_SIGN_IN = 9001; // Código de solicitud para el inicio de sesión con Google
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +58,8 @@ public class Login extends AppCompatActivity {
         etContrasenaLogin = findViewById(R.id.etContrasenaLogin);
         tvRegistrateLogin = findViewById(R.id.tvRegistrateLogin);
         btIniciarSesion = findViewById(R.id.btIniciarSesionLogin);
+        //btIniciarSesionGoogle = findViewById(R.id.btIniciarSesionGoogle);
+        googleSignInButton = findViewById(R.id.btIniciarSesionGoogle);
 
         FirebaseApp.initializeApp(this);
         //Cogemos todos los paquetes de firebaseAuthentication
@@ -77,6 +92,21 @@ public class Login extends AppCompatActivity {
             Intent intent = new Intent(Login.this, Registro.class);
             startActivity(intent);
         });
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id)) // Asegúrate de que este ID sea correcto
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        // Botón de Google Sign-In
+        //btIniciarSesionGoogle.setOnClickListener(v -> signInWithGoogle());
+        // Configura el botón de Google Sign-In
+        googleSignInButton.setSize(SignInButton.SIZE_STANDARD);  // Puedes elegir entre STANDARD o ICON_ONLY
+        googleSignInButton.setOnClickListener(view -> {
+            signInWithGoogle();
+        });
     }
 
     private void signInWithEmail(String email, String password) {
@@ -96,6 +126,51 @@ public class Login extends AppCompatActivity {
                         } else {
                             Toast.makeText(Login.this, "Error: Usuario o contraseña introducidos incorrectos", Toast.LENGTH_LONG).show();
                         }
+                    }
+                });
+    }
+
+    // Método para iniciar sesión con Google
+    private void signInWithGoogle() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    // Manejar el resultado del inicio de sesión con Google
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                Log.d("GoogleSignIn", "Google sign-in exitoso: " + account.getEmail());
+                if (account != null) {
+                    firebaseAuthWithGoogle(account);
+                }
+            } catch (ApiException e) {
+                Log.w("GoogleSignIn", "Google sign-in fallido", e);
+                Toast.makeText(this, "Error de inicio de sesión con Google: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    // Autenticación con Firebase usando el ID de Google
+    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+        mAuth.signInWithCredential(GoogleAuthProvider.getCredential(account.getIdToken(), null))
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            Toast.makeText(Login.this, "Inicio de sesión exitoso con Google.", Toast.LENGTH_SHORT).show();
+                            // Redirigir a la página principal
+                            Intent intent = new Intent(Login.this, MainPage.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } else {
+                        Toast.makeText(Login.this, "Error al autenticar con Firebase.", Toast.LENGTH_LONG).show();
                     }
                 });
     }

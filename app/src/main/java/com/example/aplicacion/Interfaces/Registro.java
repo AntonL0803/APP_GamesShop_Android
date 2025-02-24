@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -81,7 +82,7 @@ public class Registro extends AppCompatActivity {
             return;
         }
 
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailRegis).matches()) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(emailRegis).matches()) {
             Toast.makeText(this, "Por favor, ingresa un correo electrónico válido", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -97,8 +98,6 @@ public class Registro extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = firebaseAuth.getCurrentUser();
                         if (user != null) {
-                            // Obtener el ID del usuario registrado
-                            String userId = user.getUid();
 
                             /*// Guardar sesión en sharedReference (clave, valor)
                             sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
@@ -118,7 +117,8 @@ public class Registro extends AppCompatActivity {
                             userData.put("cp", cpRegis);
                             userData.put("newsletter", newRegis);
 
-                            nodoPadre.child(userId).setValue(userData).addOnCompleteListener(dbTask -> {
+                            String emailKey = emailRegis.replace(".", "_").replace("@", "_");
+                            nodoPadre.child(emailKey).setValue(userData).addOnCompleteListener(dbTask -> {
                                 if (dbTask.isSuccessful()) {
                                     user.sendEmailVerification(); // Enviar verificación de email
                                     Toast.makeText(this, "Registro exitoso. Verifica tu email.", Toast.LENGTH_LONG).show();

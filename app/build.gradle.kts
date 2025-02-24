@@ -46,4 +46,6 @@ dependencies {
     implementation ("com.firebaseui:firebase-ui-auth:7.2.0")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-database")
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")  // Google
+
 }
