@@ -2,15 +2,24 @@ package com.example.aplicacion.Interfaces;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.aplicacion.Entidades.Producto;
 import com.example.aplicacion.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,22 +27,29 @@ import com.example.aplicacion.R;
  * create an instance of this fragment.
  */
 public class ProductoDetallado extends Fragment {
-    private ImageButton imageButton;
+    private ImageView imagenProductoDetallado;
+    private ImageButton imagenButton;
     private TextView titulo;
     private TextView precio;
     private TextView descripcion;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private FirebaseDatabase db;
 
     public ProductoDetallado() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setEnterTransition(android.transition.TransitionInflater.from(getContext())
+                .inflateTransition(android.R.transition.slide_right));
+        setExitTransition(android.transition.TransitionInflater.from(getContext())
+                .inflateTransition(android.R.transition.slide_left));
+
+        if (getArguments() != null) {
+            String nombre = getArguments().getString("nombre");
+            Double precio = getArguments().getDouble("precio");
+        }
     }
 
     /**
@@ -56,38 +72,51 @@ public class ProductoDetallado extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_producto_detallado, container, false);
-        imageButton = view.findViewById(R.id.ibflechaProductoDetallado);
+        imagenProductoDetallado = view.findViewById(R.id.ivProductoDetallado);
+        imagenButton = view.findViewById(R.id.ibflechaProductoDetallado);
         titulo = view.findViewById(R.id.tituloProductoDetallado);
         precio = view.findViewById(R.id.tvPrecioProductoDetallado);
         descripcion = view.findViewById(R.id.descripcionProductoDetallado);
 
-        if (getArguments() != null) {
-            String nombre = getArguments().getString("nombre");
-            String precio = getArguments().getString("precio");
-
-            // Actualiza las vistas con los datos
-            titulo.setText(nombre);
-            this.precio.setText(String.valueOf(precio));
-        }
-
-        imageButton.setOnClickListener(new View.OnClickListener() {
+        imagenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FragmentTransaction transaction = requireActivity()
+                        .getSupportFragmentManager()
+                        .beginTransaction();
+
+                transaction.setCustomAnimations(
+                        R.animator.slide_in_left,
+                        R.animator.slide_out_right
+                );
                 requireActivity().getSupportFragmentManager().popBackStack();
-                requireActivity().overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 
+        titulo.setText(getArguments().getString("nombre"));
+        precio.setText("Precio: "+getArguments().getString("precio"));
+        cargarDescripcion(descripcion);
+
         return view;
     }
+    public void cargarDescripcion(TextView tvDescripcion){
+        db =FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
+        DatabaseReference nodoPadre = db.getReference().child("Productos");
+        nodoPadre.orderByChild("nombre").equalTo(getArguments().getString("nombre"))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            for (DataSnapshot productoSnapshot : snapshot.getChildren()){
+                                 Producto producto = productoSnapshot.getValue(Producto.class);
+                                 tvDescripcion.setText(producto.getDescripcion());
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
-
-    public void cargarDatos(String titulo){
-
+                    }
+                });
     }
 }

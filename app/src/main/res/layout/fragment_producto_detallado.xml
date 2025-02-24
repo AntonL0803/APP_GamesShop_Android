@@ -4,19 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#D3D3D3"
     android:orientation="vertical"
     tools:context=".Interfaces.ProductoDetallado">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="57dp"
+        app:cardBackgroundColor="#FFFFFF"
         app:cardElevation="150dp">
 
         <TextView
             android:id="@+id/tvCarro"
             android:layout_width="match_parent"
             android:layout_height="59dp"
-            android:background="#525252"
+            android:background="#FF4444"
             android:gravity="center"
             android:textColor="#FFFFFF"
             android:textSize="34sp"
@@ -24,10 +26,11 @@
 
         <ImageButton
             android:id="@+id/ibflechaProductoDetallado"
-            android:layout_width="35dp"
-            android:layout_height="24dp"
+            android:layout_width="34dp"
+            android:layout_height="35dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
+            android:background="@null"
             android:scaleType="fitCenter"
             android:scaleX="-1"
             android:src="@drawable/flecha"
@@ -36,7 +39,7 @@
     </androidx.cardview.widget.CardView>
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/ivProductoDetallado"
         android:layout_width="match_parent"
         android:layout_height="239dp"
         tools:src="@tools:sample/avatars" />
@@ -51,7 +54,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="425dp"
-            android:background="#C1C1C1"
+            android:background="#FFFFFF"
             android:orientation="vertical">
 
             <TextView

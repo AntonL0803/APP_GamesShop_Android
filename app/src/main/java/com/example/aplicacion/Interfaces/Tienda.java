@@ -1,9 +1,11 @@
 package com.example.aplicacion.Interfaces;
 
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +28,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,6 +45,33 @@ public class Tienda extends Fragment {
 
     private List<String> nombreProducto;
     private List<Double> precioProducto;
+
+    private Map<Integer, Integer> imagenes = new HashMap<Integer, Integer>() {{
+        put(1, R.drawable.supermariobroswonder);
+        put(2, R.drawable.biomutant);
+        put(3, R.drawable.crash);
+        put(4, R.drawable.donkeykongcountry);
+        put(5, R.drawable.detectivepikachu);
+        put(6, R.drawable.dragones3);
+        put(7, R.drawable.drivingadventures);
+        put(8, R.drawable.everybodyswitch);
+        put(9, R.drawable.fitnessboxing);
+        put(10, R.drawable.harvestella);
+        put(11, R.drawable.hollowknight);
+        put(12, R.drawable.justdance);
+        put(13, R.drawable.kirby);
+        put(14, R.drawable.mariodockerkong);
+        put(15, R.drawable.mariopartyjamboree);
+        put(16, R.drawable.mariopartysuperstars);
+        put(17, R.drawable.minecraft);
+        put(18, R.drawable.monsterhunterrise);
+        put(19, R.drawable.mysims);
+        put(20, R.drawable.peach);
+        put(21, R.drawable.pokemondiamante);
+        put(22, R.drawable.twopointcampus);
+        put(23, R.drawable.zeldakingdom);
+        put(24, R.drawable.zeldalink);
+    }};
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -91,7 +122,7 @@ public class Tienda extends Fragment {
         nombreProducto = new ArrayList<>();
         precioProducto = new ArrayList<>();
         boolean isGrid = false;
-        AdaptadorTienda adaptador = new AdaptadorTienda(nombreProducto, precioProducto, isGrid, null);
+        AdaptadorTienda adaptador = new AdaptadorTienda(nombreProducto, precioProducto, isGrid, imagenes, null);
 
         adaptador.setListenerBoton(new BotonMas() {
             @Override
@@ -129,12 +160,17 @@ public class Tienda extends Fragment {
                 String nombreProducto = nombreProductoText.getText().toString().trim();
                 String precioProductoStr = precioProductoText.getText().toString().trim();
 
-                ProductoDetallado fragment = ProductoDetallado.newInstance(nombreProducto, precioProductoStr);
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.setCustomAnimations(
+                        R.animator.slide_in_right,
+                        R.animator.slide_out_left,
+                        R.animator.slide_in_left,
+                        R.animator.slide_out_right
+                );
 
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.frameLayoutPrincipal, fragment)
+                ProductoDetallado fragment = ProductoDetallado.newInstance(nombreProducto, precioProductoStr);
+                transaction.replace(R.id.frameLayoutPrincipal, fragment)
                         .addToBackStack(null)
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
                         .commit();
             }
         });
@@ -171,4 +207,5 @@ public class Tienda extends Fragment {
             }
         });
     }
+
 }
