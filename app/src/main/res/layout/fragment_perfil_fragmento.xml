@@ -29,7 +29,7 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/editTextText"
+        android:id="@+id/etNombrePerfil"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginLeft="50dp"
@@ -66,7 +66,7 @@
         android:textSize="20sp" />
 
     <Switch
-        android:id="@+id/switchPerfil"
+        android:id="@+id/switchNewsPerfil"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginLeft="50dp"

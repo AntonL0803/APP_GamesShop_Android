@@ -23,7 +23,7 @@
         android:layout_marginTop="200px"
         android:background="#E7E5E5"
         android:ems="10"
-        android:hint="Usuario"
+        android:hint="Correo"
         android:inputType="text"
         android:textAlignment="center"
         android:textSize="20sp" />
@@ -51,10 +51,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:onClick="signInWithEmail"
             android:text="¿No tienes cuenta?"
             android:textAlignment="textStart"
             android:textSize="18sp"
-            android:textStyle="bold" />/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvRegistrateLogin"
@@ -76,7 +77,6 @@
         android:layout_marginTop="100px"
         android:layout_marginRight="100px"
         android:backgroundTint="#3B8121"
-        android:onClick="iniciarSesion"
         android:text="Iniciar Sesión"
         android:textSize="20sp" />
 
@@ -87,5 +87,22 @@
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="30dp"
         android:background="#000000" />
+
+    <!--<Button
+        android:id="@+id/btIniciarSesionGoogle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Iniciar sesión con Google"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        android:textColor="#FFFFFF"/>-->
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btIniciarSesionGoogle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor ="@android:color/holo_blue_dark"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="center"/>
+
 
 </LinearLayout>
