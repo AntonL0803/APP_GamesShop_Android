@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aplicacion.R;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiViewHolderCarrito> implements View.OnClickListener {
@@ -76,7 +74,7 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
             cantidad = nuevaVista.findViewById(R.id.cantidad);
             ivProducto = nuevaVista.findViewById(R.id.imagenProductoCarrito);
             tvNombre = nuevaVista.findViewById(R.id.nombreProductoCarrito);
-            tvPrecio =  nuevaVista.findViewById(R.id.precioProductoCarrito);
+            tvPrecio =  nuevaVista.findViewById(R.id.precioProductoTienda);
             btnMinus = nuevaVista.findViewById(R.id.btnMinus);
             btnPlus = nuevaVista.findViewById(R.id.btnPlus);
             tvQuantity = nuevaVista.findViewById(R.id.tvQuantity);

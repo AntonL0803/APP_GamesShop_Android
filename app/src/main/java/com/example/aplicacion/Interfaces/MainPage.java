@@ -36,7 +36,7 @@ public class MainPage extends AppCompatActivity {
         });
 
         tabLayout = findViewById(R.id.tabLay);
-        frame = findViewById(R.id.frameLayout);
+        frame = findViewById(R.id.frameLayoutPrincipal);
 
         // Asignar íconos a las pestañas (solo si existen)
         if (tabLayout.getTabAt(0) != null){
@@ -59,16 +59,16 @@ public class MainPage extends AppCompatActivity {
                 FragmentTransaction transaction = fm.beginTransaction();
 
                 if (tab.getPosition() == 0){
-                    transaction.replace(R.id.frameLayout, new Perfil());
+                    transaction.replace(R.id.frameLayoutPrincipal, new Perfil());
                     transaction.addToBackStack(null);
                 } else if (tab.getPosition() == 1) {
-                    transaction.replace(R.id.frameLayout, new Tienda());
+                    transaction.replace(R.id.frameLayoutPrincipal, new Tienda());
                     transaction.addToBackStack(null);
                 } else if (tab.getPosition() == 2) {
-                    transaction.replace(R.id.frameLayout, new Carro());
+                    transaction.replace(R.id.frameLayoutPrincipal, new Carro());
                     transaction.addToBackStack(null);
                 } else if (tab.getPosition() == 3) {
-                    transaction.replace(R.id.frameLayout, new Pedidos());
+                    transaction.replace(R.id.frameLayoutPrincipal, new Pedidos());
                     transaction.addToBackStack(null);
                 }
 

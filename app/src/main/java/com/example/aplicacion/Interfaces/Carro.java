@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import com.example.aplicacion.Entidades.AdaptadorCarrito;
 import com.example.aplicacion.R;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link Carro#newInstance} factory method to
@@ -21,6 +24,32 @@ import com.example.aplicacion.R;
  */
 public class Carro extends Fragment {
     private RecyclerView rvCarro;
+    private Map<Integer, Integer> imagenes = new HashMap<Integer, Integer>() {{
+        put(1, R.drawable.supermariobroswonder);
+        put(2, R.drawable.biomutant);
+        put(3, R.drawable.crash);
+        put(4, R.drawable.donkeykongcountry);
+        put(5, R.drawable.detectivepikachu);
+        put(6, R.drawable.dragones3);
+        put(7, R.drawable.drivingadventures);
+        put(8, R.drawable.everybodyswitch);
+        put(9, R.drawable.fitnessboxing);
+        put(10, R.drawable.harvestella);
+        put(11, R.drawable.hollowknight);
+        put(12, R.drawable.justdance);
+        put(13, R.drawable.kirby);
+        put(14, R.drawable.mariodockerkong);
+        put(15, R.drawable.mariopartyjamboree);
+        put(16, R.drawable.mariopartysuperstars);
+        put(17, R.drawable.minecraft);
+        put(18, R.drawable.monsterhunterrise);
+        put(19, R.drawable.mysims);
+        put(20, R.drawable.peach);
+        put(21, R.drawable.pokemondiamante);
+        put(22, R.drawable.twopointcampus);
+        put(23, R.drawable.zeldakingdom);
+        put(24, R.drawable.zeldalink);
+    }};
 
 
     // TODO: Rename parameter arguments, choose names that match

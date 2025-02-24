@@ -8,6 +8,17 @@
     app:cardCornerRadius="20dp"
     app:cardElevation="20dp">
 
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="28dp"
+        android:layout_height="32dp"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/mas" />
+
     <LinearLayout
         android:layout_width="169dp"
         android:layout_height="match_parent"
@@ -34,11 +45,11 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/precioProductoCarrito"
-            android:layout_width="136dp"
+            android:id="@+id/precioProductoTienda"
+            android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center_vertical|end"
+            android:layout_marginLeft="20dp"
+            android:gravity="center|left"
             android:text="TextView"
             android:textSize="16sp" />
 
