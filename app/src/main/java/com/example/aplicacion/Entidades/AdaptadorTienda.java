@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aplicacion.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +32,8 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
     private BotonMas listenerBoton;
     private boolean isGridLayout;
     private FirebaseDatabase db;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
 
     public AdaptadorTienda(List<String> nombreProductos, List<Double> precioProductos, boolean isGridLayout, Map<Integer, Integer> imagenes, BotonMas listenerBoton) {
         this.nombreProductos = nombreProductos;
@@ -82,27 +86,39 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
     }
 
     public void agregarAlCarrito(int position) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
         FirebaseDatabase db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
-        DatabaseReference nodoPadre = db.getReference().child("Carrito");
+
+        DatabaseReference usuariosReferencia = db.getReference().child("Usuarios");
+        String emailUser = user.getEmail();
+        DatabaseReference emailCarritoReferencia = usuariosReferencia.child(emailUser.replace("@", "_").replace(".", "_")).child("carrito");
+
+
 
         String productoSeleccionado = nombreProductos.get(position);
         Double precioSeleccionado = precioProductos.get(position);
 
-        Producto producto = new Producto(productoSeleccionado, precioSeleccionado, 1);
-        DatabaseReference productoRef = nodoPadre.child(productoSeleccionado);
-        productoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        emailCarritoReferencia.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    Producto productoExistente = snapshot.getValue(Producto.class);
-                    if (productoExistente != null) {
-                        int nuevaCantidad = productoExistente.getCantidad() + 1;
-                        productoRef.child("cantidad").setValue(nuevaCantidad);
+                    if (snapshot.child(productoSeleccionado).exists()) {
+                        Integer cantidadActual = snapshot.child(productoSeleccionado).child("cantidad").getValue(Integer.class);
+                        if (cantidadActual == null) {
+                            cantidadActual = 0;
+                        }
+                        emailCarritoReferencia.child(productoSeleccionado).child("cantidad").setValue(cantidadActual + 1);
+                    } else {
+                        Producto nuevoProducto = new Producto(productoSeleccionado, precioSeleccionado, 1);
+                        emailCarritoReferencia.child(productoSeleccionado).setValue(nuevoProducto);
                     }
                 } else {
-                    productoRef.setValue(producto);
+                    Producto nuevoProducto = new Producto(productoSeleccionado, precioSeleccionado, 1);
+                    emailCarritoReferencia.child(productoSeleccionado).setValue(nuevoProducto);
                 }
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
