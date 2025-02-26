@@ -1,5 +1,6 @@
 package com.example.aplicacion.Entidades;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +12,30 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.aplicacion.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiViewHolderCarrito> implements View.OnClickListener {
-    private List<Producto> productos;
+    private List<Producto> productos = new ArrayList<>();
     private View.OnClickListener listener;
-    private int cantidad = 0;
-    @Override
-    public void onClick(View view) {
+    FirebaseDatabase db;
+    FirebaseUser user;
+    FirebaseAuth mAuth;
 
+    public AdaptadorCarrito(List<Producto> productos) {
+        this.productos = productos;
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+        db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
     }
 
     @NonNull
@@ -33,23 +48,26 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
 
     @Override
     public void onBindViewHolder(@NonNull MiViewHolderCarrito holder, int position) {
-        holder.tvNombre.setText("Nombre del producto");
-        holder.tvPrecio.setText("Precio: 0.00$");
+        int posicionActual = holder.getBindingAdapterPosition();
+        DecimalFormat formato = new DecimalFormat("#.##");
+        holder.tvNombre.setText(productos.get(posicionActual).getNombre().toString());
+        String precioTotal = formato.format(productos.get(posicionActual).getPrecio() * productos.get(posicionActual).getCantidad());
+        holder.tvPrecio.setText("Precio: " + precioTotal + "€");
         holder.ivProducto.setImageResource(R.drawable.perfil);
-        holder.tvQuantity.setText(String.valueOf(cantidad));
+        holder.tvQuantity.setText(String.valueOf(productos.get(posicionActual).getCantidad()));
 
         holder.btnPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.tvQuantity.setText(String.valueOf(++cantidad));
+                sumarCantidad(productos.get(posicionActual).getNombre(), posicionActual);
             }
         });
         holder.btnMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.tvQuantity.getText().toString().equals("0")){
+                if (productos.get(posicionActual).getCantidad() == 0){
                 } else {
-                    holder.tvQuantity.setText(String.valueOf(--cantidad));
+                    restarCantidad(productos.get(posicionActual).getNombre(), posicionActual);
                 }
             }
         });
@@ -57,7 +75,11 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
 
     @Override
     public int getItemCount() {
-        return 100;
+        return productos.size();
+    }
+    @Override
+    public void onClick(View view) {
+
     }
 
     public class MiViewHolderCarrito extends RecyclerView.ViewHolder {
@@ -78,6 +100,31 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
             btnMinus = nuevaVista.findViewById(R.id.btnMinus);
             btnPlus = nuevaVista.findViewById(R.id.btnPlus);
             tvQuantity = nuevaVista.findViewById(R.id.tvQuantity);
+        }
+    }
+    public void sumarCantidad(String nombreProducto, int posicionActual){
+        String emailUser = user.getEmail();
+        DatabaseReference usuariosReferencia = db.getReference().child("Usuarios")
+                .child(emailUser.replace("@", "_").replace(".", "_"))
+                .child("carrito")
+                .child(nombreProducto)
+                .child("cantidad");
+
+        long nuevaCantidad = productos.get(posicionActual).getCantidad() + 1;
+        usuariosReferencia.setValue(nuevaCantidad);
+    }
+    public void restarCantidad(String nombreProducto, int posicionActual) {
+        String emailUser = user.getEmail();
+        DatabaseReference usuariosReferencia = db.getReference().child("Usuarios")
+                .child(emailUser.replace("@", "_").replace(".", "_"))
+                .child("carrito")
+                .child(nombreProducto)
+                .child("cantidad");
+
+
+        long nuevaCantidad = productos.get(posicionActual).getCantidad() - 1;
+        if (nuevaCantidad >= 0) {
+            usuariosReferencia.setValue(nuevaCantidad);
         }
     }
 }

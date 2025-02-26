@@ -3,7 +3,7 @@ package com.example.aplicacion.Entidades;
 public class Producto {
     private String nombre;
     private Double precio;
-    private int cantidad;
+    private long cantidad;
     private String descripcion;
 
     public Producto() {
@@ -14,7 +14,7 @@ public class Producto {
         this.precio = precio;
     }
 
-    public Producto(String nombre, Double precio, int cantidad) {
+    public Producto(String nombre, Double precio, long cantidad) {
         this.nombre = nombre;
         this.precio = precio;
         this.cantidad = cantidad;
@@ -36,7 +36,7 @@ public class Producto {
         this.precio = precio;
     }
 
-    public int getCantidad() {
+    public long getCantidad() {
         return cantidad;
     }
 

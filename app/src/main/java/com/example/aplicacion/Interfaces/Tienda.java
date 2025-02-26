@@ -1,6 +1,5 @@
 package com.example.aplicacion.Interfaces;
 
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -149,7 +148,7 @@ public class Tienda extends Fragment {
             }
         });
 
-        cargarDatos(adaptador);
+        cargarDatosTienda(adaptador);
 
         adaptador.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,7 +175,7 @@ public class Tienda extends Fragment {
         });
         return view;
     }
-    public void cargarDatos(AdaptadorTienda adaptador){
+    public void cargarDatosTienda(AdaptadorTienda adaptador){
         db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
         DatabaseReference nodoPadre = db.getReference().child("Productos");
 

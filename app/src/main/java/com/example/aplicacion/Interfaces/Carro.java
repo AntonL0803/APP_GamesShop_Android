@@ -2,19 +2,31 @@ package com.example.aplicacion.Interfaces;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.aplicacion.Entidades.AdaptadorCarrito;
+import com.example.aplicacion.Entidades.Producto;
 import com.example.aplicacion.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,6 +36,10 @@ import java.util.Map;
  */
 public class Carro extends Fragment {
     private RecyclerView rvCarro;
+    private FirebaseDatabase db;
+    private FirebaseAuth mAuth;
+    private FirebaseUser user;
+    private List<Producto> productos = new ArrayList<>();
     private Map<Integer, Integer> imagenes = new HashMap<Integer, Integer>() {{
         put(1, R.drawable.supermariobroswonder);
         put(2, R.drawable.biomutant);
@@ -97,12 +113,48 @@ public class Carro extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_carro, container, false);
         rvCarro = view.findViewById(R.id.rvCarrito);
-        AdaptadorCarrito adaptador = new AdaptadorCarrito();
-        LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
 
-        rvCarro.setLayoutManager(layoutManager);
-        rvCarro.setAdapter(adaptador);
-        rvCarro.addItemDecoration(new DividerItemDecoration(view.getContext(), DividerItemDecoration.VERTICAL));
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
+        if (user != null) {
+            cargarDatosCarrito();
+        } else {
+            Log.e("Carro", "Usuario no autenticado");
+        }
         return view;
+    }
+    public void cargarDatosCarrito(){
+        db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
+        productos = new ArrayList<>();
+        DatabaseReference usuariosReferencia = db.getReference().child("Usuarios");
+        String emailUser = user.getEmail();
+        DatabaseReference emailCarritoReferencia = usuariosReferencia.child(emailUser.replace("@", "_").replace(".", "_")).child("carrito");
+
+        emailCarritoReferencia.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    productos.clear();
+                    for (DataSnapshot productoSnapshot : snapshot.getChildren()) {
+                        Producto producto = productoSnapshot.getValue(Producto.class);
+                        if (producto != null){
+                            productos.add(producto);
+                        }
+                    }
+                    AdaptadorCarrito adaptador = new AdaptadorCarrito(productos);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                    rvCarro.setLayoutManager(layoutManager);
+                    rvCarro.setAdapter(adaptador);
+                    rvCarro.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+
+                    adaptador.notifyDataSetChanged();
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 }
