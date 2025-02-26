@@ -36,9 +36,8 @@ import com.google.firebase.database.ValueEventListener;
  * create an instance of this fragment.
  */
 public class Perfil extends Fragment {
-    private TextView textViewUsuarioPerfil;
+    private TextView textViewUsuarioPerfil, textViewEmail;
     private EditText editTextCpPerfil;
-    private EditText editTextEmail;
     private Switch newsletterPerfil;
     private Button cerrarSesion;
     private ImageView imageViewPerfil;
@@ -47,7 +46,6 @@ public class Perfil extends Fragment {
     private FirebaseUser usuarioActual;
     private SharedPreferences sharedPreferences;
     private DatabaseReference databaseReference;
-    private TextView tvEmail, tvCP;
     private String userId;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -97,14 +95,14 @@ public class Perfil extends Fragment {
 
         // Vincular elementos UI con IDs
         textViewUsuarioPerfil = rootView.findViewById(R.id.etNombrePerfil);
-        editTextEmail = rootView.findViewById(R.id.etEmailAddressPerfil);
+        textViewEmail = rootView.findViewById(R.id.tvEmailAddressPerfil);
         editTextCpPerfil = rootView.findViewById(R.id.etCPPerfil);
         newsletterPerfil = rootView.findViewById(R.id.switchNewsPerfil);
         cerrarSesion = rootView.findViewById(R.id.cerrarSesionPerfil);
         imageViewPerfil = rootView.findViewById(R.id.imageView2);
 
         //  Firebase
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(editTextEmail.getText().toString());
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(textViewEmail.getText().toString());
         firebaseAuth = FirebaseAuth.getInstance();
         usuarioActual = firebaseAuth.getCurrentUser();
         //storageReference = FirebaseStorage.getInstance().getReference();
@@ -112,7 +110,7 @@ public class Perfil extends Fragment {
         
         // Verificar si el usuario está autenticado
         if (usuarioActual != null) {
-            String userId = usuarioActual.getUid();
+            userId = usuarioActual.getUid();
             databaseReference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(userId);
             cargarDatosUsuario();
             configurarEventosDeCambio();
@@ -147,7 +145,7 @@ public class Perfil extends Fragment {
 
                     // Asignar valores a los elementos UI
                     textViewUsuarioPerfil.setText(nombre);
-                    editTextEmail.setText(email);
+                    textViewEmail.setText(email);
                     editTextCpPerfil.setText(cp);
                     newsletterPerfil.setChecked(newsletter != null && newsletter);
 
@@ -176,20 +174,6 @@ public class Perfil extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 actualizarDatoEnFirebase("cp", s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        // Actualizar en Firebase cuando se modifique el Email
-        editTextEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                actualizarDatoEnFirebase("email", s.toString());
             }
 
             @Override

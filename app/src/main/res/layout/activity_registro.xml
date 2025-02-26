@@ -5,95 +5,122 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="50dp"
+    android:padding="30dp"
+    android:background="#FFFFFF"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".Interfaces.Registro">
 
+    <!-- Logo -->
     <ImageView
         android:id="@+id/ivLogoRegistro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100px"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center"
         app:srcCompat="@drawable/ic_launcher_foreground" />
 
+    <!-- Campo Nombre -->
     <EditText
         android:id="@+id/etNombreRegistro"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="100px"
-        android:background="#E7E5E5"
-        android:ems="10"
+        android:layout_height="55dp"
+        android:background="#F5F5F5"
         android:hint="Nombre"
         android:inputType="text"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textColor="#333333"
+        android:textColorHint="#888888"
+        android:drawableStart="@android:drawable/ic_menu_edit"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:elevation="2dp"
+        android:layout_marginBottom="15dp"/>
 
+    <!-- Campo Email -->
     <EditText
         android:id="@+id/etEmailRegistro"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
-        android:background="#E7E5E5"
-        android:ems="10"
+        android:layout_height="55dp"
+        android:background="#F5F5F5"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textColor="#333333"
+        android:textColorHint="#888888"
+        android:drawableStart="@android:drawable/ic_dialog_email"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:elevation="2dp"
+        android:layout_marginBottom="15dp"/>
 
+    <!-- Campo Código Postal -->
     <EditText
         android:id="@+id/etCPRegistro"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
-        android:background="#E7E5E5"
-        android:ems="10"
-        android:hint="CP"
-        android:inputType="textPostalAddress"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:layout_height="55dp"
+        android:background="#F5F5F5"
+        android:hint="Código Postal"
+        android:inputType="number"
+        android:textColor="#333333"
+        android:textColorHint="#888888"
+        android:drawableStart="@android:drawable/ic_menu_mapmode"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:elevation="2dp"
+        android:layout_marginBottom="15dp"/>
 
+    <!-- Campo Contraseña -->
     <EditText
         android:id="@+id/etContrasenaRegistro"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
-        android:background="#E7E5E5"
-        android:ems="10"
+        android:layout_height="55dp"
+        android:background="#F5F5F5"
         android:hint="Contraseña"
         android:inputType="textPassword"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textColor="#333333"
+        android:textColorHint="#888888"
+        android:drawableStart="@android:drawable/ic_lock_lock"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
+        android:textSize="18sp"
+        android:elevation="2dp"
+        android:layout_marginBottom="15dp"/>
 
-
+    <!-- Switch Newsletter -->
     <Switch
         android:id="@+id/newsRegistro"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
-        android:background="#E7E5E5"
-        android:text="Newsletter"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:layout_height="wrap_content"
+        android:background="#F5F5F5"
+        android:text="Recibir ofertas y noticias"
+        android:textColor="#333333"
+        android:textSize="18sp"
+        android:padding="10dp"
+        android:elevation="2dp"
+        android:layout_marginBottom="20dp" />
 
+    <!-- Botón de Registro -->
     <Button
         android:id="@+id/btRegistro"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="100px"
-        android:layout_marginTop="100px"
-        android:layout_marginRight="100px"
-        android:backgroundTint="#00c3e3"
-        android:onClick="registrarse"
-        android:text="Registrarse"
-        android:textColor="#3A3535"
-        android:textSize="20sp" />
+        android:layout_height="55dp"
+        android:backgroundTint="#007BFF"
+        android:text="REGISTRARSE"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:elevation="4dp"
+        android:layout_marginBottom="20dp" />
 
+    <!-- Línea divisoria -->
     <View
         android:id="@+id/viewLineaLogin"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:background="#CCCCCC"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="30dp"
-        android:background="#000000" />
+        android:layout_marginTop="10dp"/>
 
 </LinearLayout>

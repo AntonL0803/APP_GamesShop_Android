@@ -4,85 +4,111 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FAF6F6"
+    android:background="#FFFFFF"
     android:orientation="vertical"
-    android:paddingTop="30dp"
-    android:paddingBottom="100dp"
+    android:padding="40dp"
+    android:gravity="center"
     tools:context=".Interfaces.Perfil">
 
+    <!-- Título -->
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="100dp"
         android:text="PERFIL"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:gravity="center"
+        android:textSize="32sp"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:layout_marginBottom="30dp" />
 
+    <!-- Imagen de perfil -->
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="50dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="30dp"
+        android:background="#E7E7E7"
+        android:scaleType="centerCrop"
         tools:src="@tools:sample/avatars" />
 
-    <TextView
+    <!-- Nombre de usuario (EditText) -->
+    <EditText
         android:id="@+id/etNombrePerfil"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginBottom="25dp"
+        android:layout_height="55dp"
+        android:background="#F9F9F9"
         android:hint="Nombre de Usuario"
-        android:inputType="text"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="18sp"
+        android:textColor="#333333"
+        android:padding="15dp"
+        android:gravity="center"
+        android:elevation="2dp"
+        android:layout_marginBottom="20dp" />
 
+    <!-- Campo Código Postal -->
     <EditText
         android:id="@+id/etCPPerfil"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:background="#E7E5E5"
-        android:ems="10"
-        android:hint="CP"
+        android:layout_height="55dp"
+        android:background="#F9F9F9"
+        android:hint="Código Postal"
         android:inputType="number"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:textSize="18sp"
+        android:textColor="#333333"
+        android:padding="15dp"
+        android:gravity="center"
+        android:elevation="2dp"
+        android:layout_marginBottom="20dp" />
 
-    <EditText
-        android:id="@+id/etEmailAddressPerfil"
+    <!-- Correo Electrónico (TextView) -->
+    <TextView
+        android:id="@+id/tvEmailAddressPerfil"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_margin="50dp"
-        android:background="#E7E5E5"
-        android:ems="10"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:layout_height="55dp"
+        android:background="#F9F9F9"
+        android:text="Correo Electrónico"
+        android:textSize="18sp"
+        android:textColor="#333333"
+        android:padding="15dp"
+        android:gravity="center"
+        android:elevation="2dp"
+        android:layout_marginBottom="20dp" />
 
+    <!-- Switch Newsletter -->
     <Switch
         android:id="@+id/switchNewsPerfil"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_weight="1"
-        android:background="#E7E5E5"
-        android:text="Newsletter"
-        android:textAlignment="center"
-        android:textSize="20sp" />
+        android:background="#F9F9F9"
+        android:text="Suscribirse al Newsletter"
+        android:textSize="18sp"
+        android:textColor="#333333"
+        android:padding="15dp"
+        android:layout_marginBottom="30dp"
+        android:gravity="center" />
 
+    <!-- Botón Cerrar Sesión -->
     <Button
         android:id="@+id/cerrarSesionPerfil"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="50dp"
+        android:layout_height="55dp"
+        android:backgroundTint="#D32F2F"
         android:text="Cerrar Sesión"
-        android:textColorLink="#FB0E0E" />
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:layout_marginBottom="20dp"
+        android:elevation="4dp" />
 
+    <!-- Botón Modificar Perfil -->
+    <Button
+        android:id="@+id/modificarPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:backgroundTint="#1976D2"
+        android:text="Modificar Datos"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:elevation="4dp" />
 </LinearLayout>
