@@ -1,6 +1,6 @@
 package com.example.aplicacion.Entidades;
 
-import android.util.Log;
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,28 +14,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.aplicacion.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiViewHolderCarrito> implements View.OnClickListener {
     private List<Producto> productos = new ArrayList<>();
+    private Map<Integer, Integer> imagenes;
     private View.OnClickListener listener;
     FirebaseDatabase db;
     FirebaseUser user;
     FirebaseAuth mAuth;
 
-    public AdaptadorCarrito(List<Producto> productos) {
+
+    public AdaptadorCarrito(List<Producto> productos, Map<Integer, Integer> imagenes) {
         this.productos = productos;
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
         db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
+        this.imagenes = imagenes;
     }
 
     @NonNull
@@ -47,28 +48,32 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MiViewHolderCarrito holder, int position) {
-        int posicionActual = holder.getBindingAdapterPosition();
+    public void onBindViewHolder(@NonNull MiViewHolderCarrito holder, @SuppressLint("RecyclerView") int position) {
+
+        //Calcular precio de toda la cantidad
         DecimalFormat formato = new DecimalFormat("#.##");
-        holder.tvNombre.setText(productos.get(posicionActual).getNombre().toString());
-        String precioTotal = formato.format(productos.get(posicionActual).getPrecio() * productos.get(posicionActual).getCantidad());
+        String precioTotal = formato.format(productos.get(position).getPrecio() * productos.get(position).getCantidad());
+
+        //Mostrar datos en el view
+        holder.tvNombre.setText(productos.get(position).getNombre().toString());
         holder.tvPrecio.setText("Precio: " + precioTotal + "€");
         holder.ivProducto.setImageResource(R.drawable.perfil);
-        holder.tvQuantity.setText(String.valueOf(productos.get(posicionActual).getCantidad()));
+        holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
 
         holder.btnPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sumarCantidad(productos.get(posicionActual).getNombre(), posicionActual);
+                sumarVista(holder, position);
+                calcularTotal(formato, holder, position);
+                actualizarCantidad(productos.get(position).getNombre(), position);
             }
         });
         holder.btnMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (productos.get(posicionActual).getCantidad() == 0){
-                } else {
-                    restarCantidad(productos.get(posicionActual).getNombre(), posicionActual);
-                }
+                restarVista(holder, position);
+                calcularTotal(formato, holder, position);
+                actualizarCantidad(productos.get(position).getNombre(), position);
             }
         });
     }
@@ -79,8 +84,27 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
     }
     @Override
     public void onClick(View view) {
-
     }
+    public void sumarVista(MiViewHolderCarrito holder, int position){
+        productos.get(position).setCantidad(productos.get(position).getCantidad() + 1);
+        holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
+    }
+    public void restarVista(MiViewHolderCarrito holder, int position){
+        productos.get(position).setCantidad(productos.get(position).getCantidad() - 1);
+        holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
+    }
+    public void actualizarCantidad(String nombreProducto, int position) {
+        String emailUser = user.getEmail();
+        DatabaseReference cantidadRef = db.getReference().child("Usuarios")
+                .child(emailUser.replace("@", "_").replace(".", "_"))
+                .child("carrito").child(nombreProducto).child("cantidad");
+        cantidadRef.setValue(productos.get(position).getCantidad());
+    }
+    public void calcularTotal(DecimalFormat formato, MiViewHolderCarrito holder, int position){
+        String precioTotal = formato.format(productos.get(position).getPrecio() * productos.get(position).getCantidad());
+        holder.tvPrecio.setText("Precio: " + precioTotal + "€");
+    }
+
 
     public class MiViewHolderCarrito extends RecyclerView.ViewHolder {
         ImageView ivProducto;
@@ -100,31 +124,6 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
             btnMinus = nuevaVista.findViewById(R.id.btnMinus);
             btnPlus = nuevaVista.findViewById(R.id.btnPlus);
             tvQuantity = nuevaVista.findViewById(R.id.tvQuantity);
-        }
-    }
-    public void sumarCantidad(String nombreProducto, int posicionActual){
-        String emailUser = user.getEmail();
-        DatabaseReference usuariosReferencia = db.getReference().child("Usuarios")
-                .child(emailUser.replace("@", "_").replace(".", "_"))
-                .child("carrito")
-                .child(nombreProducto)
-                .child("cantidad");
-
-        long nuevaCantidad = productos.get(posicionActual).getCantidad() + 1;
-        usuariosReferencia.setValue(nuevaCantidad);
-    }
-    public void restarCantidad(String nombreProducto, int posicionActual) {
-        String emailUser = user.getEmail();
-        DatabaseReference usuariosReferencia = db.getReference().child("Usuarios")
-                .child(emailUser.replace("@", "_").replace(".", "_"))
-                .child("carrito")
-                .child(nombreProducto)
-                .child("cantidad");
-
-
-        long nuevaCantidad = productos.get(posicionActual).getCantidad() - 1;
-        if (nuevaCantidad >= 0) {
-            usuariosReferencia.setValue(nuevaCantidad);
         }
     }
 }
