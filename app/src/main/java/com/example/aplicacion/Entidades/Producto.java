@@ -40,7 +40,7 @@ public class Producto {
         return cantidad;
     }
 
-    public void setCantidad(int cantidad) {
+    public void setCantidad(long cantidad) {
         this.cantidad = cantidad;
     }
 

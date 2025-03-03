@@ -131,7 +131,7 @@ public class Carro extends Fragment {
         String emailUser = user.getEmail();
         DatabaseReference emailCarritoReferencia = usuariosReferencia.child(emailUser.replace("@", "_").replace(".", "_")).child("carrito");
 
-        emailCarritoReferencia.addValueEventListener(new ValueEventListener() {
+        emailCarritoReferencia.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
@@ -142,15 +142,17 @@ public class Carro extends Fragment {
                             productos.add(producto);
                         }
                     }
-                    AdaptadorCarrito adaptador = new AdaptadorCarrito(productos);
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-                    rvCarro.setLayoutManager(layoutManager);
-                    rvCarro.setAdapter(adaptador);
-                    rvCarro.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-
-                    adaptador.notifyDataSetChanged();
                 }
+                for (Producto producto : productos) {
+                    Log.d("Carro", "Producto: " + producto.getNombre() + ", Cantidad: " + producto.getCantidad());
+                }
+                AdaptadorCarrito adaptador = new AdaptadorCarrito(productos, imagenes);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                rvCarro.setLayoutManager(layoutManager);
+                rvCarro.setAdapter(adaptador);
+                rvCarro.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
+                adaptador.notifyDataSetChanged();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

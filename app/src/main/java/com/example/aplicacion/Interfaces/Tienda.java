@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -153,11 +154,13 @@ public class Tienda extends Fragment {
         adaptador.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ImageView imagenProducto = view.findViewById(R.id.imagenProductoCarrito);
                 TextView nombreProductoText = view.findViewById(R.id.nombreProductoTarjeta2);
                 TextView precioProductoText = view.findViewById(R.id.precioProductoTienda);
 
                 String nombreProducto = nombreProductoText.getText().toString().trim();
                 String precioProductoStr = precioProductoText.getText().toString().trim();
+                int imagenID = (int) imagenProducto.getTag();
 
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(
@@ -167,7 +170,7 @@ public class Tienda extends Fragment {
                         R.animator.slide_out_right
                 );
 
-                ProductoDetallado fragment = ProductoDetallado.newInstance(nombreProducto, precioProductoStr);
+                ProductoDetallado fragment = ProductoDetallado.newInstance(nombreProducto, precioProductoStr, imagenID);
                 transaction.replace(R.id.frameLayoutPrincipal, fragment)
                         .addToBackStack(null)
                         .commit();

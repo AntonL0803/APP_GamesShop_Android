@@ -59,11 +59,12 @@ public class ProductoDetallado extends Fragment {
      * @return A new instance of fragment ProductoDetallado.
      */
     // TODO: Rename and change types and number of parameters
-    public static ProductoDetallado newInstance(String nombre, String precio) {
+    public static ProductoDetallado newInstance(String nombre, String precio, int imagenID) {
         ProductoDetallado fragment = new ProductoDetallado();
         Bundle args = new Bundle();
         args.putString("nombre", nombre);
         args.putString("precio", precio);
+        args.putInt("imagenID", imagenID);
         fragment.setArguments(args);
         return fragment;
     }
@@ -92,11 +93,10 @@ public class ProductoDetallado extends Fragment {
                 requireActivity().getSupportFragmentManager().popBackStack();
             }
         });
-
+        imagenProductoDetallado.setImageResource(getArguments().getInt("imagenID"));
         titulo.setText(getArguments().getString("nombre"));
         precio.setText("Precio: "+getArguments().getString("precio"));
         cargarDescripcion(descripcion);
-
         return view;
     }
     public void cargarDescripcion(TextView tvDescripcion){
