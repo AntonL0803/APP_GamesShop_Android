@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.aplicacion">
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>-->
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -18,6 +22,10 @@
         android:theme="@style/Theme.Aplicacion"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
+        <activity android:name="com.google.android.gms.auth.api.signin.internal.SignInHubActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:exported="false"/>
+
         <activity
             android:name=".Interfaces.Registro"
             android:exported="true" />
