@@ -47,26 +47,9 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private SignInButton googleSignInButton;
+    private ActivityResultLauncher<Intent> signInResultLauncher;
 
     //private static final int RC_SIGN_IN = 9001;
-
-    private final ActivityResultLauncher<Intent> signInResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), result -> {
-                if (result.getResultCode() == RESULT_OK) {
-                    Intent data = result.getData();
-                    if (data != null) {
-                        GoogleSignIn.getSignedInAccountFromIntent(data).addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                firebaseAuthWithGoogle(task.getResult());
-                            } else {
-                                Toast.makeText(this, "Error en Google sign in.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                } else {
-                    Toast.makeText(Login.this, "Error en Google Sign-In por el dato", Toast.LENGTH_SHORT).show();
-                }
-            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,13 +78,7 @@ public class Login extends AppCompatActivity {
         // Botón de inicio de sesión
         btIniciarSesion.setOnClickListener(view -> signInWithEmail());
 
-        // Configuración de Google Sign-In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         googleSignInButton.setOnClickListener(view -> signInWithGoogle());
         googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
 
@@ -110,6 +87,24 @@ public class Login extends AppCompatActivity {
             Intent intent = new Intent(Login.this, Registro.class);
             startActivity(intent);
         });
+
+        signInResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null) {
+                            GoogleSignIn.getSignedInAccountFromIntent(data).addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    firebaseAuthWithGoogle(task.getResult());
+                                } else {
+                                    Toast.makeText(this, "Error en Google sign in.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    } else {
+                        Toast.makeText(Login.this, "Error en Google Sign-In por el dato", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void signInWithEmail() {
@@ -153,9 +148,18 @@ public class Login extends AppCompatActivity {
 
     // Método para iniciar sesión con Google
     private void signInWithGoogle() {
+        // Configuración de Google Sign-In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(com.firebase.ui.auth.R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient.signOut();
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         signInResultLauncher.launch(signInIntent);
     }
+
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)

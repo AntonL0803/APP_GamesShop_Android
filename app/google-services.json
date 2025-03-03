@@ -8,9 +8,46 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:77151084882:android:588bd8e23c8929268b5a8b",
+        "mobilesdk_app_id": "1:77151084882:android:6510e6a232c7eed68b5a8b",
         "android_client_info": {
           "package_name": "com.example.aplicacion"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77151084882-n9nipoobt6hi613e5hebmih3n05c0n1u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aplicacion",
+            "certificate_hash": "9ee8b6ef8876889408353c3e7daca2cf5a56c23e"
+          }
+        },
+        {
+          "client_id": "77151084882-98f6eaj6cru1a2dgkbf18g9magreget5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAthnUX9reffQ0O6M7Do4fMgbHhHkEP31k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77151084882-98f6eaj6cru1a2dgkbf18g9magreget5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77151084882:android:588bd8e23c8929268b5a8b",
+        "android_client_info": {
+          "package_name": "com.example.aplicacion.Interfaces"
         }
       },
       "oauth_client": [
@@ -18,7 +55,7 @@
           "client_id": "77151084882-11aehucuamnfv25vt8nlpie7hll0o792.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.aplicacion",
+            "package_name": "com.example.aplicacion.Interfaces",
             "certificate_hash": "a24909dd831f21483f6048684f21ac311c3cf915"
           }
         },
@@ -26,7 +63,7 @@
           "client_id": "77151084882-tg6e0bkp0cr9ccggi7muqcjf27n31gdk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.aplicacion",
+            "package_name": "com.example.aplicacion.Interfaces",
             "certificate_hash": "9ee8b6ef8876889408353c3e7daca2cf5a56c23e"
           }
         },
