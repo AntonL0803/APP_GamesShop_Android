@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -21,6 +22,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.aplicacion.R;
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -47,10 +51,54 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private SignInButton googleSignInButton;
+<<<<<<< HEAD
     private ActivityResultLauncher<Intent> signInResultLauncher;
 
     //private static final int RC_SIGN_IN = 9001;
 
+=======
+    private SignInClient signInClient;
+
+    //private static final int RC_SIGN_IN = 9001;
+
+    private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    try {
+                        SignInCredential credential = signInClient.getSignInCredentialFromIntent(result.getData());
+                        String idToken = credential.getGoogleIdToken();
+                        if (idToken != null) {
+                            firebaseAuthWithGoogle(idToken);
+                        } else {
+                            Toast.makeText(this, "Error: ID Token nulo", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (ApiException e) {
+                        Log.e("GoogleSignIn", "Error en el inicio de sesión con Google", e);
+                        Toast.makeText(this, "Error en el inicio de sesión", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+    );
+    /*private final ActivityResultLauncher<Intent> signInResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        GoogleSignIn.getSignedInAccountFromIntent(data).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                firebaseAuthWithGoogle(task.getResult());
+                            } else {
+                                Toast.makeText(this, "Error en Google sign in.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                } else {
+                    Toast.makeText(Login.this, "Error en Google Sign-In por el dato", Toast.LENGTH_SHORT).show();
+                }
+            });*/
+
+>>>>>>> origin/Hui9
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,6 +195,7 @@ public class Login extends AppCompatActivity {
     }
 
     // Método para iniciar sesión con Google
+<<<<<<< HEAD
     private void signInWithGoogle() {
         // Configuración de Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -156,11 +205,40 @@ public class Login extends AppCompatActivity {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         mGoogleSignInClient.signOut();
+=======
+    /*private void signInWithGoogle() {
+>>>>>>> origin/Hui9
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         signInResultLauncher.launch(signInIntent);
+    }*/
+    private void signInWithGoogle() {
+        BeginSignInRequest signInRequest = BeginSignInRequest.builder()
+                .setGoogleIdTokenRequestOptions(
+                        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                                .setSupported(true)
+                                .setServerClientId(getString(R.string.default_web_client_id))
+                                .setFilterByAuthorizedAccounts(false)
+                                .build()
+                )
+                .build();
+
+        signInClient.beginSignIn(signInRequest)
+                .addOnSuccessListener(this, result -> {
+                    try {
+                        IntentSenderRequest intentSenderRequest = new IntentSenderRequest.Builder(result.getPendingIntent().getIntentSender()).build();
+                        signInLauncher.launch(intentSenderRequest);
+                    } catch (Exception e) {
+                        Log.e("GoogleSignIn", "Error lanzando IntentSender", e);
+                    }
+                })
+                .addOnFailureListener(this, e -> Log.e("GoogleSignIn", "Error en Google Sign-In", e));
     }
+<<<<<<< HEAD
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+=======
+    /*private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+>>>>>>> origin/Hui9
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
@@ -193,6 +271,41 @@ public class Login extends AppCompatActivity {
                         Toast.makeText(this, "Error al autenticar con Firebase.", Toast.LENGTH_SHORT).show();
                     }
 
+                });
+    }*/
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            String userId = user.getUid();
+                            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("usuarios").child(userId);
+
+                            dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (!snapshot.exists()) {
+                                        dbRef.child("username").setValue(user.getDisplayName());
+                                        dbRef.child("email").setValue(user.getEmail());
+                                        dbRef.child("codigopostal").setValue("");
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Log.e("Database", "Error al acceder a la base de datos", error.toException());
+                                }
+                            });
+
+                            Toast.makeText(this, "Inicio de sesión exitoso con Google.", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(Login.this, MainPage.class));
+                            finish();
+                        }
+                    } else {
+                        Toast.makeText(this, "Error al autenticar con Firebase.", Toast.LENGTH_SHORT).show();
+                    }
                 });
     }
 }
