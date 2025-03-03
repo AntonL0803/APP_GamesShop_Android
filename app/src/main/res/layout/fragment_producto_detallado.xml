@@ -38,11 +38,21 @@
 
     </androidx.cardview.widget.CardView>
 
-    <ImageView
-        android:id="@+id/ivProductoDetallado"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="239dp"
-        tools:src="@tools:sample/avatars" />
+        android:layout_height="271dp"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="50dp">
+
+        <ImageView
+            android:id="@+id/ivProductoDetallado"
+            android:layout_width="253dp"
+            android:layout_height="239dp"
+            android:layout_gravity="center"
+            tools:src="@tools:sample/avatars" />
+    </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

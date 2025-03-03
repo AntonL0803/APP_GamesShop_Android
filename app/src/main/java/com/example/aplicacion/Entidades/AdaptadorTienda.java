@@ -156,6 +156,7 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
                             try {
                                 int posicion = Integer.parseInt(clave);
                                 holder.ivProducto.setImageResource(imagenes.get(posicion));
+                                holder.ivProducto.setTag(imagenes.get(posicion));
                             } catch (NumberFormatException e) {
                                 holder.ivProducto.setImageResource(R.drawable.perfil);
                             }
