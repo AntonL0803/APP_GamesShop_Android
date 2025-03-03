@@ -24,7 +24,7 @@
 
     <!-- Imagen de perfil -->
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/imagenPerfil"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center"
@@ -91,7 +91,7 @@
 
     <!-- Botón Cerrar Sesión -->
     <Button
-        android:id="@+id/cerrarSesionPerfil"
+        android:id="@+id/btcerrarSesionPerfil"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:backgroundTint="#D32F2F"
@@ -103,7 +103,7 @@
 
     <!-- Botón Modificar Perfil -->
     <Button
-        android:id="@+id/modificarPerfil"
+        android:id="@+id/btmodificarPerfil"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:backgroundTint="#1976D2"

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.example.aplicacion.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +30,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link Perfil#newInstance} factory method to
@@ -39,13 +41,13 @@ public class Perfil extends Fragment {
     private TextView textViewUsuarioPerfil, textViewEmail;
     private EditText editTextCpPerfil;
     private Switch newsletterPerfil;
-    private Button cerrarSesion;
+    private Button cerrarSesion, modificarDatos;
     private ImageView imageViewPerfil;
     //private StorageReference storageReference;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser usuarioActual;
     private SharedPreferences sharedPreferences;
-    private DatabaseReference databaseReference;
+    private FirebaseDatabase db;
     private String userId;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -98,32 +100,34 @@ public class Perfil extends Fragment {
         textViewEmail = rootView.findViewById(R.id.tvEmailAddressPerfil);
         editTextCpPerfil = rootView.findViewById(R.id.etCPPerfil);
         newsletterPerfil = rootView.findViewById(R.id.switchNewsPerfil);
-        cerrarSesion = rootView.findViewById(R.id.cerrarSesionPerfil);
-        imageViewPerfil = rootView.findViewById(R.id.imageView2);
+        cerrarSesion = rootView.findViewById(R.id.btcerrarSesionPerfil);
+        imageViewPerfil = rootView.findViewById(R.id.imagenPerfil);
+        modificarDatos = rootView.findViewById(R.id.btmodificarPerfil);
 
         //  Firebase
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(textViewEmail.getText().toString());
         firebaseAuth = FirebaseAuth.getInstance();
         usuarioActual = firebaseAuth.getCurrentUser();
-        //storageReference = FirebaseStorage.getInstance().getReference();
         sharedPreferences = getActivity().getSharedPreferences("PerfilUsuario", Context.MODE_PRIVATE);
-        
+
         // Verificar si el usuario está autenticado
         if (usuarioActual != null) {
-            userId = usuarioActual.getUid();
-            databaseReference = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(userId);
             cargarDatosUsuario();
-            configurarEventosDeCambio();
+            //configurarEventosDeCambio();
         } else {
             Toast.makeText(getActivity(), "Usuario no autenticado", Toast.LENGTH_SHORT).show();
         }
 
-        // Acción para cerrar sesión (Ejemplo)
+        // Cerrar Sesión
         cerrarSesion.setOnClickListener(view -> {
             Toast.makeText(getActivity(), "Cerrando sesión...", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(getActivity(), Login.class));
             firebaseAuth.signOut();
             Toast.makeText(getActivity(), "Sesión cerrada", Toast.LENGTH_SHORT).show();
             getActivity().finish();
+        });
+
+        modificarDatos.setOnClickListener(View -> {
+            configurarEventosDeCambio();
         });
 
         // Inflate the layout for this fragment
@@ -131,66 +135,71 @@ public class Perfil extends Fragment {
         return rootView;
     }
 
+    // Cargar datos desde Firebase Realtime Database
     private void cargarDatosUsuario() {
-        // Cargar datos desde Firebase Realtime Database
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    // Obtener valores de Firebase
-                    String nombre = snapshot.child("nombre").getValue(String.class);
-                    String email = snapshot.child("email").getValue(String.class);
-                    String cp = snapshot.child("cp").getValue(String.class);
-                    Boolean newsletter = snapshot.child("newsletter").getValue(Boolean.class);
+        db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
+        DatabaseReference usuariosReferencia = db.getReference().child("Usuarios");
 
-                    // Asignar valores a los elementos UI
-                    textViewUsuarioPerfil.setText(nombre);
-                    textViewEmail.setText(email);
-                    editTextCpPerfil.setText(cp);
-                    newsletterPerfil.setChecked(newsletter != null && newsletter);
+        if (usuarioActual != null) {
+            String emailUser = usuarioActual.getEmail();
+            if (emailUser != null) {
+                String usuarioClave = emailUser.replace("@", "_").replace(".", "_"); // Reemplazamos caracteres no válidos
+                DatabaseReference usuarioReferenciado = usuariosReferencia.child(usuarioClave); // Referencia correcta al usuario
 
-                    // Guardar datos localmente con SharedPreferences
-                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                    editor.putString("nombre", nombre);
-                    editor.putString("email", email);
-                    editor.putString("cp", cp);
-                    editor.putBoolean("newsletter", newsletter != null && newsletter);
-                    editor.apply();
-                }
+                usuarioReferenciado.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // Obtener valores de Firebase
+                            String nombre = snapshot.child("nombre").getValue(String.class);
+                            String email = snapshot.child("email").getValue(String.class);
+                            String cp = snapshot.child("cp").getValue(String.class);
+                            Boolean newsletter = snapshot.child("newsletter").getValue(Boolean.class);
+
+                            // Asignar valores a los elementos UI
+                            textViewUsuarioPerfil.setText(nombre != null ? nombre : "Nombre no disponible");
+                            textViewEmail.setText(email != null ? email : "Email no disponible");
+                            editTextCpPerfil.setText(cp != null ? cp : "");
+                            newsletterPerfil.setChecked(newsletter != null && newsletter);
+
+                            // Guardar datos localmente con SharedPreferences
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("nombre", nombre);
+                            editor.putString("email", email);
+                            editor.putString("cp", cp);
+                            editor.putBoolean("newsletter", newsletter != null && newsletter);
+                            editor.apply();
+                        } else {
+                            Toast.makeText(getActivity(), "No se encontraron datos", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getActivity(), "Error al obtener datos: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getActivity(), "Error al cargarlos datos", Toast.LENGTH_SHORT).show();
-            }
-        });
+        }
     }
+
     private void configurarEventosDeCambio() {
-        // Actualizar en Firebase cuando se modifique el CP
-        editTextCpPerfil.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        try{
+            //Esto actualiza el firebase
+            String emailUser = usuarioActual.getEmail();
+            DatabaseReference usuario = db.getReference().child("Usuarios")
+                    .child(emailUser.replace("@", "_").replace(".", "_"));
+            usuario.child("cp").setValue(editTextCpPerfil.getText().toString());
+            usuario.child("nombre").setValue(textViewUsuarioPerfil.getText().toString());
+            usuario.child("newsletter").setValue(newsletterPerfil.isChecked());
+            Toast.makeText(getActivity(), "Perfil actualizado.", Toast.LENGTH_SHORT).show();
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                actualizarDatoEnFirebase("cp", s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
-
-        // Actualizar en Firebase cuando se modifique el Switch de Newsletter
-        newsletterPerfil.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            actualizarDatoEnFirebase("newsletter", isChecked);
-        });
-    }
-
-    private void actualizarDatoEnFirebase(String key, Object value) {
-        if (userId != null) {
-            databaseReference.child(key).setValue(value)
-                    .addOnSuccessListener(aVoid -> Toast.makeText(getActivity(), "Perfil actualizado", Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e -> Toast.makeText(getActivity(), "Error al actualizar", Toast.LENGTH_SHORT).show());
+        } catch (RuntimeException e) {
+            Toast.makeText(getActivity(), "No se ha realizado ningún cambio.", Toast.LENGTH_SHORT).show();
+            throw new RuntimeException(e);
         }
     }
 }
+
+
+
