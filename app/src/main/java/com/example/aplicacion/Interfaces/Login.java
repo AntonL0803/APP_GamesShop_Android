@@ -167,16 +167,18 @@ public class Login extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            String userId = user.getUid();
-                            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(userId);
+                            String email = user.getEmail();
+                            String emailKey = email.replace(".", "_").replace("@", "_");
+                            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(emailKey);
 
                             dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (!snapshot.exists()) {
-                                        dbRef.child("username").setValue(user.getDisplayName());
+                                        dbRef.child("nombre").setValue(user.getDisplayName());
                                         dbRef.child("email").setValue(user.getEmail());
-                                        dbRef.child("codigopostal").setValue("");
+                                        dbRef.child("cp").setValue("");
+                                        dbRef.child("newsletter").setValue("");
                                     }
                                 }
 
