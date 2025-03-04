@@ -75,6 +75,7 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
         int currentPosition = holder.getBindingAdapterPosition();
         //posicionImagenTienda(nombreProductos.get(currentPosition), holder);
         holder.ivProducto.setImageResource(imagenes.get(nombreProductos.get(position)));
+        holder.ivProducto.setTag(imagenes.get(nombreProductos.get(position)));
         holder.tvNombre.setText(nombreProductos.get(currentPosition));
         holder.tvPrecio.setText("Precio: " + String.valueOf(precioProductos.get(currentPosition)));
         holder.imageButton.setOnClickListener(new View.OnClickListener() {

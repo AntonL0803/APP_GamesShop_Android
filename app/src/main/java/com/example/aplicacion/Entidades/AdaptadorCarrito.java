@@ -52,34 +52,37 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
 
     @Override
     public void onBindViewHolder(@NonNull MiViewHolderCarrito holder, @SuppressLint("RecyclerView") int position) {
+        Producto producto = productos.get(position);
+        if (producto != null){
+            //Calcular precio de toda la cantidad
+            DecimalFormat formato = new DecimalFormat("#.##");
+            String precioTotal = formato.format(productos.get(position).getPrecio() * productos.get(position).getCantidad());
 
-        //Calcular precio de toda la cantidad
-        DecimalFormat formato = new DecimalFormat("#.##");
-        String precioTotal = formato.format(productos.get(position).getPrecio() * productos.get(position).getCantidad());
+            //Mostrar datos en el view
+            holder.ivProducto.setImageResource(imagenes.get(productos.get(position).getNombre()));
+            holder.tvNombre.setText(productos.get(position).getNombre().toString());
+            holder.tvPrecio.setText("Precio: " + precioTotal + "€");
+            holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
 
-        //Mostrar datos en el view
-        holder.ivProducto.setImageResource(imagenes.get(productos.get(position).getNombre()));
-        holder.tvNombre.setText(productos.get(position).getNombre().toString());
-        holder.tvPrecio.setText("Precio: " + precioTotal + "€");
-        holder.ivProducto.setImageResource(R.drawable.perfil);
-        holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
-
-        holder.btnPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sumarVista(holder, position);
-                calcularTotal(formato, holder, position);
-                actualizarCantidad(productos.get(position).getNombre(), position);
-            }
-        });
-        holder.btnMinus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                restarVista(holder, position);
-                calcularTotal(formato, holder, position);
-                actualizarCantidad(productos.get(position).getNombre(), position);
-            }
-        });
+            holder.btnPlus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    sumarVista(holder, position);
+                    calcularTotal(formato, holder, position);
+                    actualizarCantidad(productos.get(position).getNombre(), position);
+                }
+            });
+            holder.btnMinus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    restarVista(holder, position);
+                    calcularTotal(formato, holder, position);
+                    actualizarCantidad(productos.get(position).getNombre(), position);
+                }
+            });
+        } else {
+            holder.tvNombre.setText("Producto eliminado");
+        }
     }
 
     @Override

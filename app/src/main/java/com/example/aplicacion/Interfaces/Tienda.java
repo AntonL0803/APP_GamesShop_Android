@@ -160,7 +160,7 @@ public class Tienda extends Fragment {
 
                 String nombreProducto = nombreProductoText.getText().toString().trim();
                 String precioProductoStr = precioProductoText.getText().toString().trim();
-                int imagenID = imagenProducto.getTag();
+                int imagenID = (int) imagenProducto.getTag();
 
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(

@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,7 +116,22 @@ public class ProductoDetallado extends Fragment {
     }
     public void cargarDescripcion(TextView tvDescripcion){
         db =FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
-        DatabaseReference nodoPadre = db.getReference().child("Productos");
+        DatabaseReference nodoPadre = db.getReference().child("Productos").child(titulo.getText().toString()).child("descripcion");
+
+        nodoPadre.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    tvDescripcion.setText(snapshot.getValue(String.class));
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("FirebaseError", "Error al obtener datos: " + error.getMessage());
+            }
+        });
+
+        /*
         nodoPadre.orderByChild("nombre").equalTo(getArguments().getString("nombre"))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -132,6 +148,8 @@ public class ProductoDetallado extends Fragment {
 
                     }
                 });
+
+         */
     }
     public void agregarAlCarrito() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
