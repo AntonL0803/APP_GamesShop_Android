@@ -3,6 +3,7 @@ package com.example.aplicacion.Interfaces;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,7 +22,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.aplicacion.R;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,6 +49,7 @@ public class Perfil extends Fragment {
     //private StorageReference storageReference;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser usuarioActual;
+    private GoogleSignInClient googleSignInClient;
     private SharedPreferences sharedPreferences;
     private FirebaseDatabase db;
     private String userId;
@@ -88,6 +92,8 @@ public class Perfil extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        firebaseAuth = FirebaseAuth.getInstance();
+        usuarioActual = firebaseAuth.getCurrentUser();
     }
 
     @Override
@@ -155,20 +161,33 @@ public class Perfil extends Fragment {
                             String email = snapshot.child("email").getValue(String.class);
                             String cp = snapshot.child("cp").getValue(String.class);
                             Boolean newsletter = snapshot.child("newsletter").getValue(Boolean.class);
+                            if (newsletter == null) {
+                                newsletter = false;  // Si es null, asignamos un valor por defecto
+                            }
 
                             // Asignar valores a los elementos UI
                             textViewUsuarioPerfil.setText(nombre != null ? nombre : "Nombre no disponible");
                             textViewEmail.setText(email != null ? email : "Email no disponible");
                             editTextCpPerfil.setText(cp != null ? cp : "");
-                            newsletterPerfil.setChecked(newsletter != null && newsletter);
+                            newsletterPerfil.setChecked(newsletter);
 
-                            // Guardar datos localmente con SharedPreferences
+                            // Cargar la imagen de perfil desde la URL de Google
+                            Uri photoUrl = usuarioActual.getPhotoUrl();
+                            if (photoUrl != null) {
+                                Glide.with(getContext())
+                                        .load(photoUrl)
+                                        .into(imageViewPerfil); // Asegúrate de tener un ImageView para mostrar la foto
+                            } else {
+                                // Si no tiene foto de perfil, asignamos una predeterminada
+                                imageViewPerfil.setImageResource(R.drawable.imagendefecto);
+                            }
+                           /* // Guardar datos localmente con SharedPreferences
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("nombre", nombre);
                             editor.putString("email", email);
                             editor.putString("cp", cp);
                             editor.putBoolean("newsletter", newsletter != null && newsletter);
-                            editor.apply();
+                            editor.apply();*/
                         } else {
                             Toast.makeText(getActivity(), "No se encontraron datos", Toast.LENGTH_SHORT).show();
                         }
@@ -200,6 +219,3 @@ public class Perfil extends Fragment {
         }
     }
 }
-
-
-

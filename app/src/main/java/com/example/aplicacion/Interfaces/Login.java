@@ -1,5 +1,6 @@
 package com.example.aplicacion.Interfaces;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -180,6 +181,13 @@ public class Login extends AppCompatActivity {
                                         dbRef.child("cp").setValue("");
                                         dbRef.child("newsletter").setValue("");
                                     }
+                                    SharedPreferences preferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = preferences.edit();
+                                    editor.putString("email", email);
+                                    editor.putString("cp", "");  // Ensure "cp" has a value here
+                                    //editor.putString("newsletter", "");
+                                    editor.putString("nombre", user.getDisplayName());
+                                    editor.apply();
                                 }
 
                                 @Override
