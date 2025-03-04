@@ -14,8 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.aplicacion.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -24,14 +27,14 @@ import java.util.Map;
 
 public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiViewHolderCarrito> implements View.OnClickListener {
     private List<Producto> productos = new ArrayList<>();
-    private Map<Integer, Integer> imagenes;
+    private Map<String, Integer> imagenes;
     private View.OnClickListener listener;
     FirebaseDatabase db;
     FirebaseUser user;
     FirebaseAuth mAuth;
 
 
-    public AdaptadorCarrito(List<Producto> productos, Map<Integer, Integer> imagenes) {
+    public AdaptadorCarrito(List<Producto> productos, Map<String, Integer> imagenes) {
         this.productos = productos;
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -55,6 +58,7 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
         String precioTotal = formato.format(productos.get(position).getPrecio() * productos.get(position).getCantidad());
 
         //Mostrar datos en el view
+        holder.ivProducto.setImageResource(imagenes.get(productos.get(position).getNombre()));
         holder.tvNombre.setText(productos.get(position).getNombre().toString());
         holder.tvPrecio.setText("Precio: " + precioTotal + "€");
         holder.ivProducto.setImageResource(R.drawable.perfil);
@@ -90,8 +94,14 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
         holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
     }
     public void restarVista(MiViewHolderCarrito holder, int position){
-        productos.get(position).setCantidad(productos.get(position).getCantidad() - 1);
-        holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
+        long nuevaCantidad = productos.get(position).getCantidad() - 1;
+        if (nuevaCantidad <= 0){
+            holder.itemView.setVisibility(View.GONE);
+            eliminarProductoFirebase(productos.get(position).getNombre());
+        } else {
+            productos.get(position).setCantidad(nuevaCantidad);
+            holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
+        }
     }
     public void actualizarCantidad(String nombreProducto, int position) {
         String emailUser = user.getEmail();
@@ -100,11 +110,17 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
                 .child("carrito").child(nombreProducto).child("cantidad");
         cantidadRef.setValue(productos.get(position).getCantidad());
     }
+    public void eliminarProductoFirebase(String nombreProducto){
+        String emailUser = user.getEmail();
+        DatabaseReference productoRef = db.getReference().child("Usuarios")
+                .child(emailUser.replace("@", "_").replace(".", "_"))
+                .child("carrito").child(nombreProducto);
+        productoRef.removeValue();
+    }
     public void calcularTotal(DecimalFormat formato, MiViewHolderCarrito holder, int position){
         String precioTotal = formato.format(productos.get(position).getPrecio() * productos.get(position).getCantidad());
         holder.tvPrecio.setText("Precio: " + precioTotal + "€");
     }
-
 
     public class MiViewHolderCarrito extends RecyclerView.ViewHolder {
         ImageView ivProducto;

@@ -40,31 +40,31 @@ public class Carro extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseUser user;
     private List<Producto> productos = new ArrayList<>();
-    private Map<Integer, Integer> imagenes = new HashMap<Integer, Integer>() {{
-        put(1, R.drawable.supermariobroswonder);
-        put(2, R.drawable.biomutant);
-        put(3, R.drawable.crash);
-        put(4, R.drawable.donkeykongcountry);
-        put(5, R.drawable.detectivepikachu);
-        put(6, R.drawable.dragones3);
-        put(7, R.drawable.drivingadventures);
-        put(8, R.drawable.everybodyswitch);
-        put(9, R.drawable.fitnessboxing);
-        put(10, R.drawable.harvestella);
-        put(11, R.drawable.hollowknight);
-        put(12, R.drawable.justdance);
-        put(13, R.drawable.kirby);
-        put(14, R.drawable.mariodockerkong);
-        put(15, R.drawable.mariopartyjamboree);
-        put(16, R.drawable.mariopartysuperstars);
-        put(17, R.drawable.minecraft);
-        put(18, R.drawable.monsterhunterrise);
-        put(19, R.drawable.mysims);
-        put(20, R.drawable.peach);
-        put(21, R.drawable.pokemondiamante);
-        put(22, R.drawable.twopointcampus);
-        put(23, R.drawable.zeldakingdom);
-        put(24, R.drawable.zeldalink);
+    private Map<String, Integer> imagenes = new HashMap<String, Integer>() {{
+        put("Super Mario Bros Wonder", R.drawable.supermariobroswonder);
+        put("Biomutant", R.drawable.biomutant);
+        put("Crash", R.drawable.crash);
+        put("Donkey Kong Country", R.drawable.donkeykongcountry);
+        put("Detective Pikachu", R.drawable.detectivepikachu);
+        put("Dragones III", R.drawable.dragones3);
+        put("Matching Driving Adventures", R.drawable.drivingadventures);
+        put("Everybody Switch", R.drawable.everybodyswitch);
+        put("Fitness Boxing", R.drawable.fitnessboxing);
+        put("Harvestella", R.drawable.harvestella);
+        put("Hollow Knight", R.drawable.hollowknight);
+        put("Just Dance", R.drawable.justdance);
+        put("Kirby y la tierra olvidada", R.drawable.kirby);
+        put("Mario VS Donkey Kong", R.drawable.mariodockerkong);
+        put("Mario Party Jamboree", R.drawable.mariopartyjamboree);
+        put("Mario Party Superstars", R.drawable.mariopartysuperstars);
+        put("Minecraft", R.drawable.minecraft);
+        put("Monster Hunter Rise", R.drawable.monsterhunterrise);
+        put("mySims Cozy Bundle", R.drawable.mysims);
+        put("Princess Peach Showtime", R.drawable.peach);
+        put("Pokemon Diamante Brillante", R.drawable.pokemondiamante);
+        put("Two Point Campus", R.drawable.twopointcampus);
+        put("Zelda tears of the kingdom", R.drawable.zeldakingdom);
+        put("Zelda Links Awakening", R.drawable.zeldalink);
     }};
 
 
