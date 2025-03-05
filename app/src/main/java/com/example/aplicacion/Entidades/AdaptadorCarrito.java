@@ -53,13 +53,25 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
     @Override
     public void onBindViewHolder(@NonNull MiViewHolderCarrito holder, @SuppressLint("RecyclerView") int position) {
         Producto producto = productos.get(position);
-        if (producto != null){
+        if (producto == null){
+            holder.tvNombre.setText("Producto eliminado");
+        }
             //Calcular precio de toda la cantidad
             DecimalFormat formato = new DecimalFormat("#.##");
-            String precioTotal = formato.format(productos.get(position).getPrecio() * productos.get(position).getCantidad());
+
+            double precio = (producto.getPrecio() != null) ? producto.getPrecio() : 0.0;
+            Long cantidadObj = producto.getCantidad();
+            long cantidad = (cantidadObj != null) ? cantidadObj : 1;
+
+            String precioTotal = formato.format(precio * cantidad);
 
             //Mostrar datos en el view
-            holder.ivProducto.setImageResource(imagenes.get(productos.get(position).getNombre()));
+            Integer imagenRes = imagenes.get(productos.get(position).getNombre());
+            if (imagenRes != null) {
+                holder.ivProducto.setImageResource(imagenRes);
+            } else {
+                holder.ivProducto.setImageResource(R.drawable.perfil);
+            }
             holder.tvNombre.setText(productos.get(position).getNombre().toString());
             holder.tvPrecio.setText("Precio: " + precioTotal + "€");
             holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
@@ -80,9 +92,6 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
                     actualizarCantidad(productos.get(position).getNombre(), position);
                 }
             });
-        } else {
-            holder.tvNombre.setText("Producto eliminado");
-        }
     }
 
     @Override
