@@ -3,20 +3,23 @@ package com.example.aplicacion.Interfaces;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -32,8 +35,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,6 +47,8 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class Perfil extends Fragment {
+    private static final int REQUEST_PERMISSION = 1;
+    private static final int CAMERA_REQUEST_CODE = 100;
     private TextView textViewUsuarioPerfil, textViewEmail;
     private EditText editTextCpPerfil;
     private Switch newsletterPerfil;
@@ -53,6 +61,7 @@ public class Perfil extends Fragment {
     private SharedPreferences sharedPreferences;
     private FirebaseDatabase db;
     private String userId;
+    private ImageButton ibTomarFoto;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -94,6 +103,23 @@ public class Perfil extends Fragment {
         }
         firebaseAuth = FirebaseAuth.getInstance();
         usuarioActual = firebaseAuth.getCurrentUser();
+
+        /*ibTomarFoto = findViewById(R.id.imgbotonTomarFoto);
+        ibTomarFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Verifica los permisos antes de abrir la cámara
+                if (ContextCompat.checkSelfPermission(Perfil.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(Perfil.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+                    // Solicita permisos si no se tienen
+                    ActivityCompat.requestPermissions(Perfil.this,
+                            new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
+                } else {
+                    openCamera();
+                }
+            }
+        });*/
     }
 
     @Override
@@ -109,6 +135,7 @@ public class Perfil extends Fragment {
         cerrarSesion = rootView.findViewById(R.id.btcerrarSesionPerfil);
         imageViewPerfil = rootView.findViewById(R.id.imagenPerfil);
         modificarDatos = rootView.findViewById(R.id.btmodificarPerfil);
+        ibTomarFoto = rootView.findViewById(R.id.imgbotonTomarFoto);
 
         //  Firebase
         firebaseAuth = FirebaseAuth.getInstance();
@@ -118,7 +145,6 @@ public class Perfil extends Fragment {
         // Verificar si el usuario está autenticado
         if (usuarioActual != null) {
             cargarDatosUsuario();
-            //configurarEventosDeCambio();
         } else {
             Toast.makeText(getActivity(), "Usuario no autenticado", Toast.LENGTH_SHORT).show();
         }
@@ -135,6 +161,18 @@ public class Perfil extends Fragment {
         modificarDatos.setOnClickListener(View -> {
             configurarEventosDeCambio();
         });
+
+        // Tomar foto de perfil
+        ibTomarFoto.setOnClickListener(v -> {
+            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(requireActivity(),
+                        new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
+            } else {
+                openCamera();
+            }
+        });
+
 
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
@@ -212,10 +250,63 @@ public class Perfil extends Fragment {
             usuario.child("nombre").setValue(textViewUsuarioPerfil.getText().toString());
             usuario.child("newsletter").setValue(newsletterPerfil.isChecked());
             Toast.makeText(getActivity(), "Perfil actualizado.", Toast.LENGTH_SHORT).show();
-
         } catch (RuntimeException e) {
             Toast.makeText(getActivity(), "No se ha realizado ningún cambio.", Toast.LENGTH_SHORT).show();
             throw new RuntimeException(e);
         }
+    }
+
+    private void openCamera() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            if (photo != null) {
+                imageViewPerfil.setImageBitmap(photo);
+                subirImagenAFirebase(photo);
+            } else {
+                Toast.makeText(getActivity(), "No se ha capturado ninguna imagen", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                openCamera();
+            } else {
+                Toast.makeText(getActivity(), "Permisos necesarios no otorgados", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // Subir la imagen al Firebase Storage
+    private void subirImagenAFirebase(Bitmap photo) {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference profilePicRef = storageRef.child("profile_pictures/" + usuarioActual.getUid() + ".jpg");
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = profilePicRef.putBytes(data);
+        uploadTask.addOnSuccessListener(taskSnapshot -> {
+            profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                DatabaseReference usuario = db.getReference().child("Usuarios")
+                        .child(usuarioActual.getEmail().replace("@", "_").replace(".", "_"));
+                usuario.child("photoUrl").setValue(uri.toString());
+            });
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getActivity(), "Error al subir la foto", Toast.LENGTH_SHORT).show();
+        });
     }
 }

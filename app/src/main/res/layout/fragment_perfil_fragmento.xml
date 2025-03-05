@@ -22,18 +22,24 @@
         android:textStyle="bold"
         android:layout_marginBottom="30dp" />
 
-    <!-- Imagen de perfil -->
+    <!-- Nombre de usuario (EditText) -->
     <ImageView
         android:id="@+id/imagenPerfil"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="5dp"
         android:background="#E7E7E7"
         android:scaleType="centerCrop"
-        tools:src="@tools:sample/avatars" />
+        android:src="@mipmap/ic_launcher" />
 
-    <!-- Nombre de usuario (EditText) -->
+    <ImageButton
+        android:id="@+id/imgbotonTomarFoto"
+        android:layout_width="85dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="0dp"
+        android:src="@android:drawable/ic_menu_camera" />
+
     <EditText
         android:id="@+id/etNombrePerfil"
         android:layout_width="match_parent"
