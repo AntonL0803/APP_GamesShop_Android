@@ -57,8 +57,8 @@
         android:background="#F9F9F9"
         android:elevation="2dp"
         android:gravity="center"
-        android:hint="Código Postal"
-        android:inputType="number"
+        android:hint="Dirección Postal"
+        android:inputType="text"
         android:padding="15dp"
         android:textColor="#333333"
         android:textSize="18sp" />

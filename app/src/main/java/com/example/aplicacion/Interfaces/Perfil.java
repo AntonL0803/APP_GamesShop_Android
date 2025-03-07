@@ -55,7 +55,6 @@ public class Perfil extends Fragment {
     private Switch newsletterPerfil;
     private Button cerrarSesion, modificarDatos, btnGuardar;
     private ImageView imageViewPerfil;
-    //private StorageReference storageReference;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser usuarioActual;
     private GoogleSignInClient googleSignInClient;
