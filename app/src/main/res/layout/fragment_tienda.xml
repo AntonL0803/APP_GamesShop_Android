@@ -14,10 +14,10 @@
         app:cardElevation="100dp">
 
         <TextView
-            android:id="@+id/tvCarro"
+            android:id="@+id/tvPedidos"
             android:layout_width="match_parent"
             android:layout_height="59dp"
-            android:background="#525252"
+            android:background="#E60012"
             android:gravity="center"
             android:text="TIENDA"
             android:textColor="#FFFFFF"
@@ -37,9 +37,21 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTienda"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivPedidos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/fondoswitch" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPedidos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
 </LinearLayout>

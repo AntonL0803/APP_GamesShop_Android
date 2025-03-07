@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiViewHolder> implements View.OnClickListener {
 
-    private HashMap<Integer, Integer> imagenes;
+    private HashMap<String, Integer> imagenes;
     private List<String> nombreProductos;
     private List<Double> precioProductos;
     private View.OnClickListener listener;
@@ -35,7 +35,7 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
     private FirebaseAuth mAuth;
     private FirebaseUser user;
 
-    public AdaptadorTienda(List<String> nombreProductos, List<Double> precioProductos, boolean isGridLayout, Map<Integer, Integer> imagenes, BotonMas listenerBoton) {
+    public AdaptadorTienda(List<String> nombreProductos, List<Double> precioProductos, boolean isGridLayout, Map<String, Integer> imagenes, BotonMas listenerBoton) {
         this.nombreProductos = nombreProductos;
         this.precioProductos = precioProductos;
         this.isGridLayout = isGridLayout;
@@ -73,7 +73,9 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
     @Override
     public void onBindViewHolder(@NonNull AdaptadorTienda.MiViewHolder holder, int position) {
         int currentPosition = holder.getBindingAdapterPosition();
-        posicionImagen(nombreProductos.get(currentPosition), holder);
+        //posicionImagenTienda(nombreProductos.get(currentPosition), holder);
+        holder.ivProducto.setImageResource(imagenes.get(nombreProductos.get(position)));
+        holder.ivProducto.setTag(imagenes.get(nombreProductos.get(position)));
         holder.tvNombre.setText(nombreProductos.get(currentPosition));
         holder.tvPrecio.setText("Precio: " + String.valueOf(precioProductos.get(currentPosition)));
         holder.imageButton.setOnClickListener(new View.OnClickListener() {
@@ -140,38 +142,6 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
     public void onClick(View v) {
 
     }
-
-    public void posicionImagen(String nombreProductoTarjeta, MiViewHolder holder) {
-        db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
-        DatabaseReference nodoPadre = db.getReference().child("Productos");
-
-        nodoPadre.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot productoSnapshot : snapshot.getChildren()) {
-                    String nombre = productoSnapshot.child("nombre").getValue(String.class);
-                    if (nombre.equals(nombreProductoTarjeta)) {
-                        String clave = productoSnapshot.getKey();
-                        if (clave != null && !clave.isEmpty()) {
-                            try {
-                                int posicion = Integer.parseInt(clave);
-                                holder.ivProducto.setImageResource(imagenes.get(posicion));
-                                holder.ivProducto.setTag(imagenes.get(posicion));
-                            } catch (NumberFormatException e) {
-                                holder.ivProducto.setImageResource(R.drawable.perfil);
-                            }
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
     // Clase interna ViewHolder
     public class MiViewHolder extends RecyclerView.ViewHolder {
         ImageView ivProducto;

@@ -1,5 +1,6 @@
 package com.example.aplicacion.Interfaces;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,8 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.aplicacion.Entidades.AdaptadorCarrito;
+import com.example.aplicacion.Entidades.CarritoManager;
 import com.example.aplicacion.Entidades.Producto;
 import com.example.aplicacion.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,36 +40,39 @@ import java.util.Map;
  * create an instance of this fragment.
  */
 public class Carro extends Fragment {
+    private String nombre;
     private RecyclerView rvCarro;
+    private Button btnComprar;
     private FirebaseDatabase db;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+    private CarritoManager carritoManager;
     private List<Producto> productos = new ArrayList<>();
-    private Map<Integer, Integer> imagenes = new HashMap<Integer, Integer>() {{
-        put(1, R.drawable.supermariobroswonder);
-        put(2, R.drawable.biomutant);
-        put(3, R.drawable.crash);
-        put(4, R.drawable.donkeykongcountry);
-        put(5, R.drawable.detectivepikachu);
-        put(6, R.drawable.dragones3);
-        put(7, R.drawable.drivingadventures);
-        put(8, R.drawable.everybodyswitch);
-        put(9, R.drawable.fitnessboxing);
-        put(10, R.drawable.harvestella);
-        put(11, R.drawable.hollowknight);
-        put(12, R.drawable.justdance);
-        put(13, R.drawable.kirby);
-        put(14, R.drawable.mariodockerkong);
-        put(15, R.drawable.mariopartyjamboree);
-        put(16, R.drawable.mariopartysuperstars);
-        put(17, R.drawable.minecraft);
-        put(18, R.drawable.monsterhunterrise);
-        put(19, R.drawable.mysims);
-        put(20, R.drawable.peach);
-        put(21, R.drawable.pokemondiamante);
-        put(22, R.drawable.twopointcampus);
-        put(23, R.drawable.zeldakingdom);
-        put(24, R.drawable.zeldalink);
+    private Map<String, Integer> imagenes = new HashMap<String, Integer>() {{
+        put("Super Mario Bros Wonder", R.drawable.supermariobroswonder);
+        put("Biomutant", R.drawable.biomutant);
+        put("Crash", R.drawable.crash);
+        put("Donkey Kong Country", R.drawable.donkeykongcountry);
+        put("Detective Pikachu", R.drawable.detectivepikachu);
+        put("Dragones III", R.drawable.dragones3);
+        put("Matching Driving Adventures", R.drawable.drivingadventures);
+        put("Everybody Switch", R.drawable.everybodyswitch);
+        put("Fitness Boxing", R.drawable.fitnessboxing);
+        put("Harvestella", R.drawable.harvestella);
+        put("Hollow Knight", R.drawable.hollowknight);
+        put("Just Dance", R.drawable.justdance);
+        put("Kirby y la tierra olvidada", R.drawable.kirby);
+        put("Mario VS Donkey Kong", R.drawable.mariodockerkong);
+        put("Mario Party Jamboree", R.drawable.mariopartyjamboree);
+        put("Mario Party Superstars", R.drawable.mariopartysuperstars);
+        put("Minecraft", R.drawable.minecraft);
+        put("Monster Hunter Rise", R.drawable.monsterhunterrise);
+        put("mySims Cozy Bundle", R.drawable.mysims);
+        put("Princess Peach Showtime", R.drawable.peach);
+        put("Pokemon Diamante Brillante", R.drawable.pokemondiamante);
+        put("Two Point Campus", R.drawable.twopointcampus);
+        put("Zelda tears of the kingdom", R.drawable.zeldakingdom);
+        put("Zelda Links Awakening", R.drawable.zeldalink);
     }};
 
 
@@ -112,7 +120,9 @@ public class Carro extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_carro, container, false);
+        carritoManager = new CarritoManager();
         rvCarro = view.findViewById(R.id.rvCarrito);
+        btnComprar = view.findViewById(R.id.btPagarCarrito);
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -122,8 +132,16 @@ public class Carro extends Fragment {
         } else {
             Log.e("Carro", "Usuario no autenticado");
         }
+        btnComprar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mostrarDialog();
+
+            }
+        });
         return view;
     }
+
     public void cargarDatosCarrito(){
         db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
         productos = new ArrayList<>();
@@ -131,7 +149,7 @@ public class Carro extends Fragment {
         String emailUser = user.getEmail();
         DatabaseReference emailCarritoReferencia = usuariosReferencia.child(emailUser.replace("@", "_").replace(".", "_")).child("carrito");
 
-        emailCarritoReferencia.addListenerForSingleValueEvent(new ValueEventListener() {
+        emailCarritoReferencia.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
@@ -146,17 +164,32 @@ public class Carro extends Fragment {
                 for (Producto producto : productos) {
                     Log.d("Carro", "Producto: " + producto.getNombre() + ", Cantidad: " + producto.getCantidad());
                 }
-                AdaptadorCarrito adaptador = new AdaptadorCarrito(productos, imagenes);
+                AdaptadorCarrito adaptador = new AdaptadorCarrito(productos, imagenes, btnComprar);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                 rvCarro.setLayoutManager(layoutManager);
                 rvCarro.setAdapter(adaptador);
-                rvCarro.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-
                 adaptador.notifyDataSetChanged();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
+    }
+
+    public void mostrarDialog(){
+        EditText editText = new EditText(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Datos necesrios")
+                .setMessage("Introduce un nombre para el pedido")
+                .setView(editText)
+                .setPositiveButton("Aceptar",(dialog, which) -> {
+                    nombre = editText.getText().toString();
+                    if(!nombre.isEmpty()){
+                        Toast.makeText(getContext(), "Porfavor, introduzca un valor", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
     }
 }

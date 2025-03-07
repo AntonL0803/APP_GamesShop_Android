@@ -6,20 +6,26 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.aplicacion.Entidades.Producto;
 import com.example.aplicacion.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.checkerframework.common.subtyping.qual.Bottom;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +39,8 @@ public class ProductoDetallado extends Fragment {
     private TextView precio;
     private TextView descripcion;
     private FirebaseDatabase db;
+
+    private Button btAddProducto;
 
     public ProductoDetallado() {
         // Required empty public constructor
@@ -78,6 +86,7 @@ public class ProductoDetallado extends Fragment {
         titulo = view.findViewById(R.id.tituloProductoDetallado);
         precio = view.findViewById(R.id.tvPrecioProductoDetallado);
         descripcion = view.findViewById(R.id.descripcionProductoDetallado);
+        btAddProducto = view.findViewById(R.id.btAñadirProductoProductosDetallados);
 
         imagenButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,13 +104,34 @@ public class ProductoDetallado extends Fragment {
         });
         imagenProductoDetallado.setImageResource(getArguments().getInt("imagenID"));
         titulo.setText(getArguments().getString("nombre"));
-        precio.setText("Precio: "+getArguments().getString("precio"));
+        precio.setText(getArguments().getString("precio"));
         cargarDescripcion(descripcion);
+        btAddProducto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                agregarAlCarrito();
+            }
+        });
         return view;
     }
     public void cargarDescripcion(TextView tvDescripcion){
         db =FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
-        DatabaseReference nodoPadre = db.getReference().child("Productos");
+        DatabaseReference nodoPadre = db.getReference().child("Productos").child(titulo.getText().toString()).child("descripcion");
+
+        nodoPadre.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    tvDescripcion.setText(snapshot.getValue(String.class));
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("FirebaseError", "Error al obtener datos: " + error.getMessage());
+            }
+        });
+
+        /*
         nodoPadre.orderByChild("nombre").equalTo(getArguments().getString("nombre"))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -118,5 +148,46 @@ public class ProductoDetallado extends Fragment {
 
                     }
                 });
+
+         */
+    }
+    public void agregarAlCarrito() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        FirebaseDatabase db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
+
+        DatabaseReference usuariosReferencia = db.getReference().child("Usuarios");
+        String emailUser = user.getEmail();
+        DatabaseReference emailProductoDetalladoReferencia = usuariosReferencia.child(emailUser.replace("@", "_").replace(".", "_")).child("carrito");
+
+
+
+        String productoSeleccionado = titulo.getText().toString().trim();
+        String[] precioSinProcesar = precio.getText().toString().split(" ");
+        Double precioSeleccionado = Double.parseDouble(precioSinProcesar[1]);
+
+        emailProductoDetalladoReferencia.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    if (snapshot.child(productoSeleccionado).exists()) {
+                        Integer cantidadActual = snapshot.child(productoSeleccionado).child("cantidad").getValue(Integer.class);
+                        if (cantidadActual == null) {
+                            cantidadActual = 0;
+                        }
+                        emailProductoDetalladoReferencia.child(productoSeleccionado).child("cantidad").setValue(cantidadActual + 1);
+                    } else {
+                        Producto nuevoProducto = new Producto(productoSeleccionado, precioSeleccionado, 1);
+                        emailProductoDetalladoReferencia.child(productoSeleccionado).setValue(nuevoProducto);
+                    }
+                }
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
