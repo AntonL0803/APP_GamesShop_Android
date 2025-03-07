@@ -1,5 +1,6 @@
 package com.example.aplicacion.Interfaces;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,8 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.aplicacion.Entidades.AdaptadorCarrito;
+import com.example.aplicacion.Entidades.CarritoManager;
 import com.example.aplicacion.Entidades.Producto;
 import com.example.aplicacion.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,10 +40,13 @@ import java.util.Map;
  * create an instance of this fragment.
  */
 public class Carro extends Fragment {
+    private String nombre;
     private RecyclerView rvCarro;
+    private Button btnComprar;
     private FirebaseDatabase db;
     private FirebaseAuth mAuth;
     private FirebaseUser user;
+    private CarritoManager carritoManager;
     private List<Producto> productos = new ArrayList<>();
     private Map<String, Integer> imagenes = new HashMap<String, Integer>() {{
         put("Super Mario Bros Wonder", R.drawable.supermariobroswonder);
@@ -112,7 +120,9 @@ public class Carro extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_carro, container, false);
+        carritoManager = new CarritoManager();
         rvCarro = view.findViewById(R.id.rvCarrito);
+        btnComprar = view.findViewById(R.id.btPagarCarrito);
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -122,8 +132,16 @@ public class Carro extends Fragment {
         } else {
             Log.e("Carro", "Usuario no autenticado");
         }
+        btnComprar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mostrarDialog();
+
+            }
+        });
         return view;
     }
+
     public void cargarDatosCarrito(){
         db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
         productos = new ArrayList<>();
@@ -131,7 +149,7 @@ public class Carro extends Fragment {
         String emailUser = user.getEmail();
         DatabaseReference emailCarritoReferencia = usuariosReferencia.child(emailUser.replace("@", "_").replace(".", "_")).child("carrito");
 
-        emailCarritoReferencia.addListenerForSingleValueEvent(new ValueEventListener() {
+        emailCarritoReferencia.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
@@ -146,17 +164,32 @@ public class Carro extends Fragment {
                 for (Producto producto : productos) {
                     Log.d("Carro", "Producto: " + producto.getNombre() + ", Cantidad: " + producto.getCantidad());
                 }
-                AdaptadorCarrito adaptador = new AdaptadorCarrito(productos, imagenes);
+                AdaptadorCarrito adaptador = new AdaptadorCarrito(productos, imagenes, btnComprar);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                 rvCarro.setLayoutManager(layoutManager);
                 rvCarro.setAdapter(adaptador);
-                rvCarro.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-
                 adaptador.notifyDataSetChanged();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
+    }
+
+    public void mostrarDialog(){
+        EditText editText = new EditText(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Datos necesrios")
+                .setMessage("Introduce un nombre para el pedido")
+                .setView(editText)
+                .setPositiveButton("Aceptar",(dialog, which) -> {
+                    nombre = editText.getText().toString();
+                    if(!nombre.isEmpty()){
+                        Toast.makeText(getContext(), "Porfavor, introduzca un valor", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+        builder.create().show();
     }
 }

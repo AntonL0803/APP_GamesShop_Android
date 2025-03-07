@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
     android:orientation="vertical"
-    tools:context=".Interfaces.Carro">
+    tools:context=".Interfaces.Pedidos" >
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="57dp"
+        android:layout_height="60dp"
         app:cardElevation="100dp">
 
         <TextView
@@ -19,40 +18,32 @@
             android:layout_height="59dp"
             android:background="#E60012"
             android:gravity="center"
-            android:text="CARRITO"
+            android:text="PEDIDOS"
             android:textColor="#FFFFFF"
             android:textSize="34sp"
             android:textStyle="bold" />
 
     </androidx.cardview.widget.CardView>
 
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/ivPedidos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
             android:src="@drawable/fondoswitch" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvCarrito"
+            android:id="@+id/rvPedidos"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
-        <Button
-            android:id="@+id/btPagarCarrito"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_margin="10dp"
-            android:backgroundTint="#E60012"
-            android:text="Pagar"
-            android:textSize="24sp" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp" />
     </FrameLayout>
-
 </LinearLayout>

@@ -117,7 +117,7 @@ public class Tienda extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tienda, container, false);
-        rvTienda = view.findViewById(R.id.rvTienda);
+        rvTienda = view.findViewById(R.id.rvPedidos);
         swTienda = view.findViewById(R.id.switch1);
         nombreProducto = new ArrayList<>();
         precioProducto = new ArrayList<>();

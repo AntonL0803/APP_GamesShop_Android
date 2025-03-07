@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,17 +31,17 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
     private List<Producto> productos = new ArrayList<>();
     private Map<String, Integer> imagenes;
     private View.OnClickListener listener;
+    private Button btnComprar;
+    private CarritoManager carritoManager;
     FirebaseDatabase db;
     FirebaseUser user;
     FirebaseAuth mAuth;
 
-
-    public AdaptadorCarrito(List<Producto> productos, Map<String, Integer> imagenes) {
-        this.productos = productos;
-        mAuth = FirebaseAuth.getInstance();
-        user = mAuth.getCurrentUser();
-        db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
+    public AdaptadorCarrito(List<Producto> productos, Map<String, Integer> imagenes, Button btnComprar) {
+        this.productos = new ArrayList<>(productos);
+        this.btnComprar = btnComprar;
         this.imagenes = imagenes;
+        this.carritoManager = new CarritoManager();
     }
 
     @NonNull
@@ -52,46 +54,58 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
 
     @Override
     public void onBindViewHolder(@NonNull MiViewHolderCarrito holder, @SuppressLint("RecyclerView") int position) {
+        //Direcatmente cojemos el producto en cuestión
         Producto producto = productos.get(position);
         if (producto == null){
-            holder.tvNombre.setText("Producto eliminado");
+            Toast.makeText(holder.itemView.getContext(), "Vuelva a cargar el carrito", Toast.LENGTH_SHORT).show();
+            return;
         }
-            //Calcular precio de toda la cantidad
-            DecimalFormat formato = new DecimalFormat("#.##");
 
-            double precio = (producto.getPrecio() != null) ? producto.getPrecio() : 0.0;
-            Long cantidadObj = producto.getCantidad();
-            long cantidad = (cantidadObj != null) ? cantidadObj : 1;
+        //Calcular precio de toda la cantidad
+        DecimalFormat formato = new DecimalFormat("#.##");
 
-            String precioTotal = formato.format(precio * cantidad);
+        //Mostrar datos en el view
+        Integer imagenRes = imagenes.get(producto.getNombre());
+        if (imagenRes != null) {
+            holder.ivProducto.setImageResource(imagenRes);
+        } else {
+            holder.ivProducto.setImageResource(R.drawable.perfil);
+        }
 
-            //Mostrar datos en el view
-            Integer imagenRes = imagenes.get(productos.get(position).getNombre());
-            if (imagenRes != null) {
-                holder.ivProducto.setImageResource(imagenRes);
-            } else {
-                holder.ivProducto.setImageResource(R.drawable.perfil);
+        holder.tvNombre.setText(producto.getNombre().toString());
+        holder.tvPrecio.setText("Precio: " + formato.format(producto.getPrecio() * producto.getCantidad()) + "€");
+        holder.tvQuantity.setText(String.valueOf(producto.getCantidad()));
+
+        // Botón "+"
+        holder.btnPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                producto.setCantidad(producto.getCantidad() + 1);
+                holder.tvQuantity.setText(String.valueOf(producto.getCantidad()));
+                holder.tvPrecio.setText("Precio: " + formato.format(producto.getPrecio() * producto.getCantidad()) + "€");
+
+                carritoManager.actualizarCantidadFirebase(producto.getNombre(), producto.getCantidad());
+                calcularPrecioTotal(formato);
             }
-            holder.tvNombre.setText(productos.get(position).getNombre().toString());
-            holder.tvPrecio.setText("Precio: " + precioTotal + "€");
-            holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
+        });
+        holder.btnMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long nuevaCantidad = producto.getCantidad() - 1;
+                if (nuevaCantidad <= 0) {
+                    productos.remove(position);
+                    notifyItemRemoved(position);
+                    carritoManager.eliminarProductoFirebase(producto.getNombre());
+                } else {
+                    producto.setCantidad(nuevaCantidad);
+                    holder.tvQuantity.setText(String.valueOf(nuevaCantidad));
+                    holder.tvPrecio.setText("Precio: " + formato.format(producto.getPrecio() * producto.getCantidad()) + "€");
+                    carritoManager.actualizarCantidadFirebase(producto.getNombre(), producto.getCantidad());
+                }
+                calcularPrecioTotal(formato);
+            }
+        });
 
-            holder.btnPlus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    sumarVista(holder, position);
-                    calcularTotal(formato, holder, position);
-                    actualizarCantidad(productos.get(position).getNombre(), position);
-                }
-            });
-            holder.btnMinus.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    restarVista(holder, position);
-                    calcularTotal(formato, holder, position);
-                    actualizarCantidad(productos.get(position).getNombre(), position);
-                }
-            });
     }
 
     @Override
@@ -101,37 +115,17 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
     @Override
     public void onClick(View view) {
     }
-    public void sumarVista(MiViewHolderCarrito holder, int position){
-        productos.get(position).setCantidad(productos.get(position).getCantidad() + 1);
-        holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
+
+    public void calcularPrecioTotal(DecimalFormat formato){
+        double total = productos.stream()
+                .filter(productos -> productos != null && productos.getPrecio() != null)
+                .mapToDouble(productos -> productos.getPrecio() * productos.getCantidad())
+                .sum();
+        btnComprar.setText("Pagar: " + formato.format(total) + "€");
     }
-    public void restarVista(MiViewHolderCarrito holder, int position){
-        long nuevaCantidad = productos.get(position).getCantidad() - 1;
-        if (nuevaCantidad <= 0){
-            holder.itemView.setVisibility(View.GONE);
-            eliminarProductoFirebase(productos.get(position).getNombre());
-        } else {
-            productos.get(position).setCantidad(nuevaCantidad);
-            holder.tvQuantity.setText(String.valueOf(productos.get(position).getCantidad()));
-        }
-    }
-    public void actualizarCantidad(String nombreProducto, int position) {
-        String emailUser = user.getEmail();
-        DatabaseReference cantidadRef = db.getReference().child("Usuarios")
-                .child(emailUser.replace("@", "_").replace(".", "_"))
-                .child("carrito").child(nombreProducto).child("cantidad");
-        cantidadRef.setValue(productos.get(position).getCantidad());
-    }
-    public void eliminarProductoFirebase(String nombreProducto){
-        String emailUser = user.getEmail();
-        DatabaseReference productoRef = db.getReference().child("Usuarios")
-                .child(emailUser.replace("@", "_").replace(".", "_"))
-                .child("carrito").child(nombreProducto);
-        productoRef.removeValue();
-    }
-    public void calcularTotal(DecimalFormat formato, MiViewHolderCarrito holder, int position){
-        String precioTotal = formato.format(productos.get(position).getPrecio() * productos.get(position).getCantidad());
-        holder.tvPrecio.setText("Precio: " + precioTotal + "€");
+    public void eliminarTodosProductos(){
+        productos.clear();
+        notifyDataSetChanged();
     }
 
     public class MiViewHolderCarrito extends RecyclerView.ViewHolder {
