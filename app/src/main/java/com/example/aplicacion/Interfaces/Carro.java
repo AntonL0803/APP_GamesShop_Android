@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.aplicacion.Entidades.AdaptadorCarrito;
 import com.example.aplicacion.Entidades.CarritoManager;
+import com.example.aplicacion.Entidades.Pedido;
 import com.example.aplicacion.Entidades.Producto;
 import com.example.aplicacion.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +30,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +44,7 @@ import java.util.Map;
  */
 public class Carro extends Fragment {
     private String nombre;
+    private double total;
     private RecyclerView rvCarro;
     private Button btnComprar;
     private FirebaseDatabase db;
@@ -128,7 +132,7 @@ public class Carro extends Fragment {
         user = mAuth.getCurrentUser();
 
         if (user != null) {
-            cargarDatosCarrito();
+            cargarDatosCarritoAdaptador();
         } else {
             Log.e("Carro", "Usuario no autenticado");
         }
@@ -136,13 +140,57 @@ public class Carro extends Fragment {
             @Override
             public void onClick(View v) {
                 mostrarDialog();
-
             }
         });
         return view;
     }
+    public void getListaProductos(){
+        String emailUser = user.getEmail().replace("@", "_").replace(".", "_");
+        DatabaseReference carritoRef = FirebaseDatabase.getInstance().getReference()
+                .child("Usuarios").child(emailUser).child("carrito");
+        carritoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    for (DataSnapshot productoSnapshot : snapshot.getChildren()) {
+                        productos.add(productoSnapshot.getValue(Producto.class));
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
 
-    public void cargarDatosCarrito(){
+    public void crearPedido(){
+        getListaProductos();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaActual = sdf.format(new Date());
+
+        total = 0;
+
+        for (Producto producto : productos) {
+            total += producto.getPrecio() * producto.getCantidad();
+        }
+
+        String emailUser = user.getEmail().replace("@", "_").replace(".", "_");
+        DatabaseReference pedidosRef = FirebaseDatabase.getInstance().getReference()
+                .child("Usuarios").child(emailUser).child("pedidos");
+
+        Pedido pedido = new Pedido(nombre, fechaActual, total, productos);
+
+        pedidosRef.push().setValue(pedido);
+
+        FragmentTransaction transaccion = getActivity().getSupportFragmentManager().beginTransaction();
+        transaccion.replace(R.id.frameLayoutPrincipal, new Pedidos());
+        transaccion.commit();
+
+        carritoManager.vaciarCarritoFirebase();
+    }
+
+    public void cargarDatosCarritoAdaptador(){
         db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
         productos = new ArrayList<>();
         DatabaseReference usuariosReferencia = db.getReference().child("Usuarios");
@@ -161,9 +209,6 @@ public class Carro extends Fragment {
                         }
                     }
                 }
-                for (Producto producto : productos) {
-                    Log.d("Carro", "Producto: " + producto.getNombre() + ", Cantidad: " + producto.getCantidad());
-                }
                 AdaptadorCarrito adaptador = new AdaptadorCarrito(productos, imagenes, btnComprar);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                 rvCarro.setLayoutManager(layoutManager);
@@ -172,7 +217,6 @@ public class Carro extends Fragment {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
     }
@@ -185,8 +229,10 @@ public class Carro extends Fragment {
                 .setView(editText)
                 .setPositiveButton("Aceptar",(dialog, which) -> {
                     nombre = editText.getText().toString();
-                    if(!nombre.isEmpty()){
+                    if(nombre.isEmpty()){
                         Toast.makeText(getContext(), "Porfavor, introduzca un valor", Toast.LENGTH_SHORT).show();
+                    } else {
+                        crearPedido();
                     }
                 })
                 .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
