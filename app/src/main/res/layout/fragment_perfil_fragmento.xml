@@ -5,22 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#FFFFFF"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="40dp"
-    android:gravity="center"
     tools:context=".Interfaces.Perfil">
 
     <!-- Título -->
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PERFIL"
+        android:layout_marginBottom="30dp"
         android:gravity="center"
-        android:textSize="32sp"
+        android:text="PERFIL"
         android:textColor="#333333"
-        android:textStyle="bold"
-        android:layout_marginBottom="30dp" />
+        android:textSize="32sp"
+        android:textStyle="bold" />
 
     <!-- Nombre de usuario (EditText) -->
     <ImageView
@@ -33,79 +34,73 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_launcher" />
 
-    <ImageButton
-        android:id="@+id/imgbotonTomarFoto"
-        android:layout_width="85dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="0dp"
-        android:src="@android:drawable/ic_menu_camera" />
-
     <EditText
         android:id="@+id/etNombrePerfil"
         android:layout_width="match_parent"
         android:layout_height="55dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
         android:background="#F9F9F9"
-        android:hint="Nombre de Usuario"
-        android:textSize="18sp"
-        android:textColor="#333333"
-        android:padding="15dp"
-        android:gravity="center"
         android:elevation="2dp"
-        android:layout_marginBottom="20dp" />
+        android:gravity="center"
+        android:hint="Nombre de Usuario"
+        android:padding="15dp"
+        android:textColor="#333333"
+        android:textSize="18sp" />
 
     <!-- Campo Código Postal -->
     <EditText
         android:id="@+id/etCPPerfil"
         android:layout_width="match_parent"
         android:layout_height="55dp"
+        android:layout_marginBottom="20dp"
         android:background="#F9F9F9"
+        android:elevation="2dp"
+        android:gravity="center"
         android:hint="Código Postal"
         android:inputType="number"
-        android:textSize="18sp"
-        android:textColor="#333333"
         android:padding="15dp"
-        android:gravity="center"
-        android:elevation="2dp"
-        android:layout_marginBottom="20dp" />
+        android:textColor="#333333"
+        android:textSize="18sp" />
 
     <!-- Correo Electrónico (TextView) -->
     <TextView
         android:id="@+id/tvEmailAddressPerfil"
         android:layout_width="match_parent"
         android:layout_height="55dp"
+        android:layout_marginBottom="20dp"
         android:background="#F9F9F9"
-        android:text="Correo Electrónico"
-        android:textSize="18sp"
-        android:textColor="#333333"
-        android:padding="15dp"
-        android:gravity="center"
         android:elevation="2dp"
-        android:layout_marginBottom="20dp" />
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="Correo Electrónico"
+        android:textColor="#333333"
+        android:textSize="18sp" />
 
     <!-- Switch Newsletter -->
     <Switch
         android:id="@+id/switchNewsPerfil"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#F9F9F9"
-        android:text="Suscribirse al Newsletter"
-        android:textSize="18sp"
-        android:textColor="#333333"
-        android:padding="15dp"
         android:layout_marginBottom="30dp"
-        android:gravity="center" />
+        android:background="#F9F9F9"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="Suscribirse al Newsletter"
+        android:textColor="#333333"
+        android:textSize="18sp" />
 
     <!-- Botón Cerrar Sesión -->
     <Button
         android:id="@+id/btcerrarSesionPerfil"
         android:layout_width="match_parent"
         android:layout_height="55dp"
+        android:layout_marginBottom="20dp"
         android:backgroundTint="#D32F2F"
+        android:elevation="4dp"
         android:text="Cerrar Sesión"
         android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:layout_marginBottom="20dp"
-        android:elevation="4dp" />
+        android:textSize="18sp" />
 
     <!-- Botón Modificar Perfil -->
     <Button
@@ -113,8 +108,18 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:backgroundTint="#1976D2"
+        android:elevation="4dp"
         android:text="Modificar Datos"
         android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:elevation="4dp" />
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btGuardarPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:backgroundTint="#1976D2"
+        android:elevation="4dp"
+        android:text="Guardar Datos"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp" />
 </LinearLayout>

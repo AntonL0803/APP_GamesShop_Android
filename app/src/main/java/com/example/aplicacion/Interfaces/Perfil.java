@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,6 +15,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +38,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
@@ -49,10 +49,11 @@ import java.io.ByteArrayOutputStream;
 public class Perfil extends Fragment {
     private static final int REQUEST_PERMISSION = 1;
     private static final int CAMERA_REQUEST_CODE = 100;
+
     private TextView textViewUsuarioPerfil, textViewEmail;
     private EditText editTextCpPerfil;
     private Switch newsletterPerfil;
-    private Button cerrarSesion, modificarDatos;
+    private Button cerrarSesion, modificarDatos, btnGuardar;
     private ImageView imageViewPerfil;
     //private StorageReference storageReference;
     private FirebaseAuth firebaseAuth;
@@ -60,8 +61,6 @@ public class Perfil extends Fragment {
     private GoogleSignInClient googleSignInClient;
     private SharedPreferences sharedPreferences;
     private FirebaseDatabase db;
-    private String userId;
-    private ImageButton ibTomarFoto;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -103,23 +102,6 @@ public class Perfil extends Fragment {
         }
         firebaseAuth = FirebaseAuth.getInstance();
         usuarioActual = firebaseAuth.getCurrentUser();
-
-        /*ibTomarFoto = findViewById(R.id.imgbotonTomarFoto);
-        ibTomarFoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Verifica los permisos antes de abrir la cámara
-                if (ContextCompat.checkSelfPermission(Perfil.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(Perfil.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-                    // Solicita permisos si no se tienen
-                    ActivityCompat.requestPermissions(Perfil.this,
-                            new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
-                } else {
-                    openCamera();
-                }
-            }
-        });*/
     }
 
     @Override
@@ -135,7 +117,12 @@ public class Perfil extends Fragment {
         cerrarSesion = rootView.findViewById(R.id.btcerrarSesionPerfil);
         imageViewPerfil = rootView.findViewById(R.id.imagenPerfil);
         modificarDatos = rootView.findViewById(R.id.btmodificarPerfil);
-        ibTomarFoto = rootView.findViewById(R.id.imgbotonTomarFoto);
+        btnGuardar = rootView.findViewById(R.id.btGuardarPerfil);
+        btnGuardar.setVisibility(View.GONE);
+
+        editTextCpPerfil.setEnabled(false);
+        textViewUsuarioPerfil.setEnabled(false);
+        newsletterPerfil.setEnabled(false);
 
         //  Firebase
         firebaseAuth = FirebaseAuth.getInstance();
@@ -159,20 +146,35 @@ public class Perfil extends Fragment {
         });
 
         modificarDatos.setOnClickListener(View -> {
-            configurarEventosDeCambio();
+            editTextCpPerfil.setEnabled(true);
+            textViewUsuarioPerfil.setEnabled(true);
+            newsletterPerfil.setEnabled(true);
+
+            modificarDatos.setVisibility(View.GONE);
+            btnGuardar.setVisibility(View.VISIBLE);
         });
 
-        // Tomar foto de perfil
-        ibTomarFoto.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        btnGuardar.setOnClickListener(view -> {
+            configurarEventosDeCambio();
+            editTextCpPerfil.setEnabled(false);
+            textViewUsuarioPerfil.setEnabled(false);
+            newsletterPerfil.setEnabled(false);
+
+            btnGuardar.setVisibility(View.GONE);
+            modificarDatos.setVisibility(View.VISIBLE);
+        });
+
+        imageViewPerfil.setOnClickListener(v -> {
+            Log.d("PerfilFragment", "Imagen de perfil presionada, intentando abrir la cámara...");
+            if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(requireActivity(),
                         new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
-            } else {
                 openCamera();
+            } else {
+                System.out.println("No se puede abrir la camara, comprueba los permisos.");
             }
         });
-
 
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_perfil_fragmento, container, false);
@@ -187,8 +189,8 @@ public class Perfil extends Fragment {
         if (usuarioActual != null) {
             String emailUser = usuarioActual.getEmail();
             if (emailUser != null) {
-                String usuarioClave = emailUser.replace("@", "_").replace(".", "_"); // Reemplazamos caracteres no válidos
-                DatabaseReference usuarioReferenciado = usuariosReferencia.child(usuarioClave); // Referencia correcta al usuario
+                String usuarioClave = emailUser.replace("@", "_").replace(".", "_");
+                DatabaseReference usuarioReferenciado = usuariosReferencia.child(usuarioClave);// Referencia correcta al usuario
 
                 usuarioReferenciado.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -199,8 +201,24 @@ public class Perfil extends Fragment {
                             String email = snapshot.child("email").getValue(String.class);
                             String cp = snapshot.child("cp").getValue(String.class);
                             Boolean newsletter = snapshot.child("newsletter").getValue(Boolean.class);
+
                             if (newsletter == null) {
                                 newsletter = false;  // Si es null, asignamos un valor por defecto
+                            }
+
+                            // Verificar si hay una imagen en Base64 subida por el usuario
+                            if (snapshot.child("photoBase64").exists()) {
+                                String imagenBase64 = snapshot.child("photoBase64").getValue(String.class);
+                                if (imagenBase64 != null && !imagenBase64.isEmpty()) {
+                                    Log.d("PerfilFragment", "Base64 recuperada: " + imagenBase64);
+                                    Bitmap imagenDecodificada = convertirBase64AImagen(imagenBase64);
+                                    imageViewPerfil.setImageBitmap(imagenDecodificada);
+                                } else {
+                                    Log.e("PerfilFragment", "Imagen en Base64 está vacía o nula");
+                                    comprobarImagenGoogle();
+                                }
+                            } else {
+                                comprobarImagenGoogle();
                             }
 
                             // Asignar valores a los elementos UI
@@ -209,23 +227,6 @@ public class Perfil extends Fragment {
                             editTextCpPerfil.setText(cp != null ? cp : "");
                             newsletterPerfil.setChecked(newsletter);
 
-                            // Cargar la imagen de perfil desde la URL de Google
-                            Uri photoUrl = usuarioActual.getPhotoUrl();
-                            if (photoUrl != null) {
-                                Glide.with(getContext())
-                                        .load(photoUrl)
-                                        .into(imageViewPerfil); // Asegúrate de tener un ImageView para mostrar la foto
-                            } else {
-                                // Si no tiene foto de perfil, asignamos una predeterminada
-                                imageViewPerfil.setImageResource(R.drawable.imagendefecto);
-                            }
-                           /* // Guardar datos localmente con SharedPreferences
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("nombre", nombre);
-                            editor.putString("email", email);
-                            editor.putString("cp", cp);
-                            editor.putBoolean("newsletter", newsletter != null && newsletter);
-                            editor.apply();*/
                         } else {
                             Toast.makeText(getActivity(), "No se encontraron datos", Toast.LENGTH_SHORT).show();
                         }
@@ -258,55 +259,86 @@ public class Perfil extends Fragment {
 
     private void openCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+        if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            Log.d("PerfilFragment", "Cámara encontrada, abriendo...");
+            startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+        } else {
+            Log.e("PerfilFragment", "No se encontró una aplicación de cámara instalada.");
+            Toast.makeText(getActivity(), "No se encontró una aplicación de cámara", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Log.d("PerfilFragment", "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
+
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            if (photo != null) {
-                imageViewPerfil.setImageBitmap(photo);
-                subirImagenAFirebase(photo);
+            if (data != null && data.getExtras() != null) {
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                if (photo != null) {
+                    Log.d("PerfilFragment", "Foto capturada correctamente");
+                    imageViewPerfil.setImageBitmap(photo);
+                    subirImagenAFirebase(photo);
+                } else {
+                    Log.e("NO", "No se ha capturado ninguna imagen");
+                    Toast.makeText(getActivity(), "No se ha capturado ninguna imagen", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(getActivity(), "No se ha capturado ninguna imagen", Toast.LENGTH_SHORT).show();
+                Log.e("PerfilFragment", "Intent data es null");
             }
+        } else {
+            Log.e("PerfilFragment", "Error: requestCode o resultCode incorrecto");
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                openCamera();
-            } else {
-                Toast.makeText(getActivity(), "Permisos necesarios no otorgados", Toast.LENGTH_SHORT).show();
-            }
+    // Método para comprobar la imagen de Google
+    private void comprobarImagenGoogle() {
+        Uri photoUrl = usuarioActual.getPhotoUrl();
+        if (photoUrl != null) {
+            Glide.with(getContext())
+                    .load(photoUrl)
+                    .into(imageViewPerfil);
+        } else {
+            // Si no hay imagen en Google ni en Base64, poner la predeterminada
+            Log.e("PerfilFragment", "No se encontró ninguna imagen, usando imagen por defecto");
+            imageViewPerfil.setImageResource(R.drawable.imagendefecto);
         }
     }
-
-    // Subir la imagen al Firebase Storage
+    // Método para subir imagen en Base64 a Firebase Realtime Database
     private void subirImagenAFirebase(Bitmap photo) {
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReference();
-        StorageReference profilePicRef = storageRef.child("profile_pictures/" + usuarioActual.getUid() + ".jpg");
+        String imagenBase64 = convertirImagenBase64(photo);
 
+        Log.d("PerfilFragment", "Imagen en Base64: " + imagenBase64);
+
+        if (usuarioActual != null) {
+            String emailUser = usuarioActual.getEmail();
+            if (emailUser != null) {
+                String usuarioClave = emailUser.replace("@", "_").replace(".", "_");
+                DatabaseReference usuarioRef = db.getReference("Usuarios").child(usuarioClave);
+
+                usuarioRef.child("photoBase64").setValue(imagenBase64)
+                        .addOnSuccessListener(aVoid -> {
+                                Log.d("PerfilFragment", "Imagen guardada correctamente");
+                                Toast.makeText(getActivity(), "Imagen guardada", Toast.LENGTH_SHORT).show();
+                        })
+                        .addOnFailureListener(e -> {
+                                    Log.e("PerfilFragment", "Error al guardar la imagen: " + e.getMessage());
+                            Toast.makeText(getActivity(), "Error al guardar la imagen", Toast.LENGTH_SHORT).show();
+                        });
+            }
+        }
+    }
+
+    private String convertirImagenBase64(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+    }
 
-        UploadTask uploadTask = profilePicRef.putBytes(data);
-        uploadTask.addOnSuccessListener(taskSnapshot -> {
-            profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                DatabaseReference usuario = db.getReference().child("Usuarios")
-                        .child(usuarioActual.getEmail().replace("@", "_").replace(".", "_"));
-                usuario.child("photoUrl").setValue(uri.toString());
-            });
-        }).addOnFailureListener(e -> {
-            Toast.makeText(getActivity(), "Error al subir la foto", Toast.LENGTH_SHORT).show();
-        });
+    private Bitmap convertirBase64AImagen(String base64String) {
+        byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 }
