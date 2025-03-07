@@ -40,7 +40,7 @@ public class MainPage extends AppCompatActivity {
 
         // Asignar íconos a las pestañas (solo si existen)
         if (tabLayout.getTabAt(0) != null){
-            tabLayout.getTabAt(0).setIcon(R.drawable.perfil);
+            tabLayout.getTabAt(0).setIcon(R.drawable.user_solid);
         }
         if (tabLayout.getTabAt(1) != null){
             tabLayout.getTabAt(1).setIcon(R.drawable.tienda);
