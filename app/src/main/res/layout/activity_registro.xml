@@ -59,17 +59,17 @@
         android:id="@+id/etCPRegistro"
         android:layout_width="match_parent"
         android:layout_height="55dp"
+        android:layout_marginBottom="15dp"
         android:background="#F5F5F5"
-        android:hint="Código Postal"
-        android:inputType="number"
-        android:textColor="#333333"
-        android:textColorHint="#888888"
         android:drawableStart="@android:drawable/ic_menu_mapmode"
         android:drawablePadding="10dp"
-        android:padding="10dp"
-        android:textSize="18sp"
         android:elevation="2dp"
-        android:layout_marginBottom="15dp"/>
+        android:hint="Dirección Postal"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textColor="#333333"
+        android:textColorHint="#888888"
+        android:textSize="18sp" />
 
     <!-- Campo Contraseña -->
     <EditText
