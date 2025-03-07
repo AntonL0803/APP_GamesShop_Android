@@ -11,8 +11,7 @@
     <FrameLayout
         android:id="@+id/frameLayoutPrincipal"
         android:layout_width="match_parent"
-        android:layout_height="802dp">
-    </FrameLayout>
+        android:layout_height="810dp"></FrameLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLay"
