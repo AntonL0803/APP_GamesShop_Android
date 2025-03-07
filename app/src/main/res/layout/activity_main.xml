@@ -16,31 +16,52 @@
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLay"
         android:layout_width="match_parent"
-        android:layout_height="62dp">
+        android:layout_height="62dp"
+        android:background="#E60012"
+        android:textStyle="bold"
+        app:tabSelectedTextColor="#FFFFFF"
+        app:tabIndicatorColor="#FFFFFF"
+        app:tint="@color/white">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/perfil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Perfil" />
+            android:text="Perfil"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:tabIconTint="#FFFFFF"
+            app:tint="#FFFFFF" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tienda"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tienda" />
+            android:text="Tienda"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:tabIconTint="#FFFFFF"
+            app:tint="#FFFFFF" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/carrito"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Carrito" />
+            android:text="Carrito"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:tabIconTint="#FFFFFF"
+            app:tint="#FFFFFF" />
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/pedidos"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pedidos" />
+            android:text="Pedidos"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:tabIconTint="#FFFFFF"
+            app:tint="#FFFFFF"/>
     </com.google.android.material.tabs.TabLayout>
 
 </LinearLayout>

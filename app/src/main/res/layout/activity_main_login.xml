@@ -5,27 +5,28 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#F8F8F8"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="40dp"
+    android:padding="32dp"
     tools:context=".Interfaces.Login">
 
     <!-- Logo -->
     <ImageView
         android:id="@+id/ivLogoLogin"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginBottom="40dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginBottom="32dp"
         android:src="@drawable/ic_launcher_foreground"
-        android:background="@android:color/transparent" />
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter" />
 
     <!-- Campo de Email -->
     <EditText
         android:id="@+id/etUsuarioLogin"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:background="#F5F5F5"
+        android:layout_height="50dp"
+        android:background="@drawable/borderedittext"
         android:hint="Correo electrónico"
         android:inputType="textEmailAddress"
         android:textAlignment="center"

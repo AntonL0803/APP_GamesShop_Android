@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -22,7 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -51,7 +52,7 @@ public class Perfil extends Fragment {
     private static final int CAMERA_REQUEST_CODE = 100;
 
     private TextView textViewUsuarioPerfil, textViewEmail;
-    private EditText editTextCpPerfil;
+    private EditText editTextDirecionPerfil;
     private Switch newsletterPerfil;
     private Button cerrarSesion, modificarDatos, btnGuardar;
     private ImageView imageViewPerfil;
@@ -60,6 +61,7 @@ public class Perfil extends Fragment {
     private GoogleSignInClient googleSignInClient;
     private SharedPreferences sharedPreferences;
     private FirebaseDatabase db;
+    private ActivityResultLauncher<Intent> cameraLauncher;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -101,6 +103,28 @@ public class Perfil extends Fragment {
         }
         firebaseAuth = FirebaseAuth.getInstance();
         usuarioActual = firebaseAuth.getCurrentUser();
+
+        //Launcher
+        cameraLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == getActivity().RESULT_OK) {
+                        Intent data = result.getData();
+                        if (data != null && data.getExtras() != null) {
+                            Bitmap photo = (Bitmap) data.getExtras().get("data");
+                            if (photo != null) {
+                                imageViewPerfil.setImageBitmap(photo);
+                                subirImagenAFirebase(photo);
+                            } else {
+                                Toast.makeText(getActivity(), "No se ha capturado ninguna imagen", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Log.e("PerfilFragment", "Intent data es null");
+                        }
+                    } else {
+                        Log.e("PerfilFragment", "Error: resultCode incorrecto");
+                    }
+                });
     }
 
     @Override
@@ -111,7 +135,7 @@ public class Perfil extends Fragment {
         // Vincular elementos UI con IDs
         textViewUsuarioPerfil = rootView.findViewById(R.id.etNombrePerfil);
         textViewEmail = rootView.findViewById(R.id.tvEmailAddressPerfil);
-        editTextCpPerfil = rootView.findViewById(R.id.etCPPerfil);
+        editTextDirecionPerfil = rootView.findViewById(R.id.etDireccionPerfil);
         newsletterPerfil = rootView.findViewById(R.id.switchNewsPerfil);
         cerrarSesion = rootView.findViewById(R.id.btcerrarSesionPerfil);
         imageViewPerfil = rootView.findViewById(R.id.imagenPerfil);
@@ -119,7 +143,7 @@ public class Perfil extends Fragment {
         btnGuardar = rootView.findViewById(R.id.btGuardarPerfil);
         btnGuardar.setVisibility(View.GONE);
 
-        editTextCpPerfil.setEnabled(false);
+        editTextDirecionPerfil.setEnabled(false);
         textViewUsuarioPerfil.setEnabled(false);
         newsletterPerfil.setEnabled(false);
 
@@ -145,7 +169,7 @@ public class Perfil extends Fragment {
         });
 
         modificarDatos.setOnClickListener(View -> {
-            editTextCpPerfil.setEnabled(true);
+            editTextDirecionPerfil.setEnabled(true);
             textViewUsuarioPerfil.setEnabled(true);
             newsletterPerfil.setEnabled(true);
 
@@ -155,7 +179,7 @@ public class Perfil extends Fragment {
 
         btnGuardar.setOnClickListener(view -> {
             configurarEventosDeCambio();
-            editTextCpPerfil.setEnabled(false);
+            editTextDirecionPerfil.setEnabled(false);
             textViewUsuarioPerfil.setEnabled(false);
             newsletterPerfil.setEnabled(false);
 
@@ -164,7 +188,7 @@ public class Perfil extends Fragment {
         });
 
         imageViewPerfil.setOnClickListener(v -> {
-            Log.d("PerfilFragment", "Imagen de perfil presionada, intentando abrir la cámara...");
+            //Intentamos abrir la cámara
             if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED ||
                     ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(requireActivity(),
@@ -198,7 +222,7 @@ public class Perfil extends Fragment {
                             // Obtener valores de Firebase
                             String nombre = snapshot.child("nombre").getValue(String.class);
                             String email = snapshot.child("email").getValue(String.class);
-                            String cp = snapshot.child("cp").getValue(String.class);
+                            String direccion = snapshot.child("cp").getValue(String.class);
                             Boolean newsletter = snapshot.child("newsletter").getValue(Boolean.class);
 
                             if (newsletter == null) {
@@ -223,7 +247,7 @@ public class Perfil extends Fragment {
                             // Asignar valores a los elementos UI
                             textViewUsuarioPerfil.setText(nombre != null ? nombre : "Nombre no disponible");
                             textViewEmail.setText(email != null ? email : "Email no disponible");
-                            editTextCpPerfil.setText(cp != null ? cp : "");
+                            editTextDirecionPerfil.setText(direccion != null ? direccion : "");
                             newsletterPerfil.setChecked(newsletter);
 
                         } else {
@@ -246,7 +270,7 @@ public class Perfil extends Fragment {
             String emailUser = usuarioActual.getEmail();
             DatabaseReference usuario = db.getReference().child("Usuarios")
                     .child(emailUser.replace("@", "_").replace(".", "_"));
-            usuario.child("cp").setValue(editTextCpPerfil.getText().toString());
+            usuario.child("cp").setValue(editTextDirecionPerfil.getText().toString());
             usuario.child("nombre").setValue(textViewUsuarioPerfil.getText().toString());
             usuario.child("newsletter").setValue(newsletterPerfil.isChecked());
             Toast.makeText(getActivity(), "Perfil actualizado.", Toast.LENGTH_SHORT).show();
@@ -267,21 +291,17 @@ public class Perfil extends Fragment {
         }
     }
 
-    @Override
+    /*@Override -> Hay que cambiarlo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        Log.d("PerfilFragment", "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
 
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
             if (data != null && data.getExtras() != null) {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
                 if (photo != null) {
-                    Log.d("PerfilFragment", "Foto capturada correctamente");
                     imageViewPerfil.setImageBitmap(photo);
                     subirImagenAFirebase(photo);
                 } else {
-                    Log.e("NO", "No se ha capturado ninguna imagen");
                     Toast.makeText(getActivity(), "No se ha capturado ninguna imagen", Toast.LENGTH_SHORT).show();
                 }
             } else {
@@ -290,26 +310,22 @@ public class Perfil extends Fragment {
         } else {
             Log.e("PerfilFragment", "Error: requestCode o resultCode incorrecto");
         }
-    }
+    }*/
 
-    // Método para comprobar la imagen de Google
     private void comprobarImagenGoogle() {
-        Uri photoUrl = usuarioActual.getPhotoUrl();
-        if (photoUrl != null) {
+        Uri Urlfoto = usuarioActual.getPhotoUrl();
+        if (Urlfoto != null) {
             Glide.with(getContext())
-                    .load(photoUrl)
+                    .load(Urlfoto)
                     .into(imageViewPerfil);
         } else {
             // Si no hay imagen en Google ni en Base64, poner la predeterminada
-            Log.e("PerfilFragment", "No se encontró ninguna imagen, usando imagen por defecto");
             imageViewPerfil.setImageResource(R.drawable.imagendefecto);
         }
     }
-    // Método para subir imagen en Base64 a Firebase Realtime Database
+
     private void subirImagenAFirebase(Bitmap photo) {
         String imagenBase64 = convertirImagenBase64(photo);
-
-        Log.d("PerfilFragment", "Imagen en Base64: " + imagenBase64);
 
         if (usuarioActual != null) {
             String emailUser = usuarioActual.getEmail();

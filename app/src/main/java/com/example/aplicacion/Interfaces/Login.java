@@ -13,27 +13,19 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.IntentSenderRequest;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.example.aplicacion.R;
-import com.google.android.gms.auth.api.identity.BeginSignInRequest;
-import com.google.android.gms.auth.api.identity.SignInClient;
-import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
+
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -205,15 +197,3 @@ public class Login extends AppCompatActivity {
                 });
     }
 }
-
-    /*public void registrarUsuario(String emailText, String password){
-        mAuth.createUserWithEmailAndPassword(emailText,password);
-        Intent intent = new Intent(Login.this, Registro.class);
-        startActivity(intent);
-    }*/
-   /* public void iniciarSesion(View view){
-        Intent intent = new Intent();
-        intent.putExtra("usuario", etUsuarioLogin.getText().toString());
-        intent.putExtra("contrasena", etContrasenaLogin.getText().toString());
-        setResult(RESULT_OK, intent);
-    }*/
