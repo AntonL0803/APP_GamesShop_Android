@@ -47,4 +47,14 @@ public class Pedido {
     public void setProductos(List<Producto> productos) {
         this.productos = productos;
     }
+
+    @Override
+    public String toString() {
+        return "Pedido{" +
+                "nombre='" + nombre + '\'' +
+                ", fecha='" + fecha + '\'' +
+                ", total=" + total +
+                ", productos=" + productos +
+                '}';
+    }
 }

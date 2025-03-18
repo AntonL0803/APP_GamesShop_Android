@@ -179,7 +179,7 @@ public class Carro extends Fragment {
         DatabaseReference pedidosRef = FirebaseDatabase.getInstance().getReference()
                 .child("Usuarios").child(emailUser).child("pedidos");
 
-        Pedido pedido = new Pedido(nombre, fechaActual, total, productos);
+        Pedido pedido = new Pedido(nombre.toLowerCase(), fechaActual, total, productos);
 
         pedidosRef.push().setValue(pedido);
 
@@ -224,7 +224,7 @@ public class Carro extends Fragment {
     public void mostrarDialog(){
         EditText editText = new EditText(getContext());
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Datos necesrios")
+        builder.setTitle("Datos necesarios")
                 .setMessage("Introduce un nombre para el pedido")
                 .setView(editText)
                 .setPositiveButton("Aceptar",(dialog, which) -> {
