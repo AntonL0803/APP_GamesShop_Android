@@ -43,7 +43,6 @@ public class ProductoDetallado extends Fragment {
     private Button btAddProducto;
 
     public ProductoDetallado() {
-        // Required empty public constructor
     }
 
     @Override
@@ -60,12 +59,6 @@ public class ProductoDetallado extends Fragment {
         }
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment ProductoDetallado.
-     */
     // TODO: Rename and change types and number of parameters
     public static ProductoDetallado newInstance(String nombre, String precio, int imagenID) {
         ProductoDetallado fragment = new ProductoDetallado();
@@ -130,26 +123,6 @@ public class ProductoDetallado extends Fragment {
                 Log.d("FirebaseError", "Error al obtener datos: " + error.getMessage());
             }
         });
-
-        /*
-        nodoPadre.orderByChild("nombre").equalTo(getArguments().getString("nombre"))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
-                            for (DataSnapshot productoSnapshot : snapshot.getChildren()){
-                                 Producto producto = productoSnapshot.getValue(Producto.class);
-                                 tvDescripcion.setText(producto.getDescripcion());
-                            }
-                        }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-         */
     }
     public void agregarAlCarrito() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -159,8 +132,6 @@ public class ProductoDetallado extends Fragment {
         DatabaseReference usuariosReferencia = db.getReference().child("Usuarios");
         String emailUser = user.getEmail();
         DatabaseReference emailProductoDetalladoReferencia = usuariosReferencia.child(emailUser.replace("@", "_").replace(".", "_")).child("carrito");
-
-
 
         String productoSeleccionado = titulo.getText().toString().trim();
         String[] precioSinProcesar = precio.getText().toString().split(" ");
@@ -182,8 +153,6 @@ public class ProductoDetallado extends Fragment {
                     }
                 }
             }
-
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

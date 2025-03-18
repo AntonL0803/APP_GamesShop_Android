@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/tvNombrePedido"
             android:layout_width="match_parent"
             android:layout_height="107dp"
             android:layout_gravity="center_horizontal"
@@ -26,6 +26,18 @@
             android:text="TextView"
             android:textSize="20sp" />
 
+        <TextView
+            android:id="@+id/tvCodigoPedido"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="TextView"
+            android:textSize="14sp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -33,20 +45,21 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/tvFechaPedido"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginLeft="15dp"
                 android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text="TextView" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/tvPrecioPedido"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginRight="15dp"
                 android:layout_weight="1"
-                android:gravity="right"
+                android:gravity="right|center_vertical"
                 android:text="TextView" />
         </LinearLayout>
     </LinearLayout>
