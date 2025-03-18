@@ -1,5 +1,6 @@
 package com.example.aplicacion.Entidades;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,10 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.aplicacion.Interfaces.DetallesPedido;
 import com.example.aplicacion.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,11 +30,13 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.MiVi
     private List<Pedido> pedidos;
     private List<String> codigoPedido;
     private List<Pedido> pedidosFiltrados;
+    private Context contexto;
 
-    public AdaptadorPedidos(List<Pedido> pedidos, List<String> codigoPedido) {
+    public AdaptadorPedidos(List<Pedido> pedidos, List<String> codigoPedido, Context contexto) {
         this.pedidos = pedidos;
         this.codigoPedido = codigoPedido;
         pedidosFiltrados = new ArrayList<>(pedidos);
+        this.contexto = contexto;
     }
 
     @NonNull
@@ -52,6 +57,15 @@ public class AdaptadorPedidos extends RecyclerView.Adapter<AdaptadorPedidos.MiVi
 
         DecimalFormat formato = new DecimalFormat("#.##");
         holder.precio.setText("Total: " + formato.format(pedido.getTotal()));
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DetallesPedido fragmento = DetallesPedido.newInstance(pedido);
+                fragmento.show(((FragmentActivity) contexto).getSupportFragmentManager(), fragmento.getTag());
+            }
+        });
     }
 
 

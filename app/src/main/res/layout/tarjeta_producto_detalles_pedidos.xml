@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="120dp"
+    android:layout_height="130dp"
     android:layout_margin="5dp"
     android:orientation="horizontal"
     app:cardElevation="10dp">
@@ -21,11 +21,12 @@
 
             <TextView
                 android:id="@+id/tvNombreProducto"
-                android:layout_width="184dp"
+                android:layout_width="223dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Nombre del Producto"
-                android:textSize="18sp" />
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvPrecioProducto"
@@ -45,8 +46,8 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/ivImagenProducto2"
-            android:layout_width="match_parent"
+            android:id="@+id/ivImagenProductoPedido"
+            android:layout_width="148dp"
             android:layout_height="match_parent"
             android:layout_gravity="center" />
 

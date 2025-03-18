@@ -122,7 +122,7 @@ public class Pedidos extends Fragment {
                         }
                     }
                 }
-                adaptador = new AdaptadorPedidos(pedidos, codigoPedido);
+                adaptador = new AdaptadorPedidos(pedidos, codigoPedido, getContext());
                 LinearLayoutManager layout = new LinearLayoutManager(getView().getContext());
                 rvPedidos.setAdapter(adaptador);
                 rvPedidos.setLayoutManager(layout);
