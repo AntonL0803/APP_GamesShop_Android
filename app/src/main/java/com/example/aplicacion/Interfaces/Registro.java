@@ -7,6 +7,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -32,6 +33,7 @@ public class Registro extends AppCompatActivity {
     private FirebaseDatabase database; // Referencia a Firebase
     private DatabaseReference nodoPadre;
     private SharedPreferences sharedPreferences;
+    private TextView tvIrAlLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +57,19 @@ public class Registro extends AppCompatActivity {
         etContrasenaRegis = findViewById(R.id.etContrasenaRegistro);
         btRegis = findViewById(R.id.btRegistro);
         newsRegis = findViewById(R.id.newsRegistro);
+        tvIrAlLogin = findViewById(R.id.tvLogin);
 
         btRegis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 registrarNuevoUsuario();
             }
+        });
+
+        //Redirección al login
+        tvIrAlLogin.setOnClickListener(view -> {
+            Intent intentAlLogin = new Intent(Registro.this, Login.class);
+            startActivity(intentAlLogin);
         });
     }
 
