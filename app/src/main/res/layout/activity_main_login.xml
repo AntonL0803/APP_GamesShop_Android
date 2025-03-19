@@ -22,11 +22,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@null"
+            android:backgroundTint="@null"
+            android:backgroundTintMode="@null"
             android:orientation="vertical">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="355dp">
+                android:layout_height="355dp"
+                android:background="@null">
 
                 <ImageView
                     android:id="@+id/ivLogoLogin"
