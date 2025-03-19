@@ -1,6 +1,5 @@
 package com.example.aplicacion.Interfaces;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,31 +7,25 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.aplicacion.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.materialswitch.MaterialSwitch;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
 public class Registro extends AppCompatActivity {
-    private EditText etnombreRegis, etEmailRegis, etCPRegis, etContrasenaRegis;
+    private EditText etnombreRegis, etEmailRegis, etDireccionRegis, etContrasenaRegis;
     private Button btRegis;
     private MaterialSwitch newsRegis;
     private FirebaseAuth firebaseAuth;
@@ -58,7 +51,7 @@ public class Registro extends AppCompatActivity {
         // Vincular elementos UI
         etEmailRegis = findViewById(R.id.etEmailRegistro);
         etnombreRegis = findViewById(R.id.etNombreRegistro);
-        etCPRegis = findViewById(R.id.etCPRegistro);
+        etDireccionRegis = findViewById(R.id.etDireccionRegistro);
         etContrasenaRegis = findViewById(R.id.etContrasenaRegistro);
         btRegis = findViewById(R.id.btRegistro);
         newsRegis = findViewById(R.id.newsRegistro);
@@ -75,10 +68,10 @@ public class Registro extends AppCompatActivity {
         String nombreRegis = etnombreRegis.getText().toString();
         String emailRegis = etEmailRegis.getText().toString();
         String passwordRegis = etContrasenaRegis.getText().toString();
-        String cpRegis = etCPRegis.getText().toString();
+        String direccionRegis = etDireccionRegis.getText().toString();
         Boolean newRegis = newsRegis.isChecked();
 
-        if (nombreRegis.isEmpty() || emailRegis.isEmpty() || cpRegis.isEmpty() || passwordRegis.isEmpty()) {
+        if (nombreRegis.isEmpty() || emailRegis.isEmpty() || direccionRegis.isEmpty() || passwordRegis.isEmpty()) {
             Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -103,7 +96,7 @@ public class Registro extends AppCompatActivity {
                             HashMap<String, Object> userData = new HashMap<>();
                             userData.put("nombre", nombreRegis);
                             userData.put("email", emailRegis);
-                            userData.put("direccion", cpRegis);
+                            userData.put("direccion", direccionRegis);
                             userData.put("newsletter", newRegis);
 
                             String emailKey = emailRegis.replace(".", "_").replace("@", "_");
@@ -116,7 +109,7 @@ public class Registro extends AppCompatActivity {
                                     Intent intent = new Intent(Registro.this, Login.class);
                                     intent.putExtra("Nombre", nombreRegis);
                                     intent.putExtra("Email", emailRegis);
-                                    intent.putExtra("Dirección", cpRegis);
+                                    intent.putExtra("Dirección", direccionRegis);
                                     intent.putExtra("newsletter", newRegis);
                                     startActivity(intent);
                                     finish();
@@ -126,7 +119,7 @@ public class Registro extends AppCompatActivity {
                             });
                         }
                     } else {
-                        Toast.makeText(this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Error: el correo introducido ya existe", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

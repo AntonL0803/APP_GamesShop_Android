@@ -222,7 +222,7 @@ public class Perfil extends Fragment {
                             // Obtener valores de Firebase
                             String nombre = snapshot.child("nombre").getValue(String.class);
                             String email = snapshot.child("email").getValue(String.class);
-                            String direccion = snapshot.child("cp").getValue(String.class);
+                            String direccion = snapshot.child("direccion").getValue(String.class);
                             Boolean newsletter = snapshot.child("newsletter").getValue(Boolean.class);
 
                             if (newsletter == null) {
@@ -270,7 +270,7 @@ public class Perfil extends Fragment {
             String emailUser = usuarioActual.getEmail();
             DatabaseReference usuario = db.getReference().child("Usuarios")
                     .child(emailUser.replace("@", "_").replace(".", "_"));
-            usuario.child("cp").setValue(editTextDirecionPerfil.getText().toString());
+            usuario.child("direccion").setValue(editTextDirecionPerfil.getText().toString());
             usuario.child("nombre").setValue(textViewUsuarioPerfil.getText().toString());
             usuario.child("newsletter").setValue(newsletterPerfil.isChecked());
             Toast.makeText(getActivity(), "Perfil actualizado.", Toast.LENGTH_SHORT).show();
