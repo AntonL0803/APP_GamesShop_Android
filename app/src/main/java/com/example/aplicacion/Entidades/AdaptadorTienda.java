@@ -81,6 +81,10 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
         holder.imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.animate().scaleX(0.8f).scaleY(0.8f).setDuration(100)  // Reduce tamaño
+                        .withEndAction(() -> v.animate().scaleX(1f).scaleY(1f).setDuration(100)) // Restaura tamaño
+                        .start();
+
                 listenerBoton.clickListener(currentPosition);
                 agregarAlCarrito(currentPosition);
             }
@@ -120,8 +124,6 @@ public class AdaptadorTienda extends RecyclerView.Adapter<AdaptadorTienda.MiView
                     emailCarritoReferencia.child(productoSeleccionado).setValue(nuevoProducto);
                 }
             }
-
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
