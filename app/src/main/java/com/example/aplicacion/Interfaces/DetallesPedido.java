@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.aplicacion.Entidades.AdaptadorDetallesPedido;
 import com.example.aplicacion.Entidades.Pedido;
@@ -26,15 +25,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link DetallesPedido#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragmento para mostrar los detalles de un pedido en un BottomSheet.
  */
 public class DetallesPedido extends BottomSheetDialogFragment {
 
-    private Pedido pedido;
-    private RecyclerView rvPedidoDetallado;
+    private Pedido pedido; // Pedido que se va a mostrar en los detalles
+    private RecyclerView rvPedidoDetallado; // RecyclerView para mostrar los productos del pedido
 
+    // Mapa de nombres de productos a sus imágenes correspondientes
     private Map<String, Integer> imagenes = new HashMap<String, Integer>() {{
         put("Super Mario Bros Wonder", R.drawable.supermariobroswonder);
         put("Biomutant", R.drawable.biomutant);
@@ -62,8 +60,15 @@ public class DetallesPedido extends BottomSheetDialogFragment {
         put("Zelda Links Awakening", R.drawable.zeldalink);
     }};
 
+    // Constructor vacío requerido
     public DetallesPedido() {
     }
+
+    /**
+     * Método estático para crear una nueva instancia del fragmento con un pedido.
+     * @param pedido Pedido que se desea mostrar
+     * @return Nueva instancia de DetallesPedido
+     */
     public static DetallesPedido newInstance(Pedido pedido) {
         DetallesPedido fragment = new DetallesPedido();
         Bundle args = new Bundle();
@@ -75,6 +80,7 @@ public class DetallesPedido extends BottomSheetDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Obtener el pedido que se pasa como argumento
         if (getArguments() != null) {
             pedido = (Pedido) getArguments().getSerializable("pedido");
         }
@@ -83,13 +89,17 @@ public class DetallesPedido extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflar el layout del fragmento
         View view = inflater.inflate(R.layout.fragment_detalles_pedido, container, false);
         this.pedido = (Pedido) getArguments().getSerializable("pedido");
+
+        // Obtener la lista de productos del pedido
         List<Producto> productos = pedido.getProductos();
-        if (productos != null){
-            Log.d("Pedido Detallado Productos", "la lista de productos tiene cosas dentro");
+        if (productos != null) {
+            Log.d("Pedido Detallado Productos", "La lista de productos tiene cosas dentro");
         }
 
+        // Configurar el RecyclerView para mostrar los productos detallados del pedido
         rvPedidoDetallado = view.findViewById(R.id.rvPedidoDetallado);
         AdaptadorDetallesPedido adaptador = new AdaptadorDetallesPedido(productos, imagenes);
         LinearLayoutManager layout = new LinearLayoutManager(getContext());
@@ -102,15 +112,18 @@ public class DetallesPedido extends BottomSheetDialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+        // Modificar la altura del BottomSheet al iniciar el fragmento
         BottomSheetDialog vista = (BottomSheetDialog) getDialog();
         if (vista != null) {
             View view = vista.findViewById(com.google.android.material.R.id.design_bottom_sheet);
             if (view != null) {
                 BottomSheetBehavior<View> comportamiento = BottomSheetBehavior.from(view);
 
+                // Obtener la altura de la pantalla y calcular la altura deseada del BottomSheet
                 int alturaPantalla = getResources().getDisplayMetrics().heightPixels;
                 int alturaDeseada = (int) (alturaPantalla * 0.8);
 
+                // Establecer la altura y el comportamiento del BottomSheet
                 view.getLayoutParams().height = alturaDeseada;
                 view.requestLayout();
                 comportamiento.setPeekHeight(alturaDeseada);

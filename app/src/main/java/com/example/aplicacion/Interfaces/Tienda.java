@@ -1,3 +1,4 @@
+// Importaciones necesarias para trabajar con el fragmento y la base de datos
 package com.example.aplicacion.Interfaces;
 
 import android.os.Bundle;
@@ -33,19 +34,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link Tienda#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragmento que representa la tienda de productos.
+ * Muestra los productos en una lista o rejilla dependiendo de la opción seleccionada.
  */
 public class Tienda extends Fragment {
-    private RecyclerView rvTienda;
-    private Switch swTienda;
+    private RecyclerView rvTienda;  // RecyclerView para mostrar los productos
+    private Switch swTienda;        // Switch para cambiar entre lista o rejilla
 
-    private FirebaseDatabase db;
+    private FirebaseDatabase db;   // Instancia de FirebaseDatabase
 
-    private List<String> nombreProducto;
-    private List<Double> precioProducto;
+    private List<String> nombreProducto;  // Lista para almacenar los nombres de los productos
+    private List<Double> precioProducto;  // Lista para almacenar los precios de los productos
 
+    // Mapa de imágenes para cada producto
     private Map<String, Integer> imagenes = new HashMap<String, Integer>() {{
         put("Super Mario Bros Wonder", R.drawable.supermariobroswonder);
         put("Biomutant", R.drawable.biomutant);
@@ -73,28 +74,23 @@ public class Tienda extends Fragment {
         put("Zelda Links Awakening", R.drawable.zeldalink);
     }};
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // Parámetros para la creación del fragmento
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
+    // Constructor vacío requerido para crear el fragmento
     public Tienda() {
-        // Required empty public constructor
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Tienda.
+     * Método de fábrica para crear una nueva instancia del fragmento.
+     * @param param1 Primer parámetro.
+     * @param param2 Segundo parámetro.
+     * @return Nueva instancia de Tienda.
      */
-    // TODO: Rename and change types and number of parameters
     public static Tienda newInstance(String param1, String param2) {
         Tienda fragment = new Tienda();
         Bundle args = new Bundle();
@@ -107,53 +103,70 @@ public class Tienda extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Recupera los parámetros si existen
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
+    /**
+     * Método para inflar el layout del fragmento y configurar las vistas.
+     * @param inflater Inflador de vistas.
+     * @param container Contenedor padre.
+     * @param savedInstanceState Estado guardado.
+     * @return Vista del fragmento.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Infla el layout y obtiene las vistas
         View view = inflater.inflate(R.layout.fragment_tienda, container, false);
-        rvTienda = view.findViewById(R.id.rvPedidos);
-        swTienda = view.findViewById(R.id.switch1);
+        rvTienda = view.findViewById(R.id.rvPedidos); // RecyclerView para productos
+        swTienda = view.findViewById(R.id.switch1);    // Switch para cambiar entre vista de lista o rejilla
         nombreProducto = new ArrayList<>();
         precioProducto = new ArrayList<>();
-        boolean isGrid = false;
+        boolean isGrid = false; // Se inicia en vista de lista
+        // Crea el adaptador
         AdaptadorTienda adaptador = new AdaptadorTienda(nombreProducto, precioProducto, isGrid, imagenes, null);
 
+        // Configura el listener del botón "Más" en los productos (AdaptadorTienda)
         adaptador.setListenerBoton(new BotonMas() {
             @Override
             public void clickListener(int position) {
-                adaptador.agregarAlCarrito(position);
+                adaptador.agregarAlCarrito(position);  // Agrega el producto al carrito
             }
         });
 
+        // Configura el RecyclerView con el adaptador
         rvTienda.setAdapter(adaptador);
 
+        // Configura los gestores de layout para vista en lista y rejilla
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         GridLayoutManager gridLayoutManager = new GridLayoutManager(view.getContext(), 2);
 
-        rvTienda.setLayoutManager(layoutManager);
-        adaptador.notifyDataSetChanged();
+        rvTienda.setLayoutManager(layoutManager); // Inicialmente vista en lista
+        adaptador.notifyDataSetChanged();  // Notifica al adaptador que los datos se han actualizado en tiempo real
 
+        // Configura el cambio entre lista y rejilla cuando se cambie el switch
         swTienda.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                rvTienda.setLayoutManager(gridLayoutManager);
+                rvTienda.setLayoutManager(gridLayoutManager);  // Vista en rejilla
                 adaptador.setGridLayout(true);
             } else {
-                rvTienda.setLayoutManager(layoutManager);
+                rvTienda.setLayoutManager(layoutManager);  // Vista en lista
                 adaptador.setGridLayout(false);
             }
         });
 
+        // Carga los datos de productos desde Firebase
         cargarDatosTienda(adaptador);
 
+        // Configura el listener de clic en los productos para abrir la vista detallada
         adaptador.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Obtiene los datos del producto clicado
                 ImageView imagenProducto = view.findViewById(R.id.imagenProductoCarrito);
                 TextView nombreProductoText = view.findViewById(R.id.nombreProductoTarjeta2);
                 TextView precioProductoText = view.findViewById(R.id.precioProductoTienda);
@@ -162,6 +175,7 @@ public class Tienda extends Fragment {
                 String precioProductoStr = precioProductoText.getText().toString().trim();
                 int imagenID = (int) imagenProducto.getTag();
 
+                // Realiza la transición a la pantalla de detalles del producto
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.setCustomAnimations(
                         R.animator.slide_in_right,
@@ -172,37 +186,46 @@ public class Tienda extends Fragment {
 
                 ProductoDetallado fragment = ProductoDetallado.newInstance(nombreProducto, precioProductoStr, imagenID);
                 transaction.replace(R.id.frameLayoutPrincipal, fragment)
-                        .addToBackStack(null)
+                        .addToBackStack(null)  // Añade el fragmento a la pila de retroceso
                         .commit();
             }
         });
-        return view;
-    }
-    public void cargarDatosTienda(AdaptadorTienda adaptador){
-        db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
-        DatabaseReference nodoPadre = db.getReference().child("Productos");
 
+        return view;  // Devuelve la vista inflada
+    }
+
+    /**
+     * Método para cargar los datos de productos desde Firebase y actualizar la UI.
+     * @param adaptador Adaptador de productos para el RecyclerView.
+     */
+    public void cargarDatosTienda(AdaptadorTienda adaptador) {
+        db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
+        DatabaseReference nodoPadre = db.getReference().child("Productos"); // Obtiene la referencia a la base de datos
+
+        // Escucha los cambios en los datos de Firebase
         nodoPadre.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                nombreProducto.clear();
+                nombreProducto.clear();  // Limpia las listas antes de agregar nuevos datos
                 precioProducto.clear();
 
-                if (snapshot.exists()){
+                if (snapshot.exists()) {
+                    // Si existen datos, los agrega a las listas
                     for (DataSnapshot productoSnapshot : snapshot.getChildren()) {
                         Producto producto = productoSnapshot.getValue(Producto.class);
-                        if (producto != null){
+                        if (producto != null) {
                             nombreProducto.add(producto.getNombre());
                             precioProducto.add((producto.getPrecio()));
 
                             Log.d("Firebase", "Producto: " + producto.getNombre() + " - Precio: " + producto.getPrecio());
                         }
                     }
-                    adaptador.notifyDataSetChanged();
+                    adaptador.notifyDataSetChanged();  // Notifica al adaptador que los datos se han actualizado
                 } else {
                     Log.d("Firebase", "No se encontraron los datos");
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("Firebase", "Error al leer los datos");

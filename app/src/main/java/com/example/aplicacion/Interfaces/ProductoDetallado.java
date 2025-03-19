@@ -25,55 +25,58 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.checkerframework.common.subtyping.qual.Bottom;
-
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProductoDetallado#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragmento que muestra los detalles de un producto específico.
+ * Permite al usuario agregar el producto al carrito de compras.
  */
 public class ProductoDetallado extends Fragment {
-    private ImageView imagenProductoDetallado;
-    private ImageButton imagenButton;
-    private TextView titulo;
-    private TextView precio;
-    private TextView descripcion;
-    private FirebaseDatabase db;
+    private ImageView imagenProductoDetallado;  // Imagen del producto
+    private ImageButton imagenButton;  // Botón de flecha para regresar
+    private TextView titulo;  // Título (nombre) del producto
+    private TextView precio;  // Precio del producto
+    private TextView descripcion;  // Descripción del producto
+    private FirebaseDatabase db;  // Referencia a la base de datos Firebase
 
-    private Button btAddProducto;
+    private Button btAddProducto;  // Botón para añadir el producto al carrito
 
+    // Constructor vacío
     public ProductoDetallado() {
     }
 
+    // Método llamado al crear el fragmento
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Transición al entrar y salir del fragmento
         setEnterTransition(android.transition.TransitionInflater.from(getContext())
                 .inflateTransition(android.R.transition.slide_right));
         setExitTransition(android.transition.TransitionInflater.from(getContext())
                 .inflateTransition(android.R.transition.slide_left));
 
+        // Obtener los argumentos pasados al fragmento
         if (getArguments() != null) {
             String nombre = getArguments().getString("nombre");
             Double precio = getArguments().getDouble("precio");
         }
     }
 
-    // TODO: Rename and change types and number of parameters
+    // Método estático para crear una nueva instancia del fragmento con parámetros
     public static ProductoDetallado newInstance(String nombre, String precio, int imagenID) {
         ProductoDetallado fragment = new ProductoDetallado();
         Bundle args = new Bundle();
-        args.putString("nombre", nombre);
-        args.putString("precio", precio);
-        args.putInt("imagenID", imagenID);
-        fragment.setArguments(args);
+        args.putString("nombre", nombre);  // Nombre del producto
+        args.putString("precio", precio);  // Precio del producto
+        args.putInt("imagenID", imagenID);  // ID de la imagen del producto
+        fragment.setArguments(args);  // Pasar los argumentos al fragmento
         return fragment;
     }
 
+    // Método llamado para inflar la vista y configurar las vistas del fragmento
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_producto_detallado, container, false);
+        // Inicializar vistas
         imagenProductoDetallado = view.findViewById(R.id.ivProductoDetallado);
         imagenButton = view.findViewById(R.id.ibflechaProductoDetallado);
         titulo = view.findViewById(R.id.tituloProductoDetallado);
@@ -81,6 +84,7 @@ public class ProductoDetallado extends Fragment {
         descripcion = view.findViewById(R.id.descripcionProductoDetallado);
         btAddProducto = view.findViewById(R.id.btAñadirProductoProductosDetallados);
 
+        // Configurar el botón de flecha para regresar al fragmento anterior
         imagenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,41 +93,51 @@ public class ProductoDetallado extends Fragment {
                         .beginTransaction();
 
                 transaction.setCustomAnimations(
-                        R.animator.slide_in_left,
-                        R.animator.slide_out_right
+                        R.animator.slide_in_left,  // Animación de entrada
+                        R.animator.slide_out_right  // Animación de salida
                 );
-                requireActivity().getSupportFragmentManager().popBackStack();
+                requireActivity().getSupportFragmentManager().popBackStack();  // Regresar al fragmento anterior
             }
         });
+
+        // Establecer los detalles del producto desde los argumentos
         imagenProductoDetallado.setImageResource(getArguments().getInt("imagenID"));
         titulo.setText(getArguments().getString("nombre"));
         precio.setText(getArguments().getString("precio"));
-        cargarDescripcion(descripcion);
+        cargarDescripcion(descripcion);  // Cargar la descripción del producto desde Firebase
+
+        // Configurar el botón para agregar el producto al carrito
         btAddProducto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                agregarAlCarrito();
+                agregarAlCarrito();  // Agregar el producto al carrito
             }
         });
+
         return view;
     }
+
+    // Método para cargar la descripción del producto desde Firebase
     public void cargarDescripcion(TextView tvDescripcion){
-        db =FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
+        db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
         DatabaseReference nodoPadre = db.getReference().child("Productos").child(titulo.getText().toString()).child("descripcion");
 
         nodoPadre.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    tvDescripcion.setText(snapshot.getValue(String.class));
+                    tvDescripcion.setText(snapshot.getValue(String.class));  // Establecer la descripción
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.d("FirebaseError", "Error al obtener datos: " + error.getMessage());
             }
         });
     }
+
+    // Método para agregar el producto al carrito del usuario autenticado
     public void agregarAlCarrito() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -138,28 +152,30 @@ public class ProductoDetallado extends Fragment {
         DatabaseReference usuariosReferencia = db.getReference().child("Usuarios");
         String emailUser = user.getEmail();
 
+        // Referencia al carrito del usuario en la base de datos
         DatabaseReference emailProductoDetalladoReferencia = usuariosReferencia
                 .child(emailUser.replace("@", "_").replace(".", "_"))
                 .child("carrito");
 
-        String productoSeleccionado = titulo.getText().toString().trim();
-        String precioTexto = precio.getText().toString().replaceAll("[^0-9.]", "");
-        Double precioSeleccionado = Double.parseDouble(precioTexto);
+        String productoSeleccionado = titulo.getText().toString().trim();  // Nombre del producto
+        String precioTexto = precio.getText().toString().replaceAll("[^0-9.]", "");  // Precio del producto
+        Double precioSeleccionado = Double.parseDouble(precioTexto);  // Convertir a Double
 
+        // Verificar si el producto ya está en el carrito
         emailProductoDetalladoReferencia.child(productoSeleccionado).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    // Si el producto ya está en el carrito, obtener sus datos
+                    // Si el producto ya está en el carrito, actualizar la cantidad
                     Integer cantidadActual = snapshot.child("cantidad").getValue(Integer.class);
                     String nombre = snapshot.child("nombre").getValue(String.class);
                     Double precio = snapshot.child("precio").getValue(Double.class);
 
                     if (cantidadActual == null) cantidadActual = 0;
-                    if (nombre == null) nombre = productoSeleccionado; // Usar el nombre del producto si no está en la BD
-                    if (precio == null) precio = precioSeleccionado; // Usar el precio actual si no está en la BD
+                    if (nombre == null) nombre = productoSeleccionado;  // Usar el nombre del producto si no está en la BD
+                    if (precio == null) precio = precioSeleccionado;  // Usar el precio actual si no está en la BD
 
-                    // Actualizar toda la información del producto
+                    // Actualizar la información del producto en el carrito
                     Producto productoActualizado = new Producto(nombre, precio, cantidadActual + 1);
                     emailProductoDetalladoReferencia.child(productoSeleccionado).setValue(productoActualizado);
                 } else {
@@ -175,5 +191,4 @@ public class ProductoDetallado extends Fragment {
             }
         });
     }
-
 }
