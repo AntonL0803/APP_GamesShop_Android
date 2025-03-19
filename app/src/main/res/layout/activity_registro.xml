@@ -10,108 +10,116 @@
     android:padding="24dp"
     tools:context=".Interfaces.Registro">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="270dp">
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/ivLogoRegistro"
-            android:layout_width="265dp"
-            android:layout_height="260dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/logo_completo" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvRegistroDescripcion"
-            android:layout_width="361dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="center"
-            android:text="¡Crea tu cuenta y únete a nuestra comunidad!"
-            android:textColor="#333333"
-            android:textSize="18sp" />
-    </FrameLayout>
+            <ImageView
+                android:id="@+id/ivLogoRegistro"
+                android:layout_width="239dp"
+                android:layout_height="259dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/logo_completo"
+                android:scaleType="fitCenter" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilNombreRegistro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:background="#FFFEFE"
-        android:hint="Nombre">
+            <TextView
+                android:id="@+id/tvRegistroDescripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:gravity="center"
+                android:text="¡Crea tu cuenta y únete a nuestra comunidad!"
+                android:textColor="#333333"
+                android:textSize="18sp" />
+        </FrameLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etNombreRegistro"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilNombreRegistro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#FAF5F5"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginTop="24dp"
+            android:background="#FFFFFF"
+            android:hint="Nombre">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilEmailRegistro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="#FDFBFB"
-        android:hint="Email">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNombreRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#FAF5F5"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etEmailRegistro"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilEmailRegistro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginTop="8dp"
+            android:background="@color/white"
+            android:hint="Email">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilCPRegistro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="#FFFFFF"
-        android:hint="Dirección Postal">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmailRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etDireccionRegistro"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilCPRegistro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginTop="8dp"
+            android:background="@color/white"
+            android:hint="Dirección Postal">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilContrasenaRegistro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="#FFFFFF"
-        android:hint="Contraseña"
-        app:passwordToggleEnabled="true">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etDireccionRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etContrasenaRegistro"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilContrasenaRegistro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginTop="8dp"
+            android:background="@color/white"
+            android:hint="Contraseña"
+            app:passwordToggleEnabled="true">
 
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/newsRegistro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Recibir ofertas y noticias"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etContrasenaRegistro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btRegistro"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_marginTop="24dp"
-        android:text="REGISTRARSE"
-        android:textSize="18sp"
-        app:backgroundTint="#E60012"
-        app:cornerRadius="8dp" />
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/newsRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Recibir ofertas y noticias"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btRegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="REGISTRARSE"
+            android:textSize="18sp"
+            app:backgroundTint="#E60012"
+            app:cornerRadius="8dp" />
+    </LinearLayout>
 
 </LinearLayout>
