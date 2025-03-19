@@ -65,13 +65,19 @@ public class Login extends AppCompatActivity {
         videoView = findViewById(R.id.videoViewLogin);
         Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fondo_mariobros_inicio);
         videoView.setVideoURI(uri);
-        videoView.start();
 
         // Configura el VideoView para que el video se repita en bucle
         videoView.setOnPreparedListener(mp -> {
             mp.setLooping(true);
             videoView.start();
         });
+
+        videoView.setOnErrorListener((mp, what, extra) -> {
+            Log.e("VideoView", "Error al reproducir el video: what=" + what + ", extra=" + extra);
+            Toast.makeText(this, "Error al reproducir el video.", Toast.LENGTH_SHORT).show();
+            return true;
+        });
+        videoView.start();
 
         // Ajuste de la ventana para que se adapte a las barras del sistema (por ejemplo, la barra de estado)
         View rootView = findViewById(R.id.main);
