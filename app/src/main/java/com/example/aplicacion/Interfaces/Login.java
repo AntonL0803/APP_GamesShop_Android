@@ -2,6 +2,7 @@ package com.example.aplicacion.Interfaces;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -46,12 +48,22 @@ public class Login extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private SignInButton googleSignInButton;
     private ActivityResultLauncher<Intent> signInResultLauncher;
+    private VideoView videoView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main_login);
+
+        videoView = findViewById(R.id.videoViewLogin);
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fondo_pantalla_incial);
+        videoView.setVideoURI(uri);
+        videoView.start();
+
+        videoView.setOnPreparedListener(mp -> {
+            mp.setLooping(true);
+        });
 
         View rootView = findViewById(R.id.main);
         if (rootView != null) {

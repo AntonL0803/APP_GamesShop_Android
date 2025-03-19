@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8F8F8"
+    android:orientation="vertical"
     android:padding="24dp"
     tools:context=".Interfaces.Perfil">
 
@@ -12,21 +13,35 @@
         android:id="@+id/imagenPerfil"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:src="@mipmap/ic_launcher"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"/>
+        android:layout_marginTop="32dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:id="@+id/llEmailPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tvEmailAddressPerfil"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Correo Electrónico"
+            android:textColor="#333333"
+            android:textSize="18sp" />
+    </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilNombrePerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nombre de Usuario"
-        app:layout_constraintTop_toBottomOf="@id/imagenPerfil"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="24dp"
+        android:hint="Nombre de Usuario">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etNombrePerfil"
@@ -34,18 +49,15 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:textColor="#333333"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilDireccionPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Dirección Postal"
-        app:layout_constraintTop_toBottomOf="@id/tilNombrePerfil"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:hint="Dirección Postal">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDireccionPerfil"
@@ -53,92 +65,55 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:textColor="#333333"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <LinearLayout
-        android:id="@+id/llEmailPerfil"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tilDireccionPerfil"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"/>
-
-        <TextView
-            android:id="@+id/tvEmailAddressPerfil"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Correo Electrónico"
-            android:textColor="#333333"
-            android:textSize="18sp"/>
-    </LinearLayout>
 
     <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/switchNewsPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="Suscribirse al Newsletter"
         android:textColor="#333333"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/llEmailPerfil"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        android:textSize="18sp" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btcerrarSesionPerfil"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_marginTop="24dp"
         android:text="Cerrar Sesión"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:backgroundTint="#D32F2F"
         app:cornerRadius="8dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@id/switchNewsPerfil"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:iconGravity="textStart"
-        app:iconTint="#FFFFFF"/>
+        app:iconTint="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btmodificarPerfil"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_marginTop="16dp"
         android:text="Modificar Datos"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:backgroundTint="#1976D2"
         app:cornerRadius="8dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/btcerrarSesionPerfil"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:iconGravity="textStart"
-        app:iconTint="#FFFFFF"/>
+        app:iconTint="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btGuardarPerfil"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_marginTop="16dp"
         android:text="Guardar Datos"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         app:backgroundTint="#1976D2"
         app:cornerRadius="8dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/btmodificarPerfil"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:iconGravity="textStart"
-        app:iconTint="#FFFFFF"/>
+        app:iconTint="#FFFFFF" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

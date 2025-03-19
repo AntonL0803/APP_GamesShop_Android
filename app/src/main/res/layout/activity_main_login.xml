@@ -1,46 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F8F8"
-    android:padding="24dp"
+    android:orientation="vertical"
     tools:context=".Interfaces.Login">
+
+    <VideoView
+        android:id="@+id/videoViewLogin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/ivLogoLogin"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="120dp"
-        android:src="@drawable/logotipo_completo"
+        android:layout_marginTop="32dp"
         android:scaleType="fitCenter"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"/>
+        android:src="@drawable/logotipo_completo" />
 
     <TextView
         android:id="@+id/tvTituloLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="Iniciar Sesión"
-        android:textStyle="bold"
-        android:textSize="28sp"
         android:textColor="#333333"
-        app:layout_constraintTop_toBottomOf="@id/ivLogoLogin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        android:textSize="28sp"
+        android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilUsuarioLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Correo electrónico"
-        app:layout_constraintTop_toBottomOf="@id/tvTituloLogin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="24dp"
+        android:hint="Correo electrónico">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etUsuarioLogin"
@@ -48,19 +43,16 @@
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
             android:textColor="#333333"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilContrasenaLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:hint="Contraseña"
-        app:endIconMode="password_toggle"
-        app:layout_constraintTop_toBottomOf="@id/tilUsuarioLogin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp">
+        app:endIconMode="password_toggle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etContrasenaLogin"
@@ -68,18 +60,15 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:textColor="#333333"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:id="@+id/llRegistroLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/tilContrasenaLogin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tvPreguntaLogin"
@@ -88,54 +77,44 @@
             android:layout_weight="1"
             android:text="¿No tienes cuenta?"
             android:textColor="#333333"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tvRegistrateLogin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
             android:text="Regístrate"
+            android:textAlignment="textEnd"
             android:textColor="#E60012"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:textAlignment="textEnd"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:textStyle="bold" />
     </LinearLayout>
 
     <Button
         android:id="@+id/btIniciarSesionLogin"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_marginTop="24dp"
         android:backgroundTint="#E60012"
         android:text="Iniciar Sesión"
         android:textColor="#FFFFFF"
-        android:textStyle="bold"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@id/llRegistroLogin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        app:cornerRadius="8dp"/>
+        android:textStyle="bold" />
 
     <View
         android:id="@+id/viewLineaLogin"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#CCCCCC"
-        app:layout_constraintTop_toBottomOf="@id/btIniciarSesionLogin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp"
+        android:background="#CCCCCC" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/btIniciarSesionGoogle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/viewLineaLogin"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
