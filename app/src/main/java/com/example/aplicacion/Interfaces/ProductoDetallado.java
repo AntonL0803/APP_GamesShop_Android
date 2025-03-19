@@ -127,36 +127,53 @@ public class ProductoDetallado extends Fragment {
     public void agregarAlCarrito() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
+
+        if (user == null) {
+            Log.d("FirebaseError", "El usuario no está autenticado.");
+            return;
+        }
+
         FirebaseDatabase db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
 
         DatabaseReference usuariosReferencia = db.getReference().child("Usuarios");
         String emailUser = user.getEmail();
-        DatabaseReference emailProductoDetalladoReferencia = usuariosReferencia.child(emailUser.replace("@", "_").replace(".", "_")).child("carrito");
+
+        DatabaseReference emailProductoDetalladoReferencia = usuariosReferencia
+                .child(emailUser.replace("@", "_").replace(".", "_"))
+                .child("carrito");
 
         String productoSeleccionado = titulo.getText().toString().trim();
-        String[] precioSinProcesar = precio.getText().toString().split(" ");
-        Double precioSeleccionado = Double.parseDouble(precioSinProcesar[1]);
+        String precioTexto = precio.getText().toString().replaceAll("[^0-9.]", "");
+        Double precioSeleccionado = Double.parseDouble(precioTexto);
 
-        emailProductoDetalladoReferencia.addListenerForSingleValueEvent(new ValueEventListener() {
+        emailProductoDetalladoReferencia.child(productoSeleccionado).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    if (snapshot.child(productoSeleccionado).exists()) {
-                        Integer cantidadActual = snapshot.child(productoSeleccionado).child("cantidad").getValue(Integer.class);
-                        if (cantidadActual == null) {
-                            cantidadActual = 0;
-                        }
-                        emailProductoDetalladoReferencia.child(productoSeleccionado).child("cantidad").setValue(cantidadActual + 1);
-                    } else {
-                        Producto nuevoProducto = new Producto(productoSeleccionado, precioSeleccionado, 1);
-                        emailProductoDetalladoReferencia.child(productoSeleccionado).setValue(nuevoProducto);
-                    }
+                    // Si el producto ya está en el carrito, obtener sus datos
+                    Integer cantidadActual = snapshot.child("cantidad").getValue(Integer.class);
+                    String nombre = snapshot.child("nombre").getValue(String.class);
+                    Double precio = snapshot.child("precio").getValue(Double.class);
+
+                    if (cantidadActual == null) cantidadActual = 0;
+                    if (nombre == null) nombre = productoSeleccionado; // Usar el nombre del producto si no está en la BD
+                    if (precio == null) precio = precioSeleccionado; // Usar el precio actual si no está en la BD
+
+                    // Actualizar toda la información del producto
+                    Producto productoActualizado = new Producto(nombre, precio, cantidadActual + 1);
+                    emailProductoDetalladoReferencia.child(productoSeleccionado).setValue(productoActualizado);
+                } else {
+                    // Si el producto no está en el carrito, añadirlo con cantidad = 1
+                    Producto nuevoProducto = new Producto(productoSeleccionado, precioSeleccionado, 1);
+                    emailProductoDetalladoReferencia.child(productoSeleccionado).setValue(nuevoProducto);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.d("FirebaseError", "Error al actualizar carrito: " + error.getMessage());
             }
         });
     }
+
 }
