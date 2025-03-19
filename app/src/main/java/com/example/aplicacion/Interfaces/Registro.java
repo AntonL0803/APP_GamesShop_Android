@@ -21,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.aplicacion.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,7 +34,7 @@ import java.util.HashMap;
 public class Registro extends AppCompatActivity {
     private EditText etnombreRegis, etEmailRegis, etCPRegis, etContrasenaRegis;
     private Button btRegis;
-    private Switch newsRegis;
+    private MaterialSwitch newsRegis;
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase database; // Referencia a Firebase
     private DatabaseReference nodoPadre;
@@ -98,23 +99,11 @@ public class Registro extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = firebaseAuth.getCurrentUser();
                         if (user != null) {
-
-                            /*// Guardar sesión en sharedReference (clave, valor)
-                            sharedPreferences = getSharedPreferences("UserSession", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("userId", userId);
-                            editor.putString("nombre", nombreRegis);
-                            editor.putString("email", emailRegis);
-                            editor.putString("cp", cpRegis);
-                            editor.putString("password", passwordRegis);
-                            editor.putBoolean("news", newRegis);
-                            editor.apply();*/
-
                             // Guardar datos en Firebase Database
                             HashMap<String, Object> userData = new HashMap<>();
                             userData.put("nombre", nombreRegis);
                             userData.put("email", emailRegis);
-                            userData.put("cp", cpRegis);
+                            userData.put("direccion", cpRegis);
                             userData.put("newsletter", newRegis);
 
                             String emailKey = emailRegis.replace(".", "_").replace("@", "_");
@@ -127,7 +116,7 @@ public class Registro extends AppCompatActivity {
                                     Intent intent = new Intent(Registro.this, Login.class);
                                     intent.putExtra("Nombre", nombreRegis);
                                     intent.putExtra("Email", emailRegis);
-                                    intent.putExtra("CP", cpRegis);
+                                    intent.putExtra("Dirección", cpRegis);
                                     intent.putExtra("newsletter", newRegis);
                                     startActivity(intent);
                                     finish();

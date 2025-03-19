@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.aplicacion.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -53,7 +54,7 @@ public class Perfil extends Fragment {
 
     private TextView textViewUsuarioPerfil, textViewEmail;
     private EditText editTextDirecionPerfil;
-    private Switch newsletterPerfil;
+    private MaterialSwitch newsletterPerfil;
     private Button cerrarSesion, modificarDatos, btnGuardar;
     private ImageView imageViewPerfil;
     private FirebaseAuth firebaseAuth;
@@ -191,10 +192,9 @@ public class Perfil extends Fragment {
             //Intentamos abrir la cámara
             if (ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED ||
                     ContextCompat.checkSelfPermission(getContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(),
-                        new String[]{android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
-                openCamera();
+                abrirCamera();
             } else {
+                ActivityCompat.requestPermissions(requireActivity(), new String[]{android.Manifest.permission.CAMERA}, REQUEST_PERMISSION);
                 System.out.println("No se puede abrir la camara, comprueba los permisos.");
             }
         });
@@ -280,37 +280,16 @@ public class Perfil extends Fragment {
         }
     }
 
-    private void openCamera() {
+    private void abrirCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             Log.d("PerfilFragment", "Cámara encontrada, abriendo...");
-            startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
+            cameraLauncher.launch(cameraIntent);
         } else {
             Log.e("PerfilFragment", "No se encontró una aplicación de cámara instalada.");
             Toast.makeText(getActivity(), "No se encontró una aplicación de cámara", Toast.LENGTH_SHORT).show();
         }
     }
-
-    /*@Override -> Hay que cambiarlo
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == CAMERA_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
-            if (data != null && data.getExtras() != null) {
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
-                if (photo != null) {
-                    imageViewPerfil.setImageBitmap(photo);
-                    subirImagenAFirebase(photo);
-                } else {
-                    Toast.makeText(getActivity(), "No se ha capturado ninguna imagen", Toast.LENGTH_SHORT).show();
-                }
-            } else {
-                Log.e("PerfilFragment", "Intent data es null");
-            }
-        } else {
-            Log.e("PerfilFragment", "Error: requestCode o resultCode incorrecto");
-        }
-    }*/
 
     private void comprobarImagenGoogle() {
         Uri Urlfoto = usuarioActual.getPhotoUrl();

@@ -1,6 +1,7 @@
 package com.example.aplicacion.Interfaces;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -124,6 +125,11 @@ public class Login extends AppCompatActivity {
                     new Handler(Looper.getMainLooper()).post(() -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(Login.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
+                            // Reproduce el sonido de inicio de sesión exitoso
+                            MediaPlayer mediaPlayer = MediaPlayer.create(Login.this, R.raw.sonidologinexito);
+                            mediaPlayer.start();
+                            mediaPlayer.setOnCompletionListener(MediaPlayer::release); // Libera el reproductor después de la reproducción.
+
                             Intent intent = new Intent(Login.this, MainPage.class);
                             startActivity(intent);
                             finish();
@@ -164,19 +170,20 @@ public class Login extends AppCompatActivity {
                             DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(emailKey);
 
                             dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                //Asignamos los primeros datos al iniciar sesión con Google Firebase
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if (!snapshot.exists()) {
                                         dbRef.child("nombre").setValue(user.getDisplayName());
                                         dbRef.child("email").setValue(user.getEmail());
-                                        dbRef.child("cp").setValue("");
-                                        dbRef.child("newsletter").setValue("");
+                                        dbRef.child("direccion").setValue("");
+                                        dbRef.child("newsletter").setValue(false);
                                     }
                                     SharedPreferences preferences = getSharedPreferences("UserProfile", MODE_PRIVATE);
                                     SharedPreferences.Editor editor = preferences.edit();
                                     editor.putString("email", email);
-                                    editor.putString("cp", "");  // Ensure "cp" has a value here
-                                    //editor.putString("newsletter", "");
+                                    editor.putString("direccion", "");
+                                    //editor.putString("newsletter", false);
                                     editor.putString("nombre", user.getDisplayName());
                                     editor.apply();
                                 }
