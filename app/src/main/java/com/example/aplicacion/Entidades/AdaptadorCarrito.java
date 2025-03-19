@@ -105,7 +105,7 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
                 calcularPrecioTotal(formato);
             }
         });
-
+        calcularPrecioTotal(formato);
     }
 
     @Override

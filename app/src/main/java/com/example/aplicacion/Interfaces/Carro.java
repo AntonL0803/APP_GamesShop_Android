@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -223,6 +225,7 @@ public class Carro extends Fragment {
 
     public void mostrarDialog(){
         EditText editText = new EditText(getContext());
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Datos necesarios")
                 .setMessage("Introduce un nombre para el pedido")
@@ -236,6 +239,16 @@ public class Carro extends Fragment {
                     }
                 })
                 .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+
+        dialog.show();
+
+        Window window = dialog.getWindow();
+        if (window != null){
+            WindowManager.LayoutParams layoutParams = window.getAttributes();
+            layoutParams.width = 900;
+            layoutParams.height = 600;
+            window.setAttributes(layoutParams);
+        }
     }
 }
