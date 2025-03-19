@@ -55,6 +55,7 @@ public class Carro extends Fragment {
     private CarritoManager carritoManager;
     private List<Producto> productos = new ArrayList<>();
     private Map<String, Integer> imagenes = new HashMap<String, Integer>() {{
+        // Mapa de productos con sus respectivas imágenes.
         put("Super Mario Bros Wonder", R.drawable.supermariobroswonder);
         put("Biomutant", R.drawable.biomutant);
         put("Crash", R.drawable.crash);
@@ -81,29 +82,25 @@ public class Carro extends Fragment {
         put("Zelda Links Awakening", R.drawable.zeldalink);
     }};
 
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // TODO: Renombrar los parámetros según sea necesario.
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+    // TODO: Renombrar y cambiar los tipos de los parámetros.
     private String mParam1;
     private String mParam2;
 
     public Carro() {
-        // Required empty public constructor
+        // Constructor vacío requerido.
     }
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * Método de fábrica para crear una nueva instancia del fragmento Carro.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Carro.
+     * @param param1 Parámetro 1.
+     * @param param2 Parámetro 2.
+     * @return Una nueva instancia del fragmento Carro.
      */
-    // TODO: Rename and change types and number of parameters
     public static Carro newInstance(String param1, String param2) {
         Carro fragment = new Carro();
         Bundle args = new Bundle();
@@ -116,6 +113,7 @@ public class Carro extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Si hay argumentos, inicializamos los parámetros.
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -133,19 +131,24 @@ public class Carro extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
 
+        // Verificar si el usuario está autenticado.
         if (user != null) {
-            cargarDatosCarritoAdaptador();
+            cargarDatosCarritoAdaptador();  // Cargar los productos del carrito si el usuario está autenticado.
         } else {
             Log.e("Carro", "Usuario no autenticado");
         }
+
+        // Configurar el botón de "Pagar Carrito".
         btnComprar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mostrarDialog();
+                mostrarDialog();  // Mostrar el cuadro de diálogo para ingresar el nombre del pedido.
             }
         });
         return view;
     }
+
+    // Método para obtener la lista de productos del carrito desde Firebase.
     public void getListaProductos(){
         String emailUser = user.getEmail().replace("@", "_").replace(".", "_");
         DatabaseReference carritoRef = FirebaseDatabase.getInstance().getReference()
@@ -154,6 +157,7 @@ public class Carro extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
+                    // Iterar sobre los productos en el carrito.
                     for (DataSnapshot productoSnapshot : snapshot.getChildren()) {
                         productos.add(productoSnapshot.getValue(Producto.class));
                     }
@@ -165,33 +169,42 @@ public class Carro extends Fragment {
         });
     }
 
+    // Método para crear un pedido en Firebase con los productos del carrito.
     public void crearPedido(){
         getListaProductos();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        // Formato de la fecha actual.
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         String fechaActual = sdf.format(new Date());
 
         total = 0;
 
+        // Calcular el total del pedido.
         for (Producto producto : productos) {
             total += producto.getPrecio() * producto.getCantidad();
         }
 
+        // Obtener el email del usuario y formatearlo para Firebase.
         String emailUser = user.getEmail().replace("@", "_").replace(".", "_");
         DatabaseReference pedidosRef = FirebaseDatabase.getInstance().getReference()
                 .child("Usuarios").child(emailUser).child("pedidos");
 
+        // Crear un objeto Pedido con los datos necesarios.
         Pedido pedido = new Pedido(nombre.toLowerCase(), fechaActual, total, productos);
 
+        // Guardar el pedido en Firebase.
         pedidosRef.push().setValue(pedido);
 
+        // Realizar la transacción de fragmentos.
         FragmentTransaction transaccion = getActivity().getSupportFragmentManager().beginTransaction();
         transaccion.replace(R.id.frameLayoutPrincipal, new Pedidos());
         transaccion.commit();
 
+        // Vaciar el carrito en Firebase.
         carritoManager.vaciarCarritoFirebase();
     }
 
+    // Método para cargar los productos del carrito y actualizar el adaptador.
     public void cargarDatosCarritoAdaptador(){
         db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
         productos = new ArrayList<>();
@@ -199,18 +212,20 @@ public class Carro extends Fragment {
         String emailUser = user.getEmail();
         DatabaseReference emailCarritoReferencia = usuariosReferencia.child(emailUser.replace("@", "_").replace(".", "_")).child("carrito");
 
+        // Escuchar los cambios en los productos del carrito.
         emailCarritoReferencia.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    productos.clear();
+                    productos.clear();  // Limpiar la lista de productos.
                     for (DataSnapshot productoSnapshot : snapshot.getChildren()) {
                         Producto producto = productoSnapshot.getValue(Producto.class);
                         if (producto != null){
-                            productos.add(producto);
+                            productos.add(producto);  // Agregar los productos a la lista.
                         }
                     }
                 }
+                // Configurar el adaptador con los productos y las imágenes.
                 AdaptadorCarrito adaptador = new AdaptadorCarrito(productos, imagenes, btnComprar);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                 rvCarro.setLayoutManager(layoutManager);
@@ -223,6 +238,7 @@ public class Carro extends Fragment {
         });
     }
 
+    // Método para mostrar el cuadro de diálogo para ingresar el nombre del pedido.
     public void mostrarDialog(){
         EditText editText = new EditText(getContext());
 
@@ -235,7 +251,7 @@ public class Carro extends Fragment {
                     if(nombre.isEmpty()){
                         Toast.makeText(getContext(), "Porfavor, introduzca un valor", Toast.LENGTH_SHORT).show();
                     } else {
-                        crearPedido();
+                        crearPedido();  // Crear el pedido si el nombre es válido.
                     }
                 })
                 .setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
@@ -243,6 +259,7 @@ public class Carro extends Fragment {
 
         dialog.show();
 
+        // Configurar las dimensiones del cuadro de diálogo.
         Window window = dialog.getWindow();
         if (window != null){
             WindowManager.LayoutParams layoutParams = window.getAttributes();
