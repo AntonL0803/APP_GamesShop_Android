@@ -72,7 +72,12 @@ public class AdaptadorCarrito extends RecyclerView.Adapter<AdaptadorCarrito.MiVi
             holder.ivProducto.setImageResource(R.drawable.perfil);
         }
 
-        holder.tvNombre.setText(producto.getNombre().toString());
+        if (producto.getNombre() != null){
+            holder.tvNombre.setText(producto.getNombre().toString());
+        } else {
+            holder.tvNombre.setText("nombre no disponible");
+        }
+
         holder.tvPrecio.setText("Precio: " + formato.format(producto.getPrecio() * producto.getCantidad()) + "€");
         holder.tvQuantity.setText(String.valueOf(producto.getCantidad()));
 

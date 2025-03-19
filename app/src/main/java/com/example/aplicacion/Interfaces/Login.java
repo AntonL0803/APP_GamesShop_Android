@@ -57,12 +57,13 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_main_login);
 
         videoView = findViewById(R.id.videoViewLogin);
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fondo_pantalla_incial);
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fondo_mariobros_inicio);
         videoView.setVideoURI(uri);
         videoView.start();
 
         videoView.setOnPreparedListener(mp -> {
             mp.setLooping(true);
+            videoView.start();
         });
 
         View rootView = findViewById(R.id.main);

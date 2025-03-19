@@ -1,47 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F0F0"
+    android:background="@drawable/fondo_registro"
+    android:orientation="vertical"
     android:padding="24dp"
     tools:context=".Interfaces.Registro">
 
-    <ImageView
-        android:id="@+id/ivLogoRegistro"
-        android:layout_width="180dp"  android:layout_height="180dp" android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logotipo_texto" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="270dp">
 
-    <TextView
-        android:id="@+id/tvRegistroDescripcion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="¡Crea tu cuenta y únete a nuestra comunidad!"
-        android:textColor="#333333"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivLogoRegistro" />
+        <ImageView
+            android:id="@+id/ivLogoRegistro"
+            android:layout_width="265dp"
+            android:layout_height="260dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/logo_completo" />
+
+        <TextView
+            android:id="@+id/tvRegistroDescripcion"
+            android:layout_width="361dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:text="¡Crea tu cuenta y únete a nuestra comunidad!"
+            android:textColor="#333333"
+            android:textSize="18sp" />
+    </FrameLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilNombreRegistro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:hint="Nombre"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvRegistroDescripcion">
+        android:background="#FFFEFE"
+        android:hint="Nombre">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etNombreRegistro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#FAF5F5"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -50,10 +54,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilNombreRegistro">
+        android:background="#FDFBFB"
+        android:hint="Email">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEmailRegistro"
@@ -67,10 +69,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="Dirección Postal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilEmailRegistro">
+        android:background="#FFFFFF"
+        android:hint="Dirección Postal">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etDireccionRegistro"
@@ -84,10 +84,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:background="#FFFFFF"
         android:hint="Contraseña"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilCPRegistro"
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -103,9 +101,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Recibir ofertas y noticias"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilContrasenaRegistro" />
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btRegistro"
@@ -114,9 +111,7 @@
         android:layout_marginTop="24dp"
         android:text="REGISTRARSE"
         android:textSize="18sp"
-        app:cornerRadius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/newsRegistro" />
+        app:backgroundTint="#E60012"
+        app:cornerRadius="8dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
