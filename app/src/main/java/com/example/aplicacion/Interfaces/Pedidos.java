@@ -119,7 +119,7 @@ public class Pedidos extends Fragment {
                             if (codigo != null && codigo.length() > 9) {
                                 codigo = codigo.substring(0, 9); // Limitar a 9 caracteres
                             }
-                            codigoPedido.add(codigo); // Agregar el código del pedido
+                            codigoPedido.add(codigo.toLowerCase().trim()); // Agregar el código del pedido
 
                             Log.d("pedido", "El pedido introducido es el siguiente" + pedido);
                         }
