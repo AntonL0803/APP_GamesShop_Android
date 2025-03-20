@@ -102,22 +102,22 @@ public class Login extends AppCompatActivity {
 
         // Resultado de la actividad de Google Sign-In
         signInResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            GoogleSignIn.getSignedInAccountFromIntent(data).addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    firebaseAuthWithGoogle(task.getResult()); // Autenticación con Google
-                                } else {
-                                    Toast.makeText(this, "Error en Google sign in.", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    } else {
-                        Toast.makeText(Login.this, "Error en Google Sign-In por el dato", Toast.LENGTH_SHORT).show();
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        GoogleSignIn.getSignedInAccountFromIntent(data).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                firebaseAuthWithGoogle(task.getResult()); // Autenticación con Google
+                            } else {
+                                Toast.makeText(this, "Error en Google sign in.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
-                });
+                } else {
+                    Toast.makeText(Login.this, "Error en Google Sign-In por el dato", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     // Método para iniciar sesión con correo y contraseña
@@ -172,7 +172,7 @@ public class Login extends AppCompatActivity {
 
     // Método para iniciar sesión con Google
     private void signInWithGoogle() {
-        // Configuración de Google Sign-In (está deprecado porque la mayoría de los móviles no soportan la nueva versión)
+        // Configuración de Google Sign-In (está deprecado porque la mayoría de los móviles no soportan la nueva versión): pide el ID de cliente web y el email.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id)) // Se especifica el ID de cliente web
                 .requestEmail() // Solicita el email
@@ -186,9 +186,11 @@ public class Login extends AppCompatActivity {
 
     // Método para autenticar al usuario con Google en Firebase
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+        //Crea una credencial de autenticación con el ID de token de Google.
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
+                    //Obtiene el usuario autenticado con Google en Firebase
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
