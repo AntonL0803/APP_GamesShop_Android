@@ -9,7 +9,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         app:cardElevation="100dp">
 
         <TextView
@@ -28,7 +28,8 @@
     <SearchView
         android:id="@+id/buscadorPedidos"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="#A4A4A4" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -39,12 +40,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
-            android:src="@drawable/fondoswitch" />
+            android:src="@drawable/fondo_registro" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPedidos"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp" />
+            android:layout_height="match_parent" />
     </FrameLayout>
 </LinearLayout>

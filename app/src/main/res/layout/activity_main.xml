@@ -17,10 +17,10 @@
         android:id="@+id/tabLay"
         android:layout_width="match_parent"
         android:layout_height="62dp"
-        android:background="#E60012"
+        android:background="#00B9DC"
         android:textStyle="bold"
-        app:tabSelectedTextColor="#FFFFFF"
         app:tabIndicatorColor="#FFFFFF"
+        app:tabSelectedTextColor="#FFFFFF"
         app:tint="@color/white">
 
         <com.google.android.material.tabs.TabItem
@@ -61,7 +61,7 @@
             android:textColor="#FFFFFF"
             android:textStyle="bold"
             app:tabIconTint="#FFFFFF"
-            app:tint="#FFFFFF"/>
+            app:tint="#FFFFFF" />
     </com.google.android.material.tabs.TabLayout>
 
 </LinearLayout>
