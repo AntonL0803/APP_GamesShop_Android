@@ -2,11 +2,4 @@
     <string name="app_name">Aplicacion</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="login_title">INICIAR SESIÓN</string>
-    <string name="email_hint">Correo electrónico</string>
-    <string name="password_hint">Contraseña</string>
-    <string name="no_account_question">¿No tienes cuenta?</string>
-    <string name="register_link">Regístrate</string>
-    <string name="login_button">Iniciar Sesión</string>
-    <string name="or_text">o</string>
 </resources>
