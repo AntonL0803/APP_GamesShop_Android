@@ -90,7 +90,7 @@ public class Registro extends AppCompatActivity {
             return;
         }
 
-        // Validación del formato del email
+        // Función de Android: Validación del formato del email
         if (!Patterns.EMAIL_ADDRESS.matcher(emailRegis).matches()) {
             Toast.makeText(this, "Por favor, ingresa un correo electrónico válido", Toast.LENGTH_SHORT).show();
             return;
@@ -102,14 +102,15 @@ public class Registro extends AppCompatActivity {
             return;
         }
 
-        // Crear usuario en Firebase Auth
+        // Crear y registra un usuario en Firebase Authentication
         firebaseAuth.createUserWithEmailAndPassword(emailRegis, passwordRegis)
+                //se ejecuta cuando el intento de registro termina
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Obtener usuario registrado
                         FirebaseUser user = firebaseAuth.getCurrentUser();
-                        if (user != null) {
-                            //Crear un HashMap con los datos del usuario
+                        if (user != null) { //registro fue exitoso y el usuario está disponible.
+                            //Crear un HashMap para almacenar los datos del usuario
                             HashMap<String, Object> userData = new HashMap<>();
                             userData.put("nombre", nombreRegis);
                             userData.put("email", emailRegis);
@@ -121,7 +122,7 @@ public class Registro extends AppCompatActivity {
 
                             // Guardar los datos en la base de datos Firebase
                             nodoPadre.child(emailKey).setValue(userData).addOnCompleteListener(dbTask -> {
-                                if (dbTask.isSuccessful()) {
+                                if (dbTask.isSuccessful()) { //Escritura
 
                                     // Enviar email de verificación al usuario
                                     user.sendEmailVerification();

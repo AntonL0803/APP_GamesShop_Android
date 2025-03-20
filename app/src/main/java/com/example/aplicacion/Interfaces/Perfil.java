@@ -220,15 +220,17 @@ public class Perfil extends Fragment {
         db = FirebaseDatabase.getInstance("https://gameshopandroid-cf6f2-default-rtdb.europe-west1.firebasedatabase.app");
         DatabaseReference usuariosReferencia = db.getReference().child("Usuarios");
         String emailUsuario = usuarioActual.getEmail();
+        //Si el email está vacío
         if (emailUsuario != null) {
             String usuarioClave = emailUsuario.replace("@", "_").replace(".", "_");
             DatabaseReference usuarioReferenciado = usuariosReferencia.child(usuarioClave);// Referencia correcta al usuario
 
+            //Solo queremos obtener los datos una vez (sin escuchar cambios en tiempo real)
             usuarioReferenciado.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    //Si existe: Obtenemos valores de Firebase
                     if (snapshot.exists()) {
-                        // Obtener valores de Firebase
                         String nombre = snapshot.child("nombre").getValue(String.class);
                         String email = snapshot.child("email").getValue(String.class);
                         String direccion = snapshot.child("direccion").getValue(String.class);
@@ -237,7 +239,7 @@ public class Perfil extends Fragment {
                             newsletter = false;  // Si es null, asignamos un valor por defecto
                         }
 
-                        // Asignar valores a los elementos UI
+                        // Si un valor es null, se muestra un mensaje predeterminado.
                         textViewUsuarioPerfil.setText(nombre != null ? nombre : "Nombre no disponible");
                         textViewEmail.setText(email != null ? email : "Email no disponible");
                         editTextDirecionPerfil.setText(direccion != null ? direccion : "");
@@ -248,10 +250,12 @@ public class Perfil extends Fragment {
                             String imagenBase64 = snapshot.child("photoBase64").getValue(String.class);
                             if (imagenBase64 != null && !imagenBase64.isEmpty()) {
                                 Log.d("PerfilFragment", "Base64 recuperada: " + imagenBase64);
+                                //Propio
                                 Bitmap imagenDecodificada = convertirBase64AImagen(imagenBase64);
                                 imageViewPerfil.setImageBitmap(imagenDecodificada);
                             } else {
                                 Log.e("PerfilFragment", "Imagen en Base64 está vacía o nula");
+                                //Google
                                 comprobarImagenGoogle();
                             }
                         } else {
@@ -261,7 +265,6 @@ public class Perfil extends Fragment {
                         Toast.makeText(getActivity(), "No se encontraron datos", Toast.LENGTH_SHORT).show();
                     }
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Toast.makeText(getActivity(), "Error al obtener datos: " + error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -271,9 +274,10 @@ public class Perfil extends Fragment {
 
     }
 
+    // Guardar cambios del perfil
     private void configurarEventosDeCambio() {
         try{
-            //Esto actualiza el firebase
+            //Esto actualiza los valores en el firebase
             String emailUser = usuarioActual.getEmail();
             DatabaseReference usuario = db.getReference().child("Usuarios")
                     .child(emailUser.replace("@", "_").replace(".", "_"));
@@ -287,6 +291,7 @@ public class Perfil extends Fragment {
         }
     }
 
+    //Si hay aplicación de cámara
     private void abrirCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -298,6 +303,7 @@ public class Perfil extends Fragment {
         }
     }
 
+    //Si hay imagen de google
     private void comprobarImagenGoogle() {
         Uri Urlfoto = usuarioActual.getPhotoUrl();
         if (Urlfoto != null) {
@@ -309,6 +315,7 @@ public class Perfil extends Fragment {
             imageViewPerfil.setImageResource(R.drawable.imagendefecto);
         }
     }
+
     //Captura y guarda la imagen de perfil en Firebase en formato Base64.
     private void subirImagenAFirebase(Bitmap photo) {
         String imagenBase64 = convertirImagenBase64(photo);
@@ -332,12 +339,14 @@ public class Perfil extends Fragment {
         }
     }
 
+    //Para gardar
     private String convertirImagenBase64(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
     }
 
+    //Para sacar
     private Bitmap convertirBase64AImagen(String base64String) {
         byte[] decodedBytes = Base64.decode(base64String, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
