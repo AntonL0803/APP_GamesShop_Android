@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -63,14 +61,13 @@ public class Login extends AppCompatActivity {
 
         // Configuración del VideoView para reproducir un video de fondo
         videoView = findViewById(R.id.videoViewLogin);
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fondo_mariobros_inicio);
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.fondo_login);
         videoView.setVideoURI(uri);
         videoView.start();
 
         // Configura el VideoView para que el video se repita en bucle
         videoView.setOnPreparedListener(mp -> {
             mp.setLooping(true);
-            videoView.start();
         });
 
         // Ajuste de la ventana para que se adapte a las barras del sistema (por ejemplo, la barra de estado)
